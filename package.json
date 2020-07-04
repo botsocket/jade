@@ -1,6 +1,6 @@
 {
     "name": "@botbind/lyra",
-    "version": "2.0.0",
+    "version": "3.0.0",
     "description": "A robust and powerful data validator",
     "main": "src/index.js",
     "types": "src/index.d.ts",
