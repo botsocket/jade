@@ -16,13 +16,7 @@ exports.extension = Lyra.obj({
 
     alias: Lyra.arr(Lyra.str()).single(),
 
-    from: Lyra.obj().schema().when('type', {
-        is: Lyra.alt(
-            Lyra.arr().min(2),
-            Lyra.obj().regex(),
-        ),
-        then: Lyra.forbidden(),
-    }),
+    from: Lyra.obj().schema(),
 
     flags: Lyra.obj().pattern(internals.nameRx, Lyra.required()),
 

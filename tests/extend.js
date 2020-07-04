@@ -149,6 +149,7 @@ describe('extend()', () => {
 
     it('should throw if from or alias is provided on multiple types', () => {
         expect(() => Lyra.extend({ type: ['string', 'number'], from: Lyra.str() })).toThrow('from is forbidden');
+        expect(() => Lyra.extend({ type: ['string'], from: Lyra.str() })).not.toThrow();
         expect(() => Lyra.extend({ type: /^s/, from: Lyra.str() })).toThrow('from is forbidden');
 
         expect(() => Lyra.extend({ type: ['string', 'number'], alias: 'combo' })).toThrow('alias is forbidden');
@@ -231,29 +232,6 @@ describe('extend()', () => {
                 output: 'special',
             },
         ]);
-    });
-
-    it('should throw if "from" is provided when extending multiple types', () => {
-        expect(() => {
-            Lyra.extend({
-                type: ['number', 'string'],
-                from: Lyra.any(),
-            });
-        }).toThrow('from is forbidden');
-
-        expect(() => {
-            Lyra.extend({
-                type: ['number'],
-                from: Lyra.number(),
-            });
-        }).not.toThrow();
-
-        expect(() => {
-            Lyra.extend({
-                type: /^s/,
-                from: Lyra.any(),
-            });
-        }).toThrow('from is forbidden');
     });
 
     it('should extend a complex base', () => {
