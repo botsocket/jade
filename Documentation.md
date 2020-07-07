@@ -608,7 +608,7 @@ Lyra.object().$isType('any'); // true
 Lyra.object().type === 'any'; // false
 ```
 
--   `$compile`: A function of signature `function (value) {}` that compiles a literal to a schema. Similar to (but not exactly the same) [`compile()`](#compilevalue). 
+-   `$compile`: A function of signature `function (value) {}` that compiles a literal to a schema. Similar to (but not exactly the same) [`compile()`](#compilevalue).
 -   `$getFlag`: A function of signature `function (name) {}` that retrieves a flag (and returns its default value if no value has been set) where:
     -   `name`: The name of the flag.
 -   `$setFlag`: A function of signature `function (name, value, [options]) {}` that sets a flag where:
@@ -673,7 +673,7 @@ const custom = Lyra.extend((root) => ({
         // Clean, if specified
 
         value = coerced.version;
-        if (schema.$getFlag('clean')) { 
+        if (schema.$getFlag('clean')) {
             value = Semver.clean(value);
         }
 
@@ -688,7 +688,7 @@ const custom = Lyra.extend((root) => ({
         // Validate condition, if any
 
         const condition = schema.$getFlag('condition');
-        if (condition && 
+        if (condition &&
             !Semver.satisfies(value, condition)) {
 
             return error('semver.condition', { condition });
@@ -1202,7 +1202,7 @@ const default = {
     },
 };
 
-require('assert').deepEqual(schema.validate(undefined).value, default); // true 
+require('assert').deepEqual(schema.validate(undefined).value, default); // true
 ```
 
 [Back to top](#api)

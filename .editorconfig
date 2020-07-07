@@ -1,15 +1,9 @@
 root = true
 
-[*.md]
-trim_trailing_whitespace = false
-
-[*.js]
-trim_trailing_whitespace = true
-
 [*]
+trim_trailing_whitespace = true
 indent_style = space
 indent_size = 4
 end_of_line = lf
 charset = utf-8
 insert_final_newline = true
-max_line_length = 140
