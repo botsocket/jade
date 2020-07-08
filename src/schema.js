@@ -404,8 +404,8 @@ internals.Schema = class {
         return target;
     }
 
-    $createError(value, code, settings, state, local = {}) {
-        return Errors.create(this, value, code, settings, state, local);
+    $createError(value, code, settings, state, local, options = {}) {
+        return Errors.create(this, value, code, settings, state, local || {}, options);
     }
 
     $validate(value, settings, state, overrides = {}) {

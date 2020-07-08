@@ -347,6 +347,32 @@ describe('object()', () => {
                 },
             ]);
         });
+
+        it('should not use parent label for unknown keys', () => {
+            const schema = Lyra.obj({
+                a: Lyra.str(),
+            }).label('Options');
+
+            Utils.validate(schema, [
+                { value: { a: 'x' } },
+                {
+                    value: 'x',
+                    error: {
+                        code: 'object.base',
+                        message: 'Options must be an object',
+                        local: { label: 'Options' },
+                    },
+                },
+                {
+                    value: { b: 'x' },
+                    error: {
+                        code: 'object.unknown',
+                        message: 'b is not allowed',
+                        local: { label: 'b' },
+                    },
+                },
+            ]);
+        });
     });
 
     describe('pattern()', () => {

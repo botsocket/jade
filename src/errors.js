@@ -7,7 +7,7 @@ const Utils = require('./utils');
 
 const internals = {};
 
-exports.create = function (schema, value, code, settings, state, local) {
+exports.create = function (schema, value, code, settings, state, local, options) {
     Assert(typeof code === 'string', 'Code must be a string');
 
     const messages = { ...schema._definition.messages, ...settings.messages };
@@ -16,7 +16,10 @@ exports.create = function (schema, value, code, settings, state, local) {
     Assert(template, `Message ${code} is not defined`);
     Assert(!local.label, 'Cannot pass custom label as local');
 
-    local.label = schema.$getFlag('label');
+    if (options.flags !== false) {
+        local.label = schema.$getFlag('label');
+    }
+
     if (!local.label) {
         const length = state.keys.length;
         if (length) {

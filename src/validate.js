@@ -17,7 +17,7 @@ exports.schema = function (schema, value, settings, state, overrides) {
         state,
         settings,
         original: value,
-        error: (code, local, divedState = state) => schema.$createError(value, code, settings, divedState, local),
+        error: (code, local, divedState, options) => schema.$createError(value, code, settings, divedState || state, local, options),
     };
 
     // Coerce (Always exit early)

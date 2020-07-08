@@ -233,7 +233,7 @@ module.exports = Extend.schema(Any, {
 
         if (!allowUnknown) {
             for (const key of keys) {
-                errors.push(error('object.unknown', undefined, state.dive(value, key)));
+                errors.push(error('object.unknown', null, state.dive(value, key), { flags: false }));
 
                 if (settings.abortEarly) {
                     return errors;
