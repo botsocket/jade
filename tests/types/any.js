@@ -1732,13 +1732,28 @@ describe('any()', () => {
             const schema = Lyra.obj({
                 a: Lyra.any().default('x'),
                 b: {
-                    c: Lyra.any().default('x'),
-                    d: {
-                        e: Lyra.any().default('x'),
-                        f: Lyra.any().default('x'),
+                    c: {
+                        d: Lyra.any().default('x'),
                     },
                 },
-            }).default();
+                e: {
+                    f: {
+                        g: Lyra.obj({
+                            h: Lyra.any().default('x'),
+                        }).default('someOtherDefault'),
+                    },
+                },
+                i: Lyra.obj(),
+                j: Lyra.obj().default(),
+                k: {},
+                l: {
+                    m: Lyra.num(),
+                },
+                n: Lyra.obj({
+                    o: Lyra.any(),
+                }).default(),
+            })
+                .default();
 
             Utils.validate(schema, [
                 {
@@ -1746,12 +1761,15 @@ describe('any()', () => {
                     output: {
                         a: 'x',
                         b: {
-                            c: 'x',
-                            d: {
-                                e: 'x',
-                                f: 'x',
+                            c: { d: 'x' },
+                        },
+                        e: {
+                            f: {
+                                g: 'someOtherDefault',
                             },
                         },
+                        j: {},
+                        n: {},
                     },
                 },
             ]);
@@ -1759,14 +1777,13 @@ describe('any()', () => {
 
         it('should generate deep defaults for non-native objects', () => {
             const custom = Lyra.extend({ type: 'test', from: Lyra.obj() });
-            const schema = custom
-                .test({
-                    a: custom.obj({
-                        b: custom.test({
-                            c: custom.any().default('x'),
-                        }),
+            const schema = custom.test({
+                a: custom.obj({
+                    b: custom.test({
+                        c: custom.any().default('x'),
                     }),
-                })
+                }),
+            })
                 .default();
 
             Utils.validate(schema, [

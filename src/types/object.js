@@ -118,12 +118,9 @@ module.exports = Extend.schema(Any, {
         if (schema.$getFlag('default') === Utils.symbols.deepDefault) {
             for (let i = 0; i < children.length; i++) {
                 const child = children[i];
-                let childSchema = child.schema;
-                if (childSchema.$isType('object')) {
-                    childSchema = childSchema.default(); // Deep default
+                if (child.schema.$isType('object')) {
+                    child.schema = internals.deepDefault(child.schema);
                 }
-
-                child.schema = childSchema;
             }
         }
 
@@ -500,6 +497,30 @@ module.exports = Extend.schema(Any, {
         map: (value) => new Map(Object.entries(value)),
     },
 });
+
+internals.deepDefault = function (schema) {
+    if (schema.$getFlag('default') !== undefined) { // Does not process if already has default
+        return schema;
+    }
+
+    if (!schema.$terms.keys) {
+        return schema;
+    }
+
+    for (let i = 0; i < schema.$terms.keys.length; i++) {
+        const child = schema.$terms.keys[i];
+
+        if (child.schema.$isType('object')) {
+            child.schema = internals.deepDefault(child.schema);
+        }
+
+        if (child.schema.$getFlag('default') !== undefined) {
+            return schema.default();
+        }
+    }
+
+    return schema;
+};
 
 internals.dependencies = function (value, peers, settings, state) {
     return {
