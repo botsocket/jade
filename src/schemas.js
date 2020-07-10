@@ -12,7 +12,8 @@ exports.extension = Lyra.obj({
     type: Lyra.alt(
         Lyra.arr(Lyra.str()).single(),
         Lyra.obj().regex(),
-    ).required(),
+    )
+        .required(),
 
     alias: Lyra.arr(Lyra.str()).single(),
 
@@ -33,7 +34,8 @@ exports.extension = Lyra.obj({
             Lyra.arr(),
             Lyra.obj().values(),
             null,
-        ).required(),
+        )
+            .required(),
 
         merge: Lyra.fn(),
 
