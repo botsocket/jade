@@ -158,12 +158,13 @@ module.exports = Extend.schema(Any, {
         }
 
         // Shallow clone
-        value = Clone(value, { shallow: false });
+
+        value = Clone(value, { shallow: true });
+
+        // Keys
 
         const errors = [];
         const keys = new Set(Object.keys(value));
-
-        // Keys
 
         if (schema.$terms.keys) {
             for (const { key, schema: childSchema } of schema.$terms.keys) {

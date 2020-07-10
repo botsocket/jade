@@ -100,6 +100,22 @@ describe('object()', () => {
         ]);
     });
 
+    it('should not clone nested objects recursively if it does not have any rules to validate', () => {
+        const schema = Lyra.obj({
+            a: Lyra.obj(),
+            b: Lyra.obj({
+                c: 1,
+            }),
+        });
+
+        const a = {};
+        const b = { c: 1 };
+        const result = schema.validate({ a, b });
+
+        expect(result.value.a).toBe(a);
+        expect(result.value.b).not.toBe(b);
+    });
+
     describe('unknown()', () => {
         it('should allow unknown keys', () => {
             const schema = Lyra.obj({ a: 'x' }).unknown();
