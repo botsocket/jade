@@ -14,13 +14,9 @@ exports.extension = Lyra.obj({
         Lyra.obj().regex(),
     )
         .required(),
-
     alias: Lyra.arr(Lyra.str()).single(),
-
     from: Lyra.obj().schema(),
-
     flags: Lyra.obj().pattern(internals.nameRx, Lyra.required()),
-
     messages: Lyra.obj().pattern(
         Lyra.str(),
         Lyra.alt(
@@ -28,7 +24,6 @@ exports.extension = Lyra.obj({
             Lyra.obj().template(),
         ),
     ),
-
     terms: Lyra.obj().pattern(internals.nameRx, {
         default: Lyra.alt(
             Lyra.arr(),
@@ -36,9 +31,7 @@ exports.extension = Lyra.obj({
             null,
         )
             .required(),
-
         merge: Lyra.fn(),
-
         blueprint: Lyra.obj({
             mapped: Lyra.obj({
                 from: Lyra.str().required(),
@@ -46,32 +39,23 @@ exports.extension = Lyra.obj({
             })
                 .required(),
         }),
-
         register: Lyra.num(),
     }),
-
     args: Lyra.fn(),
-
     construct: Lyra.fn(),
-
     rebuild: Lyra.fn(),
-
     coerce: Lyra.fn(),
-
     validate: Lyra.fn(),
-
     rules: Lyra.obj().pattern(
         internals.nameRx,
         Lyra.obj({
             method: Lyra.fn().allow(false),
-
             alias: Lyra.arr(Lyra.str())
                 .single()
                 .when('method', {
                     is: Lyra.absent(),
                     then: Lyra.forbidden(),
                 }),
-
             validate: Lyra.fn().when('method', {
                 is: Lyra.alt(
                     false,
@@ -79,19 +63,13 @@ exports.extension = Lyra.obj({
                 ),
                 then: Lyra.required(),
             }),
-
             single: Lyra.bool(),
-
             convert: Lyra.bool(),
-
             args: Lyra.alt(
                 Lyra.arr(Lyra.str()),
-
                 Lyra.obj().pattern(internals.nameRx, {
                     normalize: Lyra.fn(),
-
                     ref: Lyra.bool(),
-
                     assert: Lyra.alt(
                         Lyra.obj().schema(),
                         Lyra.fn(),
@@ -100,7 +78,6 @@ exports.extension = Lyra.obj({
                             is: true,
                             then: Lyra.required(),
                         }),
-
                     message: Lyra.str().when('assert', {
                         is: Lyra.fn().required(),
                         then: Lyra.required(),
@@ -121,7 +98,6 @@ exports.extension = Lyra.obj({
     ),
 
     overrides: Lyra.obj().pattern(internals.nameRx, Lyra.fn()),
-
     casts: Lyra.obj().pattern(internals.nameRx, Lyra.fn()),
 })
     .when('.type', {
