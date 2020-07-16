@@ -1428,8 +1428,7 @@ describe('any()', () => {
                 .min(2)
                 .settings({ strict: false, messages: { 'number.base': '{#label} is not good enough' } });
 
-            Utils.validate(
-                schema,
+            Utils.validate(schema,
                 {
                     presence: 'required',
                     strict: true,
@@ -2757,8 +2756,7 @@ describe('any()', () => {
         it('should validate branches with no breaks', () => {
             const schema = Lyra.obj({
                 a: Lyra.num(),
-                b: Lyra.switch(
-                    'a',
+                b: Lyra.switch('a',
                     { is: Lyra.num().multiple(2), then: 'x', break: false },
                     { is: Lyra.num().multiple(5), then: 'y', otherwise: 'z' },
                 ),

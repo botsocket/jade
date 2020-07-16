@@ -717,18 +717,14 @@ describe('array()', () => {
             expect(() => Lyra.arr(Lyra.arr()).single()).toThrow('Cannot specify single when array has array items');
             expect(() => Lyra.arr().single().items(Lyra.str(), Lyra.arr())).toThrow('Cannot specify single when array has array items');
             expect(() => Lyra.arr().single().items(Lyra.alt(Lyra.arr()))).toThrow('Cannot specify single when array has array items');
-            expect(() => Lyra.arr().single().items(Lyra.alt(Lyra.str()).try(Lyra.arr()))).toThrow(
-                'Cannot specify single when array has array items',
-            );
+            expect(() => Lyra.arr().single().items(Lyra.alt(Lyra.str()).try(Lyra.arr()))).toThrow('Cannot specify single when array has array items');
             expect(() => Lyra.arr().single().items(Lyra.str())).not.toThrow();
             expect(() => Lyra.arr().single().items(Lyra.alt(Lyra.str()))).not.toThrow();
 
             expect(() => Lyra.arr().ordered(Lyra.arr()).single()).toThrow('Cannot specify single when array has array items');
             expect(() => Lyra.arr().single().ordered(Lyra.str(), Lyra.arr())).toThrow('Cannot specify single when array has array items');
             expect(() => Lyra.arr().single().ordered(Lyra.alt(Lyra.arr()))).toThrow('Cannot specify single when array has array items');
-            expect(() => Lyra.arr().single().ordered(Lyra.alt(Lyra.str()).try(Lyra.arr()))).toThrow(
-                'Cannot specify single when array has array items',
-            );
+            expect(() => Lyra.arr().single().ordered(Lyra.alt(Lyra.str()).try(Lyra.arr()))).toThrow('Cannot specify single when array has array items');
             expect(() => Lyra.arr().single().ordered(Lyra.str())).not.toThrow();
             expect(() => Lyra.arr().single().ordered(Lyra.alt(Lyra.str()))).not.toThrow();
         });

@@ -1546,17 +1546,9 @@ Provides a set of conditions and modifies the current schema accordingly at vali
 ```js
 const schema = Lyra.object({
     a: Lyra.number(),
-    b: Lyra.any().switch(
-        'a',
-        {
-            is: Lyra.number().multiple(2),
-            then: 'x',
-        },
-        {
-            is: Lyra.number().multiple(5),
-            then: 'y',
-            otherwise: 'z',
-        },
+    b: Lyra.any().switch('a',
+        { is: Lyra.number().multiple(2), then: 'x' },
+        { is: Lyra.number().multiple(5), then: 'y', otherwise: 'z' },
     ),
 });
 
