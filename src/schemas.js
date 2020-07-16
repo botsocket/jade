@@ -8,6 +8,53 @@ const internals = {
 
 exports.extensions = Lyra.arr(Lyra.obj(), Lyra.fn()).min(1);
 
+internals.rule = Lyra.obj({
+    method: Lyra.fn().allow(false),
+    alias: Lyra.arr(Lyra.str())
+        .single()
+        .when('method', {
+            is: Lyra.absent(),
+            then: Lyra.forbidden(),
+        }),
+    validate: Lyra.fn().when('method', {
+        is: Lyra.alt(
+            false,
+            Lyra.absent(),
+        ),
+        then: Lyra.required(),
+    }),
+    single: Lyra.bool(),
+    convert: Lyra.bool(),
+    args: Lyra.alt(
+        Lyra.arr(Lyra.str()),
+        Lyra.obj().pattern(internals.nameRx, {
+            normalize: Lyra.fn(),
+            ref: Lyra.bool(),
+            assert: Lyra.alt(
+                Lyra.obj().schema(),
+                Lyra.fn(),
+            )
+                .when('ref', {
+                    is: true,
+                    then: Lyra.required(),
+                }),
+            message: Lyra.str().when('assert', {
+                is: Lyra.fn().required(),
+                then: Lyra.required(),
+                else: Lyra.forbidden(),
+            }),
+        }),
+    ),
+})
+    .when('.validate', {
+        is: Lyra.absent(),
+        then: {
+            single: Lyra.forbidden(),
+            convert: Lyra.forbidden(),
+            args: Lyra.forbidden(),
+        },
+    });
+
 exports.extension = Lyra.obj({
     type: Lyra.alt(
         Lyra.arr(Lyra.str()).single(),
@@ -55,53 +102,5 @@ exports.extension = Lyra.obj({
         then: {
             alias: Lyra.forbidden(),
             from: Lyra.forbidden(),
-        },
-    });
-
-internals.rule = Lyra.obj({
-    method: Lyra.fn().allow(false),
-    alias: Lyra.arr(Lyra.str())
-        .single()
-        .when('method', {
-            is: Lyra.absent(),
-            then: Lyra.forbidden(),
-        }),
-    validate: Lyra.fn().when('method', {
-        is: Lyra.alt(
-            false,
-            Lyra.absent(),
-        ),
-        then: Lyra.required(),
-    }),
-    single: Lyra.bool(),
-    convert: Lyra.bool(),
-    args: Lyra.alt(
-        Lyra.arr(Lyra.str()),
-        Lyra.obj().pattern(internals.nameRx, {
-            normalize: Lyra.fn(),
-            ref: Lyra.bool(),
-            assert: Lyra.alt(
-                Lyra.obj().schema(),
-                Lyra.fn(),
-            )
-                .when('ref', {
-                    is: true,
-                    then: Lyra.required(),
-                }),
-            message: Lyra.str().when('assert', {
-                is: Lyra.fn().required(),
-                then: Lyra.required(),
-                else: Lyra.forbidden(),
-            }),
-        }),
-    ),
-})
-    .or('method', 'validate')
-    .when('.validate', {
-        is: Lyra.absent(),
-        then: {
-            single: Lyra.forbidden(),
-            convert: Lyra.forbidden(),
-            args: Lyra.forbidden(),
         },
     });
