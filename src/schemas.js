@@ -76,7 +76,7 @@ exports.extension = Lyra.obj({
         )
             .required(),
         merge: Lyra.fn(),
-        blueprint: Lyra.obj({
+        description: Lyra.obj({
             mapped: Lyra.obj({
                 from: Lyra.str().required(),
                 to: Lyra.str().required(),

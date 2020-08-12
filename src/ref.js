@@ -47,19 +47,6 @@ internals.context = function (path, options) {
     };
 };
 
-exports.build = function (blueprint) {
-    const context = { ...blueprint };
-    if (!context.type) {
-        context.type = 'value';
-
-        if (context.ancestor === undefined) {
-            context.ancestor = 1;
-        }
-    }
-
-    return new internals.Ref(context);
-};
-
 internals.Ref = class {
     constructor(context) {
         this._path = context.path;

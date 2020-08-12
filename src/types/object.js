@@ -18,7 +18,7 @@ module.exports = Extend.schema(Any, {
     terms: {
         keys: {
             default: null,
-            blueprint: {
+            description: {
                 mapped: { key: 'key', value: 'schema' },
             },
 

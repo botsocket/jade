@@ -243,7 +243,7 @@ describe('extend()', () => {
         const schema = custom.test();
 
         // Known implementation limitation
-        Utils.validate(schema, { blueprint: false }, [
+        Utils.validate(schema, [
             { value: ['x', 'y'] },
             {
                 value: 'x',
@@ -536,10 +536,9 @@ describe('extend()', () => {
         const b = custom.test().special(1);
         const c = custom.test().special(2);
 
-        // In order for blueprint tests to pass construct method needs to be defined
-        Utils.validate(a, { blueprint: false }, [{ value: 1 }, { value: 2 }]);
+        Utils.validate(a, [{ value: 1 }, { value: 2 }]);
 
-        Utils.validate(a.merge(b), { blueprint: false }, [
+        Utils.validate(a.merge(b), [
             { value: 2 },
             {
                 value: 1,
@@ -551,9 +550,9 @@ describe('extend()', () => {
             },
         ]);
 
-        Utils.validate(b.merge(a), { blueprint: false }, [{ value: 1 }, { value: 2 }]);
+        Utils.validate(b.merge(a), [{ value: 1 }, { value: 2 }]);
 
-        Utils.validate(b.merge(c), { blueprint: false }, [
+        Utils.validate(b.merge(c), [
             {
                 value: 1,
                 error: {

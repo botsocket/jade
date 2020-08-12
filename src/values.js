@@ -170,21 +170,21 @@ module.exports = internals.Values = class {
     }
 
     describe() {
-        const blueprint = [];
+        const description = [];
 
         if (this._override) {
-            blueprint.push({ override: true });
+            description.push({ override: true });
         }
 
         for (const value of this._values) {
-            blueprint.push(typeof value === 'object' ? { value } : value);
+            description.push(typeof value === 'object' ? { value } : value);
         }
 
         for (const ref of this._refs) {
-            blueprint.push(ref.describe());
+            description.push(ref.describe());
         }
 
-        return blueprint;
+        return description;
     }
 
     static add(values, target, other) {

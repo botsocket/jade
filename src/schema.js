@@ -34,24 +34,24 @@ internals.Schema = class {
     }
 
     describe() {
-        const blueprint = { type: this.type, flags: {} };
+        const description = { type: this.type, flags: {} };
 
         // Valids/invalids
 
         if (this._valids.size) {
-            blueprint.allows = this._valids.describe();
+            description.allows = this._valids.describe();
         }
 
         if (this._invalids.size) {
-            blueprint.invalids = this._invalids.describe();
+            description.invalids = this._invalids.describe();
         }
 
         // Settings
 
         if (Object.keys(this._settings).length) {
-            blueprint.settings = Clone(this._settings);
+            description.settings = Clone(this._settings);
 
-            const messages = blueprint.settings.messages;
+            const messages = description.settings.messages;
             if (messages) {
                 for (const code of Object.keys(messages)) {
                     messages[code] = messages[code].describe();
@@ -66,18 +66,18 @@ internals.Schema = class {
                 continue;
             }
 
-            blueprint.flags[key] = internals.describe(this._flags[key]);
+            description.flags[key] = internals.describe(this._flags[key]);
         }
 
-        if (!Object.keys(blueprint.flags).length) {
-            delete blueprint.flags;
+        if (!Object.keys(description.flags).length) {
+            delete description.flags;
         }
 
         // Rules
 
         for (const { name, args } of this._rules) {
-            if (!blueprint.rules) {
-                blueprint.rules = [];
+            if (!description.rules) {
+                description.rules = [];
             }
 
             const rule = { name };
@@ -89,7 +89,7 @@ internals.Schema = class {
                 rule.args[key] = internals.describe(args[key], { arg: true });
             }
 
-            blueprint.rules.push(rule);
+            description.rules.push(rule);
         }
 
         // Terms
@@ -102,7 +102,7 @@ internals.Schema = class {
                 continue;
             }
 
-            Assert(!blueprint[key], 'Cannot generate blueprint for this schema due to internal key conflicts');
+            Assert(!description[key], 'Cannot generate description for this schema due to internal key conflicts');
 
             const terms = this.$terms[key];
             if (!terms) {
@@ -111,35 +111,35 @@ internals.Schema = class {
 
             if (Utils.isValues(terms)) {
                 if (terms.size) {
-                    blueprint[key] = terms.describe();
+                    description[key] = terms.describe();
                 }
 
                 continue;
             }
 
             if (!terms.length &&
-                !def.blueprint) {
+                !def.description) {
 
                 continue;
             }
 
             const normalized = terms.map(internals.describe);
 
-            if (def.blueprint) {
-                const { key: mapKey, value } = def.blueprint.mapped;
+            if (def.description) {
+                const { key: mapKey, value } = def.description.mapped;
 
-                blueprint[key] = {};
+                description[key] = {};
                 for (const term of normalized) {
-                    blueprint[key][term[mapKey]] = term[value];
+                    description[key][term[mapKey]] = term[value];
                 }
 
                 continue;
             }
 
-            blueprint[key] = normalized;
+            description[key] = normalized;
         }
 
-        return blueprint;
+        return description;
     }
 
     clone() {
@@ -632,4 +632,8 @@ internals.assertOptions = function (options) {
 
 internals.presence = function (presence) {
     return presence === 'optional' || presence === 'required' || presence === 'forbidden';
+};
+
+internals.describe = function () {
+    return {};
 };

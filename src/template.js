@@ -39,10 +39,6 @@ module.exports = internals.Template = class {
 
         return { template };
     }
-
-    static build(blueprint) {
-        return new internals.Template(blueprint.source, blueprint.options);
-    }
 };
 
 internals.Template.prototype[Utils.symbols.template] = true;
