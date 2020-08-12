@@ -15,14 +15,6 @@ exports.validate = function (schema, options, tests) {
         options = {};
     }
 
-    if (options.blueprint !== false) {
-        const blueprint = schema.describe();
-        schema = schema.$root.construct(blueprint);
-
-        Assert(Equal(schema.describe(), blueprint), 'Cannot construct schema', schema.type);
-        delete options.blueprint;
-    }
-
     for (let i = 0; i < tests.length; i++) {
         const test = tests[i];
         const result = schema.validate(test.value, options);
@@ -72,7 +64,7 @@ exports.validate = function (schema, options, tests) {
                 const expectedError = test.error[j];
                 const actualError = internals.summarizeError(result.errors[j]);
 
-                Assert(Equal(actualError, expectedError, { deepFunction: true }), // For templates
+                Assert(Equal(actualError, expectedError),
                     [
                         'Actual error:',
                         internals.inspect(actualError),
@@ -89,7 +81,7 @@ exports.validate = function (schema, options, tests) {
         for (const error of result.errors) {
             const actualError = internals.summarizeError(error);
 
-            Assert(Equal(actualError, test.error, { deepFunction: true }), // For templates
+            Assert(Equal(actualError, test.error),
                 [
                     'Actual error:',
                     internals.inspect(actualError),

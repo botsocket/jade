@@ -21,7 +21,6 @@ exports.schema = function (schema, extension) {
     }
 
     def.bases.add(target.type);
-    def.construct = internals.construct(def.construct, extension.construct);
     def.rebuild = internals.rebuild(def.rebuild, extension.rebuild);
     def.coerce = internals.method(def.coerce, extension.coerce);
     def.validate = internals.method(def.validate, extension.validate);
@@ -132,18 +131,6 @@ exports.schema = function (schema, extension) {
 
     target._definition = def;
     return target;
-};
-
-internals.construct = function (target, source) {
-    if (!target ||
-        !source) {
-
-        return target || source;
-    }
-
-    return (schema, terms) => {
-        return target(source(schema, terms), terms);
-    };
 };
 
 internals.rebuild = function (target, source) {

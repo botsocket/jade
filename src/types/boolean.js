@@ -29,18 +29,6 @@ module.exports = Extend.schema(Any, {
         'boolean.base': '{#label} must be a boolean',
     },
 
-    construct: (schema, terms) => {
-        if (terms.truthy) {
-            schema = schema.truthy(...terms.truthy);
-        }
-
-        if (terms.falsy) {
-            schema = schema.falsy(...terms.falsy);
-        }
-
-        return schema;
-    },
-
     coerce: (value, { schema, settings, state }) => {
         const type = typeof value;
         if (type === 'boolean') {

@@ -24,20 +24,6 @@ module.exports = Extend.schema(Schema, {
         notes: { default: [] },
     },
 
-    construct: (schema, terms) => {
-        if (terms.conditions) {
-            for (const { subject, ...condition } of terms.conditions) {
-                schema = schema.when(subject, condition);
-            }
-        }
-
-        if (terms.notes) {
-            schema = schema.annotate(...terms.notes);
-        }
-
-        return schema;
-    },
-
     rules: {
         convert: {
             method(enabled = true) {

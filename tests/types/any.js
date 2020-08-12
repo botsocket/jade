@@ -1,7 +1,5 @@
 'use strict';
 
-const Dust = require('@botbind/dust');
-
 const Lyra = require('../../src');
 const Utils = require('../utils');
 
@@ -3297,19 +3295,6 @@ describe('any()', () => {
         it('should throw on incorrect parameters', () => {
             expect(() => Lyra.any().annotate()).toThrow('Notes must contain at least one note');
             expect(() => Lyra.any().annotate('x', 1)).toThrow('Notes must contain only strings');
-        });
-
-        it('should set notes', () => {
-            const notes = Lyra.any().annotate('x', 'y', 'zt').describe().notes;
-
-            expect(Dust.equal(notes, ['x', 'y', 'zt'])).toBe(true);
-        });
-
-        it('should construct schema with notes', () => {
-            const blueprint = Lyra.any().annotate('x', 'y').describe();
-            const notes = Lyra.construct(blueprint).describe().notes;
-
-            expect(Dust.equal(notes, ['x', 'y'])).toBe(true);
         });
     });
 });

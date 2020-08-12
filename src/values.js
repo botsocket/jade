@@ -177,7 +177,7 @@ module.exports = internals.Values = class {
         }
 
         for (const value of this._values) {
-            blueprint.push({ value });
+            blueprint.push(typeof value === 'object' ? { value } : value);
         }
 
         for (const ref of this._refs) {

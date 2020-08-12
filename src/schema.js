@@ -7,7 +7,6 @@ const IsObject = require('@botbind/dust/src/isObject');
 const Merge = require('@botbind/dust/src/merge');
 
 const Compile = require('./compile');
-const Blueprint = require('./blueprint');
 const State = require('./state');
 const Ref = require('./ref');
 const Values = require('./values');
@@ -32,6 +31,115 @@ internals.Schema = class {
         this.$terms = {}; // Hash of arrays of immutable objects
         this.$super = {}; // Behaves like super
         this.$root = null;
+    }
+
+    describe() {
+        const blueprint = { type: this.type, flags: {} };
+
+        // Valids/invalids
+
+        if (this._valids.size) {
+            blueprint.allows = this._valids.describe();
+        }
+
+        if (this._invalids.size) {
+            blueprint.invalids = this._invalids.describe();
+        }
+
+        // Settings
+
+        if (Object.keys(this._settings).length) {
+            blueprint.settings = Clone(this._settings);
+
+            const messages = blueprint.settings.messages;
+            if (messages) {
+                for (const code of Object.keys(messages)) {
+                    messages[code] = messages[code].describe();
+                }
+            }
+        }
+
+        // Flags
+
+        for (const key of Object.keys(this._flags)) {
+            if (key[0] === '_') {
+                continue;
+            }
+
+            blueprint.flags[key] = internals.describe(this._flags[key]);
+        }
+
+        if (!Object.keys(blueprint.flags).length) {
+            delete blueprint.flags;
+        }
+
+        // Rules
+
+        for (const { name, args } of this._rules) {
+            if (!blueprint.rules) {
+                blueprint.rules = [];
+            }
+
+            const rule = { name };
+            for (const key of Object.keys(args)) {
+                if (!rule.args) {
+                    rule.args = {};
+                }
+
+                rule.args[key] = internals.describe(args[key], { arg: true });
+            }
+
+            blueprint.rules.push(rule);
+        }
+
+        // Terms
+
+        for (const key of Object.keys(this.$terms)) {
+            const def = this._definition.terms[key];
+            Assert(def, `Terms ${key} is not defined`);
+
+            if (key[0] === '_') {
+                continue;
+            }
+
+            Assert(!blueprint[key], 'Cannot generate blueprint for this schema due to internal key conflicts');
+
+            const terms = this.$terms[key];
+            if (!terms) {
+                continue;
+            }
+
+            if (Utils.isValues(terms)) {
+                if (terms.size) {
+                    blueprint[key] = terms.describe();
+                }
+
+                continue;
+            }
+
+            if (!terms.length &&
+                !def.blueprint) {
+
+                continue;
+            }
+
+            const normalized = terms.map(internals.describe);
+
+            if (def.blueprint) {
+                const { key: mapKey, value } = def.blueprint.mapped;
+
+                blueprint[key] = {};
+                for (const term of normalized) {
+                    blueprint[key][term[mapKey]] = term[value];
+                }
+
+                continue;
+            }
+
+            blueprint[key] = normalized;
+        }
+
+        return blueprint;
     }
 
     clone() {
@@ -104,10 +212,6 @@ internals.Schema = class {
         }
 
         return target.$rebuild();
-    }
-
-    describe() {
-        return Blueprint.generate(this);
     }
 
     settings(options) {

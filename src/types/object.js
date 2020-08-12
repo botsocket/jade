@@ -70,26 +70,6 @@ module.exports = Extend.schema(Any, {
         'object.template': '{#label} must be a valid template',
     },
 
-    construct: (schema, terms) => {
-        if (terms.keys) {
-            schema = schema.keys(terms.keys);
-        }
-
-        if (terms.dependencies) {
-            for (const { type, peers } of terms.dependencies) {
-                schema = internals.dependency(schema, peers, type);
-            }
-        }
-
-        if (terms.patterns) {
-            for (const { key, value } of terms.patterns) {
-                schema = schema.pattern(key, value);
-            }
-        }
-
-        return schema;
-    },
-
     args: (schema, keys) => {
         return schema.keys(keys);
     },

@@ -86,7 +86,6 @@ exports.extension = Lyra.obj({
         register: Lyra.num(),
     }),
     args: Lyra.fn(),
-    construct: Lyra.fn(),
     rebuild: Lyra.fn(),
     coerce: Lyra.fn(),
     validate: Lyra.fn(),

@@ -19,14 +19,6 @@ module.exports = Extend.schema(Any, {
         'alternatives.all': '{#label} must match all of the provided schemas',
     },
 
-    construct: (schema, terms) => {
-        if (terms.items) {
-            schema = schema.try(...terms.items);
-        }
-
-        return schema;
-    },
-
     args: (schema, ...schemas) => {
         return schema.try(...schemas);
     },

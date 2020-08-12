@@ -38,18 +38,6 @@ module.exports = Extend.schema(Any, {
         'array.unique': '{#label} must not have duplicate items at {#pos} and {#dupPos}',
     },
 
-    construct: (schema, terms) => {
-        if (terms.ordereds) {
-            schema = schema.ordered(...terms.ordereds);
-        }
-
-        if (terms.items) {
-            schema = schema.items(...terms.items);
-        }
-
-        return schema;
-    },
-
     args: (schema, ...items) => {
         return schema.items(...items);
     },

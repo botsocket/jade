@@ -2,7 +2,6 @@
 
 const Assert = require('@botbind/dust/src/assert');
 
-const Blueprint = require('./blueprint');
 const Compile = require('./compile');
 const Values = require('./values');
 const Ref = require('./ref');
@@ -89,10 +88,6 @@ internals.root = function () {
 
     root.compile = function (value) {
         return Compile.schema(this, value);
-    };
-
-    root.construct = function (blueprint) {
-        return Blueprint.construct(this, blueprint);
     };
 
     root.extend = function (...extensions) {

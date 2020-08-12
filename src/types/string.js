@@ -56,16 +56,6 @@ module.exports = Extend.schema(Any, {
         'string.trim': '{#label} must not contain leading and trailing whitespaces',
     },
 
-    construct: (schema, terms) => {
-        if (terms.replacements) {
-            for (const { pattern, replacement } of terms.replacements) {
-                schema = schema.replace(pattern, replacement);
-            }
-        }
-
-        return schema;
-    },
-
     coerce: (value, { schema }) => {
         value = String(value);
 
