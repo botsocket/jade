@@ -1162,7 +1162,8 @@ const schema = Lyra.obj({
             f: Lyra.any().default('x'),
         },
     },
-}).default();
+})
+    .default();
 
 const default = {
     a: 'x',
@@ -1641,13 +1642,14 @@ const schema = Lyra.object({
     a: Lyra.any(),
     b: Lyra.any(),
     c: Lyra.any(),
-}).when('.a', {
-    is: Lyra.present(),
-    then: {
-        b: Lyra.required(),
-        c: Lyra.required(),
-    },
-});
+})
+    .when('.a', {
+        is: Lyra.present(),
+        then: {
+            b: Lyra.required(),
+            c: Lyra.required(),
+        },
+    });
 ```
 
 Nested conditions:
@@ -3102,7 +3104,8 @@ const schema = Lyra.object({
     b: {
         c: Lyra.string(),
     },
-}).unknown();
+})
+    .unknown();
 
 schema.validate({
     a: 'x',
@@ -3381,7 +3384,8 @@ Establishes a dependency between the provided peers in which all the peers must 
 const schema = Lyra.object({
     a: Lyra.string(),
     b: Lyra.string(),
-}).and('a', 'b');
+})
+    .and('a', 'b');
 
 schema.validate({}); // Pass
 schema.validate({ a: 'x', b: 'y' }); // Pass
@@ -3401,7 +3405,8 @@ Establishes a dependency between the provided peers in which at least one of the
 const schema = Lyra.object({
     a: Lyra.string(),
     b: Lyra.string(),
-}).or('a', 'b');
+})
+    .or('a', 'b');
 
 schema.validate({ a: 'x' }); // Pass
 schema.validate({ b: 'y' }); // Pass
@@ -3421,7 +3426,8 @@ Establishes a dependency between the provided peers in which exactly one of the 
 const schema = Lyra.object({
     a: Lyra.string(),
     b: Lyra.string(),
-}).xor('a', 'b');
+})
+    .xor('a', 'b');
 
 schema.validate({ a: 'x' }); // Pass
 schema.validate({ b: 'y' }); // Pass
@@ -3441,7 +3447,8 @@ Establishes a dependency between the provided peers in which none or one of the 
 const schema = Lyra.object({
     a: Lyra.string(),
     b: Lyra.string(),
-}).oxor('a', 'b');
+})
+    .oxor('a', 'b');
 
 schema.validate({ a: 'x' }); // Pass
 schema.validate({ b: 'y' }); // Pass
