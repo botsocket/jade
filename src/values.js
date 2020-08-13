@@ -9,6 +9,7 @@ const internals = {};
 
 module.exports = internals.Values = class {
     constructor(values, refs) {
+
         this._values = new Set(values);
         this._refs = new Set(refs);
         this._insensitives = new Map();
@@ -19,6 +20,7 @@ module.exports = internals.Values = class {
     }
 
     _mapInsensitives() {
+
         for (const value of this._values) {
             if (typeof value === 'string') {
                 this._insensitives.set(value.toLowerCase(), value);
@@ -27,20 +29,24 @@ module.exports = internals.Values = class {
     }
 
     get size() {
+
         return this._values.size + this._refs.size;
     }
 
     get values() {
+
         return [...this._values, ...this._refs];
     }
 
     clone() {
+
         const values = new internals.Values(this._values, this._refs);
         values._override = this._override;
         return values;
     }
 
     override() {
+
         this._override = true;
         this._values.clear();
         this._refs.clear();
@@ -48,6 +54,7 @@ module.exports = internals.Values = class {
     }
 
     merge(source, remove) {
+
         Assert(Utils.isValues(source), 'Source must be a valid values');
         Assert(remove === undefined || Utils.isValues(remove), 'Remove must be a valid values');
 
@@ -69,6 +76,7 @@ module.exports = internals.Values = class {
     }
 
     add(item) {
+
         if (Utils.isResolvable(item)) {
             if (!this._refs.has(item)) {
                 this._refs.add(item);
@@ -89,6 +97,7 @@ module.exports = internals.Values = class {
     }
 
     delete(item) {
+
         if (Utils.isResolvable(item)) {
             this._refs.delete(item);
         }
@@ -104,6 +113,7 @@ module.exports = internals.Values = class {
     }
 
     has(value, settings, state, insensitive) {
+
         if (!this.size) {
             return false;
         }
@@ -170,6 +180,7 @@ module.exports = internals.Values = class {
     }
 
     describe() {
+
         const desc = [];
 
         if (this._override) {
@@ -188,6 +199,7 @@ module.exports = internals.Values = class {
     }
 
     static add(values, target, other) {
+
         Assert(values.length, 'Values must have at least a value');
 
         const override = values[0] === Utils.symbols.override;

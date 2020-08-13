@@ -8,6 +8,7 @@ const Utils = require('./utils');
 const internals = {};
 
 exports.schema = function (root, value) {
+
     Assert(value !== undefined, 'Cannot compile undefined to a schema');
 
     if (Utils.isSchema(value)) {
@@ -42,6 +43,7 @@ exports.schema = function (root, value) {
 };
 
 internals.simple = function (value) {
+
     const type = typeof value;
     return (
         value === null ||
@@ -53,5 +55,6 @@ internals.simple = function (value) {
 };
 
 exports.ref = function (value, options) {
+
     return Utils.isRef(value) ? value : Ref.create(value, options);
 };

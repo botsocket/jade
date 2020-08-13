@@ -27,12 +27,14 @@ module.exports = Extend.schema(Schema, {
     rules: {
         convert: {
             method(enabled = true) {
+
                 return this.settings({ strict: !enabled });
             },
         },
 
         messages: {
             method(messages) {
+
                 return this.settings({ messages });
             },
         },
@@ -41,6 +43,7 @@ module.exports = Extend.schema(Schema, {
             alias: ['notes', 'description'],
 
             method(...notes) {
+
                 Assert(notes.length, 'Notes must contain at least one note');
 
                 const target = this.clone();
@@ -61,6 +64,7 @@ module.exports = Extend.schema(Schema, {
             args: ['method', 'description'],
 
             method(method, description) {
+
                 Assert(typeof method === 'function', 'Method must be a function');
                 Assert(description === undefined || typeof description === 'string', 'Description must be a string');
 
@@ -68,6 +72,7 @@ module.exports = Extend.schema(Schema, {
             },
 
             validate: (value, helpers, { method }) => {
+
                 try {
                     return method(value, helpers);
                 }

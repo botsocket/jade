@@ -26,6 +26,7 @@ const internals = {
 };
 
 internals.root = function () {
+
     const root = {};
     root._types = new Set(Object.keys(internals.types));
     root._aliases = {
@@ -42,6 +43,7 @@ internals.root = function () {
 
     for (const type of root._types) {
         root[type] = function (...args) {
+
             return internals.create(internals.types[type], this, args);
         };
     }
@@ -56,6 +58,7 @@ internals.root = function () {
     ]) {
 
         root[method] = function (...args) {
+
             return this.any()[method](...args);
         };
     }
@@ -63,18 +66,22 @@ internals.root = function () {
     // Methods
 
     root.values = function (values, refs) {
+
         return new Values(values, refs);
     };
 
     root.template = function (source, options) {
+
         return new Template(source, options);
     };
 
     root.ref = function (path, options) {
+
         return Ref.create(path, options);
     };
 
     root.in = function (path, options = {}) {
+
         Assert(options.in === undefined, 'Option in cannot be provided when using Lyra.in()');
 
         return Ref.create(path, { ...options, in: true });
@@ -87,10 +94,12 @@ internals.root = function () {
     root.isResolvable = Utils.isResolvable;
 
     root.compile = function (value) {
+
         return Compile.schema(this, value);
     };
 
     root.extend = function (...extensions) {
+
         Schemas = Schemas || require('./schemas');
         extensions = Schemas.extensions.attempt(extensions);
 
@@ -116,6 +125,7 @@ internals.root = function () {
                 const base = item.from || newRoot.any();
                 const extended = Extend.schema(base, item);
                 newRoot[type] = function (...args) {
+
                     return internals.create(extended, this, args);
                 };
 
@@ -142,6 +152,7 @@ internals.root = function () {
 };
 
 internals.create = function (schema, root, args) {
+
     schema.$root = root;
 
     if (schema._definition.args &&
@@ -154,12 +165,14 @@ internals.create = function (schema, root, args) {
 };
 
 internals.assignAliases = function (root) {
+
     for (const alias of Object.keys(root._aliases)) {
         root[alias] = root[root._aliases[alias]];
     }
 };
 
 internals.expandExtension = function (root, extension) {
+
     let types = [];
     if (Array.isArray(extension.type)) {
         if (extension.type.length === 1) {

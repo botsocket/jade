@@ -13,6 +13,7 @@ exports.symbols = {
 };
 
 exports.isSchema = function (value) {
+
     if (!value) {
         return false;
     }
@@ -21,6 +22,7 @@ exports.isSchema = function (value) {
 };
 
 exports.isRef = function (value) {
+
     if (!value) {
         return false;
     }
@@ -29,6 +31,7 @@ exports.isRef = function (value) {
 };
 
 exports.isTemplate = function (value) {
+
     if (!value) {
         return false;
     }
@@ -37,6 +40,7 @@ exports.isTemplate = function (value) {
 };
 
 exports.isValues = function (value) {
+
     if (!value) {
         return false;
     }
@@ -45,14 +49,17 @@ exports.isValues = function (value) {
 };
 
 exports.isResolvable = function (value) {
+
     return exports.isRef(value) || exports.isTemplate(value);
 };
 
 exports.isNumber = function (value) {
+
     return typeof value === 'number' && !Number.isNaN(value);
 };
 
 exports.compare = function (left, right, operator) {
+
     switch (operator) {
         case '>': return left > right;
         case '<': return left < right;
@@ -63,6 +70,7 @@ exports.compare = function (left, right, operator) {
 };
 
 exports.settings = function (target, source) {
+
     Errors = Errors || require('./errors');
 
     const merged = { ...target, ...source };
@@ -76,6 +84,7 @@ exports.settings = function (target, source) {
 };
 
 exports.processArgs = function (arg, def, label) {
+
     if (def.normalize) {
         arg = def.normalize(arg);
     }

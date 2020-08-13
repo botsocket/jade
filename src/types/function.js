@@ -13,6 +13,7 @@ module.exports = Extend.schema(Any, {
     },
 
     validate: (value, { error }) => {
+
         if (typeof value !== 'function') {
             return error('function.base');
         }
@@ -26,12 +27,14 @@ module.exports = Extend.schema(Any, {
             args: ['ctor'],
 
             method(ctor) {
+
                 Assert(typeof ctor === 'function', 'Constructor must be a function');
 
                 return this.$addRule({ name: 'inherit', args: { ctor } });
             },
 
             validate: (value, { error }, { ctor }) => {
+
                 if (value.prototype instanceof ctor) {
                     return value;
                 }

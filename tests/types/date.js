@@ -4,21 +4,26 @@ const Lyra = require('../../src');
 const Utils = require('../utils');
 
 describe('date()', () => {
+
     beforeEach(() => {
+
         const original = Date.now;
 
         Date.now = () => 130100000;
 
         Date.now.restore = () => {
+
             Date.now = original;
         };
     });
 
     afterEach(() => {
+
         Date.now.restore();
     });
 
     it('should validate dates', () => {
+
         const schema = Lyra.date();
 
         Utils.validate(schema, [
@@ -67,6 +72,7 @@ describe('date()', () => {
     });
 
     it('should coerce to dates', () => {
+
         const schema = Lyra.date().convert();
         const date = new Date('01/01/2020');
 
@@ -127,6 +133,7 @@ describe('date()', () => {
     });
 
     it('should cast to numbers', () => {
+
         const date = new Date('01/01/2020');
         const schema = Lyra.date().cast('number');
 
@@ -139,6 +146,7 @@ describe('date()', () => {
     });
 
     it('should cast to strings', () => {
+
         const date = new Date('01/01/2020');
         const schema = Lyra.date().cast('string');
 
@@ -151,12 +159,15 @@ describe('date()', () => {
     });
 
     describe('max()', () => {
+
         it('should throw on incorrect parameters', () => {
+
             expect(() => Lyra.date().max('x')).toThrow('limit must be now or a valid date or a valid reference');
             expect(() => Lyra.date().max(NaN)).toThrow('limit must be now or a valid date or a valid reference');
         });
 
         it('should compare dates', () => {
+
             const date = new Date('01/01/2020');
             const schema = Lyra.date().max(date);
 
@@ -175,6 +186,7 @@ describe('date()', () => {
         });
 
         it('should normalize max dates passed as strings', () => {
+
             const date = new Date('01/01/2020');
             const schema = Lyra.date().max(date.toString());
 
@@ -193,6 +205,7 @@ describe('date()', () => {
         });
 
         it('should compare with now', () => {
+
             const schema = Lyra.date().max('now');
 
             Utils.validate(schema, [
@@ -210,6 +223,7 @@ describe('date()', () => {
         });
 
         it('should support references', () => {
+
             const ref = Lyra.ref('b');
             const schema = Lyra.obj({
                 a: Lyra.date().max(ref),
@@ -238,6 +252,7 @@ describe('date()', () => {
         });
 
         it('should error on invalid references', () => {
+
             const ref = Lyra.ref('b');
             const schema = Lyra.obj({
                 a: Lyra.date().max(ref),
@@ -260,6 +275,7 @@ describe('date()', () => {
         });
 
         it('should override compare dates', () => {
+
             const date = new Date('01/01/2020');
             const date2 = new Date('01/02/2020');
             const schema = Lyra.date().max(date2.toString()).max(date.toString());
@@ -279,12 +295,15 @@ describe('date()', () => {
     });
 
     describe('min()', () => {
+
         it('should throw on incorrect parameters', () => {
+
             expect(() => Lyra.date().min('x')).toThrow('limit must be now or a valid date or a valid reference');
             expect(() => Lyra.date().min(NaN)).toThrow('limit must be now or a valid date or a valid reference');
         });
 
         it('should compare dates', () => {
+
             const date = new Date('01/01/2020');
             const schema = Lyra.date().min(date);
 
@@ -303,6 +322,7 @@ describe('date()', () => {
         });
 
         it('should normalize min dates passed as strings', () => {
+
             const date = new Date('01/01/2020');
             const schema = Lyra.date().min(date.toString());
 
@@ -321,6 +341,7 @@ describe('date()', () => {
         });
 
         it('should compare with now', () => {
+
             const schema = Lyra.date().min('now');
 
             Utils.validate(schema, [
@@ -338,6 +359,7 @@ describe('date()', () => {
         });
 
         it('should support references', () => {
+
             const ref = Lyra.ref('b');
             const schema = Lyra.obj({
                 a: Lyra.date().min(ref),
@@ -366,6 +388,7 @@ describe('date()', () => {
         });
 
         it('should error on invalid references', () => {
+
             const ref = Lyra.ref('b');
             const schema = Lyra.obj({
                 a: Lyra.date().min(ref),
@@ -388,6 +411,7 @@ describe('date()', () => {
         });
 
         it('should override compare dates', () => {
+
             const date = new Date('01/01/2020');
             const date2 = new Date('01/02/2020');
             const schema = Lyra.date().min(date.toString()).min(date2.toString());
@@ -407,12 +431,15 @@ describe('date()', () => {
     });
 
     describe('greater()', () => {
+
         it('should throw on incorrect parameters', () => {
+
             expect(() => Lyra.date().greater('x')).toThrow('limit must be now or a valid date or a valid reference');
             expect(() => Lyra.date().greater(NaN)).toThrow('limit must be now or a valid date or a valid reference');
         });
 
         it('should compare dates', () => {
+
             const date = new Date('01/01/2020');
             const schema = Lyra.date().greater(date);
 
@@ -438,6 +465,7 @@ describe('date()', () => {
         });
 
         it('should normalize greater dates passed as strings', () => {
+
             const date = new Date('01/01/2020');
             const schema = Lyra.date().greater(date.toString());
 
@@ -463,6 +491,7 @@ describe('date()', () => {
         });
 
         it('should compare with now', () => {
+
             const schema = Lyra.date().greater('now');
 
             Utils.validate(schema, [
@@ -487,6 +516,7 @@ describe('date()', () => {
         });
 
         it('should support references', () => {
+
             const ref = Lyra.ref('b');
             const schema = Lyra.obj({
                 a: Lyra.date().greater(ref),
@@ -515,6 +545,7 @@ describe('date()', () => {
         });
 
         it('should error on invalid references', () => {
+
             const ref = Lyra.ref('b');
             const schema = Lyra.obj({
                 a: Lyra.date().greater(ref),
@@ -537,6 +568,7 @@ describe('date()', () => {
         });
 
         it('should override compare dates', () => {
+
             const date = new Date('01/01/2020');
             const date2 = new Date('01/02/2020');
             const schema = Lyra.date().greater(date2.toString()).greater(date.toString());
@@ -556,12 +588,15 @@ describe('date()', () => {
     });
 
     describe('less()', () => {
+
         it('should throw on incorrect parameters', () => {
+
             expect(() => Lyra.date().less('x')).toThrow('limit must be now or a valid date or a valid reference');
             expect(() => Lyra.date().less(NaN)).toThrow('limit must be now or a valid date or a valid reference');
         });
 
         it('should compare dates', () => {
+
             const date = new Date('01/01/2020');
             const schema = Lyra.date().less(date);
 
@@ -587,6 +622,7 @@ describe('date()', () => {
         });
 
         it('should normalize less dates passed as strings', () => {
+
             const date = new Date('01/01/2020');
             const schema = Lyra.date().less(date.toString());
 
@@ -612,6 +648,7 @@ describe('date()', () => {
         });
 
         it('should compare with now', () => {
+
             const schema = Lyra.date().less('now');
 
             Utils.validate(schema, [
@@ -636,6 +673,7 @@ describe('date()', () => {
         });
 
         it('should support references', () => {
+
             const ref = Lyra.ref('b');
             const schema = Lyra.obj({
                 a: Lyra.date().less(ref),
@@ -664,6 +702,7 @@ describe('date()', () => {
         });
 
         it('should error on invalid references', () => {
+
             const ref = Lyra.ref('b');
             const schema = Lyra.obj({
                 a: Lyra.date().less(ref),
@@ -686,6 +725,7 @@ describe('date()', () => {
         });
 
         it('should override compare dates', () => {
+
             const date = new Date('01/01/2020');
             const date2 = new Date('01/02/2020');
             const schema = Lyra.date().less(date.toString()).less(date2.toString());

@@ -10,11 +10,13 @@ const internals = {};
 
 module.exports = internals.Template = class {
     constructor(source, options) {
+
         this._refs = [];
         this._settings = options;
 
         this._template = Template.parse(source, {
             reference: (path) => {
+
                 const ref = Ref.create(path, this._settings);
                 this._refs.push(ref);
                 return (context) => ref.resolve(...context);
@@ -23,14 +25,17 @@ module.exports = internals.Template = class {
     }
 
     resolve(value, settings, state, local) {
+
         return this._template.resolve([value, settings, state, local]);
     }
 
     toString() {
+
         return this._template.toString();
     }
 
     describe(options = {}) {
+
         if (options.compact &&
             !this._settings) {
 

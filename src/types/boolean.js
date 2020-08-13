@@ -14,6 +14,7 @@ module.exports = Extend.schema(Any, {
             default: new Values(),
 
             merge: (target, source, _, sourceParent) => {
+
                 return target.merge(source, sourceParent.$terms.falsy);
             },
         },
@@ -21,6 +22,7 @@ module.exports = Extend.schema(Any, {
             default: new Values(),
 
             merge: (target, source, _, sourceParent) => {
+
                 return target.merge(source, sourceParent.$terms.truthy);
             },
         },
@@ -30,6 +32,7 @@ module.exports = Extend.schema(Any, {
     },
 
     coerce: (value, { schema, settings, state }) => {
+
         const type = typeof value;
         if (type === 'boolean') {
             return value;
@@ -61,6 +64,7 @@ module.exports = Extend.schema(Any, {
     },
 
     validate: (value, { error }) => {
+
         if (typeof value === 'boolean') {
             return value;
         }
@@ -71,12 +75,14 @@ module.exports = Extend.schema(Any, {
     rules: {
         insensitive: {
             method(enabled = true) {
+
                 return this.$setFlag('insensitive', enabled);
             },
         },
 
         truthy: {
             method(...values) {
+
                 const target = this.clone();
 
                 Values.add(values, target.$terms.truthy, target.$terms.falsy);
@@ -86,6 +92,7 @@ module.exports = Extend.schema(Any, {
 
         falsy: {
             method(...values) {
+
                 const target = this.clone();
 
                 Values.add(values, target.$terms.falsy, target.$terms.truthy);

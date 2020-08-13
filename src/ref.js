@@ -9,6 +9,7 @@ const Utils = require('./utils');
 const internals = {};
 
 exports.create = function (path, options = {}) {
+
     Assert(typeof path === 'string', 'Path must be a string');
     Assert(options.ancestor === undefined || typeof options.ancestor === 'number', 'Option ancestor must be a number');
 
@@ -19,6 +20,7 @@ exports.create = function (path, options = {}) {
 };
 
 internals.context = function (path, options) {
+
     if (options.prefix !== false) {
         if (path[0] === '$') {
             return { path: path.slice(1), type: 'global' };
@@ -49,6 +51,7 @@ internals.context = function (path, options) {
 
 internals.Ref = class {
     constructor(context) {
+
         this._path = context.path;
         this._type = context.type;
         this._ancestor = context.ancestor;
@@ -61,6 +64,7 @@ internals.Ref = class {
     }
 
     _createDisplay() {
+
         let head = '';
         if (this._type === 'value' &&
             this._ancestor !== 1) {
@@ -73,6 +77,7 @@ internals.Ref = class {
     }
 
     resolve(value, settings, state, local) {
+
         if (this._type === 'global') {
             return Get(settings.context, this._keys);
         }
@@ -91,10 +96,12 @@ internals.Ref = class {
     }
 
     toString() {
+
         return this._display;
     }
 
     describe() {
+
         const ref = { ref: this._path };
 
         if (this._type !== 'value') {
@@ -120,18 +127,22 @@ internals.Ref.prototype.immutable = true;
 
 exports.Register = class {
     constructor(refs = []) {
-        this.refs = refs; // [[ancestor, root]]
+
+        this.refs = refs;                           // [[ancestor, root]]
     }
 
     reset() {
+
         this.refs = [];
     }
 
     clone() {
+
         return new exports.Register([...this.refs]);
     }
 
     register(value, register = 1) {
+
         // References
 
         if (Utils.isRef(value) &&
@@ -174,6 +185,7 @@ exports.Register = class {
     }
 
     references() {
+
         const references = [];
         for (const [ancestor, root] of this.refs) {
             if (!ancestor) {

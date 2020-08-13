@@ -10,6 +10,7 @@ const Errors = require('../src/errors');
 const internals = {};
 
 exports.validate = function (schema, options, tests) {
+
     if (Array.isArray(options)) {
         tests = options;
         options = {};
@@ -95,13 +96,14 @@ exports.validate = function (schema, options, tests) {
 };
 
 internals.summarizeError = function (error) {
+
     const summary = {
         code: error.code,
         message: error.message,
         local: error.local,
     };
 
-    // Summarize error deeply
+    // Summarize errors
 
     for (const key of Object.keys(summary.local)) {
         const errors = Errors.extract(summary.local[key]);
@@ -117,6 +119,7 @@ internals.summarizeError = function (error) {
 };
 
 internals.inspect = function (value) {
+
     return Util.inspect(value, {
         colors: true,
         depth: null,

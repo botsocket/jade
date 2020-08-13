@@ -7,10 +7,8 @@ const Extend = require('../extend');
 const Utils = require('../utils');
 
 const internals = {
-    // Copied from https://stackoverflow.com/a/41437076/10598722
-    emailRx: /(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@[*[a-zA-Z0-9-]+.[a-zA-Z0-9-.]+]*/,
-    // Copied from https://mathiasbynens.be/demo/url-regex @stephenhay
-    urlRx: /^(https?|ftp):\/\/[^\s/$.?#].[^\s]*$/,
+    emailRx: /(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@[*[a-zA-Z0-9-]+.[a-zA-Z0-9-.]+]*/,                 // Copied from https://stackoverflow.com/a/41437076/10598722
+    urlRx: /^(https?|ftp):\/\/[^\s/$.?#].[^\s]*$/,                                                                          // Copied from https://mathiasbynens.be/demo/url-regex @stephenhay
     alphanumericRx: /^[a-zA-Z0-9]+$/,
     numericRx: /^[0-9]+$/,
     dataUriRx: /^data:[\w+.-]+\/[\w+.-]+;(?:(charset=[\w-]+|base64),)?(.*)$/,
@@ -57,6 +55,7 @@ module.exports = Extend.schema(Any, {
     },
 
     coerce: (value, { schema }) => {
+
         value = String(value);
 
         const casing = schema.$getFlag('case');
@@ -80,6 +79,7 @@ module.exports = Extend.schema(Any, {
     },
 
     validate: (value, { error }) => {
+
         if (typeof value !== 'string') {
             return error('string.base');
         }
@@ -102,10 +102,12 @@ module.exports = Extend.schema(Any, {
             },
 
             method(limit) {
+
                 return this.$addRule({ name: 'length', args: { limit }, operator: '=' });
             },
 
             validate: (value, { error }, { limit }, { name, args, operator }) => {
+
                 if (Utils.compare(value.length, limit, operator)) {
                     return value;
                 }
@@ -116,18 +118,21 @@ module.exports = Extend.schema(Any, {
 
         min: {
             method(limit) {
+
                 return this.$addRule({ name: 'min', method: 'length', args: { limit }, operator: '>=' });
             },
         },
 
         max: {
             method(limit) {
+
                 return this.$addRule({ name: 'max', method: 'length', args: { limit }, operator: '<=' });
             },
         },
 
         insensitive: {
             method(enabled = true) {
+
                 return this.$setFlag('insensitive', enabled);
             },
         },
@@ -136,10 +141,12 @@ module.exports = Extend.schema(Any, {
             args: ['options'],
 
             method(options = {}) {
+
                 return this.$addRule({ name: 'dataUri', args: { options } });
             },
 
             validate: (value, { error }, { options }) => {
+
                 const matches = internals.dataUriRx.exec(value);
                 if (matches) {
                     if (!matches[1] ||
@@ -161,10 +168,12 @@ module.exports = Extend.schema(Any, {
             args: ['options'],
 
             method(options = {}) {
+
                 return this.$addRule({ name: 'base64', args: { options } });
             },
 
             validate: (value, { error }, { options }) => {
+
                 if (internals.validateBase64(value, options)) {
                     return value;
                 }
@@ -175,6 +184,7 @@ module.exports = Extend.schema(Any, {
 
         creditCard: {
             validate: (value, { error }) => {
+
                 let i = value.length;
                 let sum = 0;
                 let mul = 1;
@@ -202,6 +212,7 @@ module.exports = Extend.schema(Any, {
             args: ['regex', 'name'],
 
             method(regex, name) {
+
                 Assert(regex instanceof RegExp, 'Regex must be a valid regular expression');
                 Assert(!regex.flags.includes('g') && !regex.flags.includes('y'), 'Regex must not contain global and sticky flags');
                 Assert(name === undefined || typeof name === 'string', 'Name must be a string');
@@ -210,6 +221,7 @@ module.exports = Extend.schema(Any, {
             },
 
             validate: (value, { error }, { regex, name = 'unknown' }) => {
+
                 if (regex.test(value)) {
                     return value;
                 }
@@ -220,6 +232,7 @@ module.exports = Extend.schema(Any, {
 
         email: {
             validate: (value, { error }) => {
+
                 if (internals.emailRx.test(value)) {
                     return value;
                 }
@@ -230,6 +243,7 @@ module.exports = Extend.schema(Any, {
 
         url: {
             validate: (value, { error }) => {
+
                 if (internals.urlRx.test(value)) {
                     return value;
                 }
@@ -240,6 +254,7 @@ module.exports = Extend.schema(Any, {
 
         alphanum: {
             validate: (value, { error }) => {
+
                 if (internals.alphanumericRx.test(value)) {
                     return value;
                 }
@@ -250,6 +265,7 @@ module.exports = Extend.schema(Any, {
 
         numeric: {
             validate: (value, { error }) => {
+
                 if (internals.numericRx.test(value)) {
                     return value;
                 }
@@ -263,6 +279,7 @@ module.exports = Extend.schema(Any, {
             args: ['dir'],
 
             method(dir) {
+
                 Assert(dir === 'upper' || dir === 'lower', 'Direction must be upper or lower');
 
                 const target = this.$setFlag('case', dir);
@@ -270,6 +287,7 @@ module.exports = Extend.schema(Any, {
             },
 
             validate: (value, { error }, { dir }) => {
+
                 if (dir === 'lower' &&
                     value.toLocaleLowerCase() === value) {
 
@@ -286,12 +304,14 @@ module.exports = Extend.schema(Any, {
 
         uppercase: {
             method() {
+
                 return this.case('upper');
             },
         },
 
         lowercase: {
             method() {
+
                 return this.case('lower');
             },
         },
@@ -301,12 +321,14 @@ module.exports = Extend.schema(Any, {
             args: ['enabled'],
 
             method(enabled = true) {
+
                 const target = this.$addRule({ name: 'trim', args: { enabled } });
                 target.$setFlag('trim', enabled, { clone: false });
                 return target;
             },
 
             validate: (value, { error }, { enabled }) => {
+
                 if (!enabled ||
                     value === value.trim()) {
 
@@ -319,6 +341,7 @@ module.exports = Extend.schema(Any, {
 
         replace: {
             method(pattern, replacement) {
+
                 Assert(pattern instanceof RegExp || typeof pattern === 'string', 'Pattern must be a valid regular expression or a string');
                 Assert(typeof replacement === 'string', 'Replacement must be a string');
 
@@ -332,6 +355,7 @@ module.exports = Extend.schema(Any, {
 });
 
 internals.validateBase64 = function (value, options) {
+
     const paddingRequired = options.paddingRequired !== false;
     const urlSafe = options.urlSafe !== false;
     return internals.base64Rx[paddingRequired][urlSafe].test(value);

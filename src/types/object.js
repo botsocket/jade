@@ -23,6 +23,7 @@ module.exports = Extend.schema(Any, {
             },
 
             merge: (target, source) => {
+
                 if (!source.length) {
                     return source;
                 }
@@ -71,10 +72,12 @@ module.exports = Extend.schema(Any, {
     },
 
     args: (schema, keys) => {
+
         return schema.keys(keys);
     },
 
     coerce: (value) => {
+
         if (typeof value !== 'string') {
             return value;
         }
@@ -88,6 +91,7 @@ module.exports = Extend.schema(Any, {
     },
 
     rebuild: (schema) => {
+
         const children = schema.$terms.keys;
         if (!children) {
             return;
@@ -122,6 +126,7 @@ module.exports = Extend.schema(Any, {
     },
 
     validate: (value, { schema, settings, state, error }) => {
+
         if (!IsObject(value) ||
             Array.isArray(value)) {
 
@@ -225,7 +230,7 @@ module.exports = Extend.schema(Any, {
         // Deps
 
         for (const { type, peers } of schema.$terms.dependencies) {
-            const failed = internals.dependencies(value, peers, settings, state)[type]();
+            const failed = internals.dependencies[type](value, peers, settings, state);
             if (!failed) {
                 continue;
             }
@@ -243,6 +248,7 @@ module.exports = Extend.schema(Any, {
     rules: {
         unknown: {
             method(enabled = true) {
+
                 return this.$setFlag('unknown', enabled);
             },
         },
@@ -251,6 +257,7 @@ module.exports = Extend.schema(Any, {
             alias: ['get', 'reach'],
 
             method(path) {
+
                 if (path === undefined) {
                     return this;
                 }
@@ -284,6 +291,7 @@ module.exports = Extend.schema(Any, {
             alias: ['of', 'shape', 'entries'],
 
             method(keys) {
+
                 const target = this.clone();
 
                 if (keys === undefined) {
@@ -305,6 +313,7 @@ module.exports = Extend.schema(Any, {
 
         pattern: {
             method(key, value) {
+
                 Assert(key !== undefined, 'Key pattern must be provided');
 
                 const target = this.clone();
@@ -329,10 +338,12 @@ module.exports = Extend.schema(Any, {
             },
 
             method(limit) {
+
                 return this.$addRule({ name: 'length', args: { limit }, operator: '=' });
             },
 
             validate: (value, { error }, { limit }, { name, args, operator }) => {
+
                 if (Utils.compare(Object.keys(value).length, limit, operator)) {
                     return value;
                 }
@@ -343,12 +354,14 @@ module.exports = Extend.schema(Any, {
 
         min: {
             method(limit) {
+
                 return this.$addRule({ name: 'min', method: 'length', args: { limit }, operator: '>=' });
             },
         },
 
         max: {
             method(limit) {
+
                 return this.$addRule({ name: 'max', method: 'length', args: { limit }, operator: '<=' });
             },
         },
@@ -358,12 +371,14 @@ module.exports = Extend.schema(Any, {
             args: ['ctor'],
 
             method(ctor) {
+
                 Assert(typeof ctor === 'function', 'Constructor must be a function');
 
                 return this.$addRule({ name: 'instance', args: { ctor } });
             },
 
             validate: (value, { error }, { ctor }) => {
+
                 if (value instanceof ctor) {
                     return value;
                 }
@@ -374,6 +389,7 @@ module.exports = Extend.schema(Any, {
 
         regex: {
             method() {
+
                 return this.instance(RegExp);
             },
         },
@@ -382,12 +398,14 @@ module.exports = Extend.schema(Any, {
             args: ['type', 'options'],
 
             method(type = 'any', options = {}) {
+
                 Assert(typeof type === 'string', 'Type must be a string');
 
                 return this.$addRule({ name: 'schema', args: { type, options } });
             },
 
             validate: (value, { error }, { type, options }) => {
+
                 if (Utils.isSchema(value)) {
                     const isType = options.allowBase ? value.$isType(type) : value.type === type;
                     if (type === 'any' ||
@@ -407,6 +425,7 @@ module.exports = Extend.schema(Any, {
 
         values: {
             validate: (value, { error }) => {
+
                 if (Utils.isValues(value)) {
                     return value;
                 }
@@ -417,6 +436,7 @@ module.exports = Extend.schema(Any, {
 
         ref: {
             validate: (value, { error }) => {
+
                 if (Utils.isRef(value)) {
                     return value;
                 }
@@ -427,6 +447,7 @@ module.exports = Extend.schema(Any, {
 
         template: {
             validate: (value, { error }) => {
+
                 if (Utils.isTemplate(value)) {
                     return value;
                 }
@@ -437,30 +458,35 @@ module.exports = Extend.schema(Any, {
 
         and: {
             method(...peers) {
+
                 return internals.dependency(this, peers, 'and');
             },
         },
 
         nand: {
             method(...peers) {
+
                 return internals.dependency(this, peers, 'nand');
             },
         },
 
         or: {
             method(...peers) {
+
                 return internals.dependency(this, peers, 'or');
             },
         },
 
         xor: {
             method(...peers) {
+
                 return internals.dependency(this, peers, 'xor');
             },
         },
 
         oxor: {
             method(...peers) {
+
                 return internals.dependency(this, peers, 'oxor');
             },
         },
@@ -468,6 +494,7 @@ module.exports = Extend.schema(Any, {
 
     overrides: {
         default(value, options) {
+
             if (value === undefined) {
                 const target = this.$super.default(Utils.symbols.deepDefault, options);
                 return target.$rebuild();
@@ -483,6 +510,7 @@ module.exports = Extend.schema(Any, {
 });
 
 internals.deepDefault = function (schema) {
+
     if (schema.$getFlag('default') !== undefined) {                             // Do not process if already has default
         return schema;
     }
@@ -506,110 +534,115 @@ internals.deepDefault = function (schema) {
     return schema;
 };
 
-internals.dependencies = function (value, peers, settings, state) {
-    return {
-        and: () => {
-            const missing = [];
-            const present = [];
-            for (const peer of peers) {
-                if (peer.resolve(value, settings, state) === undefined) {
-                    missing.push(peer.context);
-                }
-                else {
-                    present.push(peer.context);
-                }
+internals.dependencies = {
+    and: (value, peers, settings, state) => {
+
+        const missing = [];
+        const present = [];
+        for (const peer of peers) {
+            if (peer.resolve(value, settings, state) === undefined) {
+                missing.push(peer.context);
+            }
+            else {
+                present.push(peer.context);
+            }
+        }
+
+        const length = peers.length;
+        if (missing.length !== length &&
+            present.length !== length) {
+
+            return {
+                code: 'object.and',
+                local: { present, missing },
+            };
+        }
+    },
+
+    nand: (value, peers, settings, state) => {
+
+        const present = [];
+        for (const peer of peers) {
+            if (peer.resolve(value, settings, state) === undefined) {
+                return;
             }
 
-            const length = peers.length;
-            if (missing.length !== length &&
-                present.length !== length) {
+            present.push(peer.context);
+        }
 
-                return {
-                    code: 'object.and',
-                    local: { present, missing },
-                };
+        return {
+            code: 'object.nand',
+            local: { present },
+        };
+    },
+
+    or: (value, peers, settings, state) => {
+
+        const missing = [];
+        for (const peer of peers) {
+            if (peer.resolve(value, settings, state) !== undefined) {
+                return;
             }
-        },
 
-        nand: () => {
-            const present = [];
-            for (const peer of peers) {
-                if (peer.resolve(value, settings, state) === undefined) {
-                    return;
-                }
+            missing.push(peer.context);
+        }
 
+        return {
+            code: 'object.or',
+            local: { missing },
+        };
+    },
+
+    xor: (value, peers, settings, state) => {
+
+        const present = [];
+        const peerContexts = [];
+        for (const peer of peers) {
+            if (peer.resolve(value, settings, state) !== undefined) {
                 present.push(peer.context);
             }
 
-            return {
-                code: 'object.nand',
-                local: { present },
-            };
-        },
+            peerContexts.push(peer.context);
+        }
 
-        or: () => {
-            const missing = [];
-            for (const peer of peers) {
-                if (peer.resolve(value, settings, state) !== undefined) {
-                    return;
-                }
+        if (present.length === 1) {
+            return;
+        }
 
-                missing.push(peer.context);
+        return {
+            code: 'object.xor',
+            local: { peers: peerContexts, present },
+        };
+    },
+
+    oxor: (value, peers, settings, state) => {
+
+        const present = [];
+        const peerContexts = [];
+        for (const peer of peers) {
+            if (peer.resolve(value, settings, state) !== undefined) {
+                present.push(peer.context);
             }
 
-            return {
-                code: 'object.or',
-                local: { missing },
-            };
-        },
+            peerContexts.push(peer.context);
+        }
 
-        xor: () => {
-            const present = [];
-            const peerContexts = [];
-            for (const peer of peers) {
-                if (peer.resolve(value, settings, state) !== undefined) {
-                    present.push(peer.context);
-                }
+        if (present.length === 1 ||
+            !present.length) {
 
-                peerContexts.push(peer.context);
-            }
+            return;
+        }
 
-            if (present.length === 1) {
-                return;
-            }
-
-            return {
-                code: 'object.xor',
-                local: { peers: peerContexts, present },
-            };
-        },
-
-        oxor: () => {
-            const present = [];
-            const peerContexts = [];
-            for (const peer of peers) {
-                if (peer.resolve(value, settings, state) !== undefined) {
-                    present.push(peer.context);
-                }
-
-                peerContexts.push(peer.context);
-            }
-
-            if (present.length === 1 ||
-                !present.length) {
-
-                return;
-            }
-
-            return {
-                code: 'object.oxor',
-                local: { peers: peerContexts, present },
-            };
-        },
-    };
+        return {
+            code: 'object.oxor',
+            local: { peers: peerContexts, present },
+        };
+    },
 };
 
+
 internals.dependency = function (schema, peers, type) {
+
     Assert(peers.length, 'Peers must have at least one peer');
 
     const target = schema.clone();
@@ -627,6 +660,7 @@ internals.dependency = function (schema, peers, type) {
 
 internals.Peer = class {
     constructor(schema, peer) {
+
         this.ref = Compile.ref(peer, { ancestor: 0, prefix: false });
         this.context = { path: peer, label: peer };
 
@@ -634,6 +668,7 @@ internals.Peer = class {
     }
 
     label(schema) {
+
         const child = schema.extract(this.context.path);
         if (!child) {
             return;
@@ -648,10 +683,12 @@ internals.Peer = class {
     }
 
     resolve(value, settings, state) {
+
         return this.ref.resolve(value, settings, state);
     }
 
     describe() {
+
         return this.context.path;
     }
 };

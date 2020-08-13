@@ -4,7 +4,9 @@ const Lyra = require('../../src');
 const Utils = require('../utils');
 
 describe('alterantives()', () => {
+
     it('should validate if no alternative is provided', () => {
+
         const schema = Lyra.alt();
 
         Utils.validate(schema, [
@@ -21,6 +23,7 @@ describe('alterantives()', () => {
     });
 
     it('should apply deep labels', () => {
+
         const schema = Lyra.alt(Lyra.str()).label('A');
 
         Utils.validate(schema, [
@@ -36,6 +39,7 @@ describe('alterantives()', () => {
     });
 
     it('should compile schemas', () => {
+
         const schema = Lyra.compile([
             'x',
             Lyra.number(),
@@ -70,7 +74,9 @@ describe('alterantives()', () => {
     });
 
     describe('try()', () => {
+
         it('should match any schemas', () => {
+
             const schema = Lyra.alt(Lyra.num().min(1).convert().required(), Lyra.str());
 
             Utils.validate(schema, [
@@ -107,6 +113,7 @@ describe('alterantives()', () => {
         });
 
         it('should match schemas added via multiple calls', () => {
+
             const schema = Lyra.alt(Lyra.num()).try(Lyra.str());
 
             Utils.validate(schema, [
@@ -138,6 +145,7 @@ describe('alterantives()', () => {
         });
 
         it('should match single item', () => {
+
             const schema = Lyra.alt(Lyra.str());
 
             Utils.validate(schema, [
@@ -153,6 +161,7 @@ describe('alterantives()', () => {
         });
 
         it('should collect all errors', () => {
+
             const schema = Lyra.alt(Lyra.str(), Lyra.num().min(2).multiple(2)).settings({ abortEarly: false });
 
             Utils.validate(schema, [
@@ -188,11 +197,14 @@ describe('alterantives()', () => {
     });
 
     describe('match()', () => {
+
         it('should throw on incorrect parameters', () => {
+
             expect(() => Lyra.alt().match('x')).toThrow('Mode must be all, one or any');
         });
 
         it('should match exactly one schema', () => {
+
             const schema = Lyra.alt(Lyra.num().multiple(2), Lyra.num().multiple(5)).match('one');
 
             Utils.validate(schema, [
@@ -218,6 +230,7 @@ describe('alterantives()', () => {
         });
 
         it('should match all schemas', () => {
+
             const schema = Lyra.alt(Lyra.num().convert(), Lyra.str()).match('all');
 
             Utils.validate(schema, [
@@ -242,6 +255,7 @@ describe('alterantives()', () => {
         });
 
         it('should return modified value from the last schema', () => {
+
             const schema = Lyra.alt(Lyra.str(), Lyra.num().convert()).match('all');
 
             Utils.validate(schema, [

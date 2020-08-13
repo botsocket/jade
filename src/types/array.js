@@ -39,10 +39,12 @@ module.exports = Extend.schema(Any, {
     },
 
     args: (schema, ...items) => {
+
         return schema.items(...items);
     },
 
     coerce: (value) => {
+
         if (typeof value !== 'string') {
             return value;
         }
@@ -56,6 +58,7 @@ module.exports = Extend.schema(Any, {
     },
 
     rebuild: (schema) => {
+
         schema.$terms._requireds = [];
         schema.$terms._inclusions = [];
         schema.$terms._forbiddens = [];
@@ -83,6 +86,7 @@ module.exports = Extend.schema(Any, {
     },
 
     validate: (value, { error, state, schema, settings }) => {
+
         let clone = true;
 
         if (!Array.isArray(value)) {
@@ -131,7 +135,7 @@ module.exports = Extend.schema(Any, {
             // Forbiddens
 
             for (const forbidden of schema.$terms._forbiddens) {
-                const result = forbidden.$validate(item, settings, divedState, { presence: 'ignore' }); // Prevent undefined from generating in array.forbidden
+                const result = forbidden.$validate(item, settings, divedState, { presence: 'ignore' });                                 // Prevent undefined from generating in array.forbidden
 
                 if (result.errors) {
                     continue;
@@ -166,7 +170,7 @@ module.exports = Extend.schema(Any, {
                             return result.errors;
                         }
 
-                        continue; // Failed. Move on to the next item
+                        continue;                                                                       // Failed. Move on to the next item
                     }
 
                     if (ordered.$getFlag('result') === 'strip') {
@@ -186,7 +190,7 @@ module.exports = Extend.schema(Any, {
                         return errors;
                     }
 
-                    break; // No more rules to test, so move on to the next item
+                    break;                                                                              // No more rules to test, so move on to the next item
                 }
             }
 
@@ -213,11 +217,11 @@ module.exports = Extend.schema(Any, {
                     }
 
                     requireds.splice(j, 1);
-                    break; // Matched
+                    break;                                                                              // Matched
                 }
             }
 
-            if (isValid) { // Required match. Move on to the next item
+            if (isValid) {                                                                              // Required match. Move on to the next item
                 continue;
             }
 
@@ -226,7 +230,7 @@ module.exports = Extend.schema(Any, {
             for (const inclusion of inclusions) {
                 let result;
 
-                const idx = requireds.indexOf(inclusion); // Prevent running failed requireds twice
+                const idx = requireds.indexOf(inclusion);                                               // Prevent running failed requireds twice
                 if (idx !== -1) {
                     result = requiredChecks[idx];
                 }
@@ -241,18 +245,18 @@ module.exports = Extend.schema(Any, {
                             i--;
                         }
                         else {
-                            value[i] = result.value; // Reassign item with the modified value for forbidden checks
+                            value[i] = result.value;                                                    // Reassign item with the modified value for forbidden checks
                         }
 
                         break;
                     }
                 }
 
-                if (inclusions.length === 1) { // Return actual error if there's only 1 item defined
+                if (inclusions.length === 1) {                                                          // Return actual error if there's only 1 item defined
                     if (settings.stripUnknown) {
                         value.splice(i, 1);
                         i--;
-                        isValid = true; // This item although failed, is still valid because it is considered unknown and has been stripped
+                        isValid = true;                                                                 // This item although failed, is still valid because it is considered unknown and has been stripped
                         continue;
                     }
 
@@ -266,7 +270,7 @@ module.exports = Extend.schema(Any, {
                 }
             }
 
-            if (errored) { // Prevent having actual error with array.unknown
+            if (errored) {                                                                              // Prevent having actual error with array.unknown
                 continue;
             }
 
@@ -313,6 +317,7 @@ module.exports = Extend.schema(Any, {
             alias: 'of',
 
             method(...items) {
+
                 return internals.items(this, items, 'items');
             },
         },
@@ -321,12 +326,14 @@ module.exports = Extend.schema(Any, {
             alias: 'tuple',
 
             method(...items) {
+
                 return internals.items(this, items, 'ordereds');
             },
         },
 
         single: {
             method(enabled = true) {
+
                 Assert(!enabled || !this.$getFlag('_hasArrayItems'), 'Cannot specify single when array has array items');
 
                 return this.$setFlag('single', enabled);
@@ -335,6 +342,7 @@ module.exports = Extend.schema(Any, {
 
         sparse: {
             method(enabled = true) {
+
                 return this.$setFlag('sparse', enabled);
             },
         },
@@ -349,10 +357,12 @@ module.exports = Extend.schema(Any, {
             },
 
             method(limit) {
+
                 return this.$addRule({ name: 'length', args: { limit }, operator: '=' });
             },
 
             validate: (value, { error }, { limit }, { name, args, operator }) => {
+
                 if (Utils.compare(value.length, limit, operator)) {
                     return value;
                 }
@@ -363,12 +373,14 @@ module.exports = Extend.schema(Any, {
 
         min: {
             method(limit) {
+
                 return this.$addRule({ name: 'min', method: 'length', args: { limit }, operator: '>=' });
             },
         },
 
         max: {
             method(limit) {
+
                 return this.$addRule({ name: 'max', method: 'length', args: { limit }, operator: '<=' });
             },
         },
@@ -377,6 +389,7 @@ module.exports = Extend.schema(Any, {
             args: ['comparator'],
 
             method(comparator) {
+
                 const isComparator = typeof comparator === 'function';
                 const isPath = typeof comparator === 'string';
 
@@ -386,7 +399,8 @@ module.exports = Extend.schema(Any, {
             },
 
             validate: (value, helpers, { comparator }, { isComparator, isPath }) => {
-                const records = new Map(); // [value, index]
+
+                const records = new Map();
                 const compare = isComparator ? comparator : (a, b) => Equal(a, b);
 
                 for (let i = 0; i < value.length; i++) {
@@ -411,6 +425,7 @@ module.exports = Extend.schema(Any, {
 });
 
 internals.verifySingle = function (item, schema) {
+
     if (item.$isType('array') ||
         item.$getFlag('_hasArrayItems')) {
 
@@ -421,6 +436,7 @@ internals.verifySingle = function (item, schema) {
 };
 
 internals.errorMissedRequireds = function (requireds, error) {
+
     const knownMisses = [];
     let unknownMisses = 0;
 
@@ -449,6 +465,7 @@ internals.errorMissedRequireds = function (requireds, error) {
 };
 
 internals.items = function (schema, items, type) {
+
     Assert(items.length, 'Items must have at least one item');
 
     const target = schema.clone();

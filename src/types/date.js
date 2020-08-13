@@ -19,6 +19,7 @@ module.exports = Extend.schema(Any, {
     },
 
     coerce: (value) => {
+
         const type = typeof value;
         if (type !== 'number' &&
             type !== 'string') {
@@ -35,6 +36,7 @@ module.exports = Extend.schema(Any, {
     },
 
     validate: (value, { error }) => {
+
         if (value instanceof Date &&
             !Number.isNaN(value.getTime())) {
 
@@ -57,6 +59,7 @@ module.exports = Extend.schema(Any, {
             },
 
             validate: (value, { error }, { limit }, { name, args, operator }) => {
+
                 if (limit === 'now') {
                     limit = Date.now();
                 }
@@ -74,24 +77,28 @@ module.exports = Extend.schema(Any, {
 
         min: {
             method(limit) {
+
                 return this.$addRule({ name: 'min', method: 'compare', args: { limit }, operator: '>=' });
             },
         },
 
         max: {
             method(limit) {
+
                 return this.$addRule({ name: 'max', method: 'compare', args: { limit }, operator: '<=' });
             },
         },
 
         greater: {
             method(limit) {
+
                 return this.$addRule({ name: 'greater', method: 'compare', args: { limit }, operator: '>' });
             },
         },
 
         less: {
             method(limit) {
+
                 return this.$addRule({ name: 'less', method: 'compare', args: { limit }, operator: '<' });
             },
         },
@@ -104,7 +111,6 @@ module.exports = Extend.schema(Any, {
 });
 
 internals.date = function (value) {
-    // Normalize string timestamps
 
     if (typeof value === 'string' &&
         internals.numberRx.test(value)) {

@@ -9,6 +9,7 @@ const Utils = require('./utils');
 const internals = {};
 
 exports.schema = function (schema, extension) {
+
     const parent = Object.getPrototypeOf(schema);
     const proto = Clone(parent);
     const target = schema._assign(Object.create(proto));
@@ -70,6 +71,7 @@ exports.schema = function (schema, extension) {
 
             if (rule.method === undefined) {
                 proto[key] = function () {
+
                     return this.$addRule({ name: key });
                 };
             }
@@ -134,6 +136,7 @@ exports.schema = function (schema, extension) {
 };
 
 internals.rebuild = function (target, source) {
+
     if (!target ||
         !source) {
 
@@ -141,12 +144,14 @@ internals.rebuild = function (target, source) {
     }
 
     return (schema) => {
+
         target(schema);
         source(schema);
     };
 };
 
 internals.method = function (target, source) {
+
     if (!target ||
         !source) {
 
@@ -154,6 +159,7 @@ internals.method = function (target, source) {
     }
 
     return (value, helpers) => {
+
         const result = target(value, helpers);
         const errors = Errors.extract(result);
         if (!errors) {

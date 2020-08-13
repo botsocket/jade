@@ -6,9 +6,12 @@ const Lyra = require('../src');
 const Utils = require('./utils');
 
 describe('compile()', () => {
+
     it('should compile example object', () => {
+
         const error = new Error('Invalid');
         const validateFn = function (value) {
+
             if (value === 'someValue') {
                 return value;
             }

@@ -10,7 +10,15 @@ module.exports = {
     parserOptions: {
         ecmaVersion: 9,
     },
+    plugins: ['@hapi/eslint-plugin-hapi'],
     rules: {
+
+        // Plugins
+
+        '@hapi/hapi/capitalize-modules': ['error', 'global-scope-only'],
+        '@hapi/hapi/no-var': 'error',
+        '@hapi/hapi/scope-start': 'error',
+        '@hapi/hapi/no-arrowception': 'error',
 
         // Possible errors
 

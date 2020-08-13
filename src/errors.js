@@ -8,6 +8,7 @@ const Utils = require('./utils');
 const internals = {};
 
 exports.create = function (schema, value, code, settings, state, local, options) {
+
     Assert(typeof code === 'string', 'Code must be a string');
 
     const messages = { ...schema._definition.messages, ...settings.messages };
@@ -34,6 +35,7 @@ exports.create = function (schema, value, code, settings, state, local, options)
 };
 
 exports.extract = function (result) {
+
     if (result instanceof internals.ValidationError) {
         return [result];
     }
@@ -48,6 +50,7 @@ exports.extract = function (result) {
 };
 
 exports.messages = function (target, source) {
+
     if (!source) {
         return target;
     }
@@ -63,6 +66,7 @@ exports.messages = function (target, source) {
 
 internals.ValidationError = class extends Error {
     constructor(message, code, state, local) {
+
         super(message);
 
         this.name = 'ValidationError';
@@ -73,5 +77,6 @@ internals.ValidationError = class extends Error {
 };
 
 internals.path = function (keys) {
+
     return keys.map((key) => String(key).replace(/\./g, '\\.')).join('.');
 };

@@ -18,6 +18,7 @@ const internals = {};
 
 internals.Schema = class {
     constructor() {
+
         this.type = 'any';
 
         this._definition = {};
@@ -28,12 +29,13 @@ internals.Schema = class {
         this._invalids = new Values();
         this._flags = {};
 
-        this.$terms = {}; // Hash of arrays of immutable objects
-        this.$super = {}; // Behaves like super
+        this.$terms = {};                               // Hash of arrays of immutable objects
+        this.$super = {};                               // Behaves like super
         this.$root = null;
     }
 
     describe() {
+
         const desc = { type: this.type, flags: {} };
 
         // Valids/invalids
@@ -143,11 +145,13 @@ internals.Schema = class {
     }
 
     clone() {
+
         const proto = Object.getPrototypeOf(this);
         return this._assign(Object.create(proto));
     }
 
     merge(source) {
+
         if (this === source) {
             return this;
         }
@@ -215,6 +219,7 @@ internals.Schema = class {
     }
 
     settings(options) {
+
         Assert(options.context === undefined, 'Cannot override context');
         internals.assertOptions(options);
 
@@ -225,6 +230,7 @@ internals.Schema = class {
     }
 
     cast(to) {
+
         Assert(to === false || typeof to === 'string', 'To must be a string or false');
         Assert(to === false || this._definition.casts[to], `Cast to ${to} for type ${this.type} is not supported`);
 
@@ -232,24 +238,29 @@ internals.Schema = class {
     }
 
     presence(presence) {
+
         Assert(internals.presence(presence), 'Presence must be optional, required or forbidden');
 
         return this.$setFlag('presence', presence);
     }
 
     optional() {
+
         return this.presence('optional');
     }
 
     required() {
+
         return this.presence('required');
     }
 
     forbidden() {
+
         return this.presence('forbidden');
     }
 
     default(value, options = {}) {
+
         Assert(value !== undefined, 'Value must be provided');
         Assert(typeof value === 'function' || !options.literal, 'Option literal only applies to function value');
 
@@ -263,16 +274,19 @@ internals.Schema = class {
     }
 
     label(label) {
+
         Assert(typeof label === 'string', 'Label must be a string');
 
         return this.$setFlag('label', label);
     }
 
     only(enabled = true) {
+
         return this.$setFlag('only', enabled);
     }
 
     allow(...values) {
+
         const target = this.clone();
 
         Values.add(values, target._valids, target._invalids);
@@ -280,6 +294,7 @@ internals.Schema = class {
     }
 
     valid(...values) {
+
         const target = this.clone();
 
         Values.add(values, target._valids, target._invalids);
@@ -288,6 +303,7 @@ internals.Schema = class {
     }
 
     invalid(...values) {
+
         const target = this.clone();
 
         Values.add(values, target._invalids, target._valids);
@@ -295,14 +311,17 @@ internals.Schema = class {
     }
 
     strip(enabled = true) {
+
         return this.$setFlag('result', enabled ? 'strip' : undefined);
     }
 
     raw(enabled = true) {
+
         return this.$setFlag('result', enabled ? 'raw' : undefined);
     }
 
     switch(subject, ...branches) {
+
         if (Array.isArray(branches[0])) {
             branches = branches[0];
         }
@@ -322,6 +341,7 @@ internals.Schema = class {
     }
 
     when(subject, options, _clone = true) {
+
         Assert(typeof subject === 'string' || Utils.isRef(subject), 'Subject must be a string or a valid reference');
         Assert(options.not === undefined || options.is === undefined, 'Option is and not cannot be provided together');
         Assert(options.then !== undefined || options.otherwise !== undefined, 'Option then or otherwise must be provided');
@@ -351,6 +371,7 @@ internals.Schema = class {
     }
 
     validate(value, options = {}) {
+
         internals.assertOptions(options);
 
         const settings = Utils.settings({
@@ -366,6 +387,7 @@ internals.Schema = class {
     }
 
     attempt(value, options = {}) {
+
         Assert(options.abortEarly === undefined, 'Option abortEarly only applies to validate()');
 
         const result = this.validate(value, options);
@@ -379,14 +401,17 @@ internals.Schema = class {
     // Extension methods
 
     $isType(type) {
+
         return this._definition.bases.has(type);
     }
 
     $compile(value) {
+
         return Compile.schema(this.$root, value);
     }
 
     $getFlag(name) {
+
         if (this._flags[name] === undefined) {
             const def = this._definition.flags[name];
             return def && def.default;
@@ -396,6 +421,7 @@ internals.Schema = class {
     }
 
     $setFlag(name, value, options = {}) {
+
         Assert(typeof name === 'string', 'Name must be a string');
 
         if (Equal(this._flags[name], value)) {
@@ -422,6 +448,7 @@ internals.Schema = class {
     }
 
     $rebuild() {
+
         this._refs.reset();
 
         for (const key of Object.keys(this._flags)) {
@@ -451,10 +478,12 @@ internals.Schema = class {
     }
 
     $references() {
+
         return this._refs.references();
     }
 
     $addRule(options) {
+
         Assert(typeof options.name === 'string', 'Option name must be a string');
         Assert(options.method === undefined || typeof options.method === 'string', 'Option method must be a string');
 
@@ -499,8 +528,7 @@ internals.Schema = class {
             rule.args[key] = processed.arg;
         }
 
-        // Remove dup rules. Single defaults to true
-        if (def.single !== false) {
+        if (def.single !== false) {                                 // Remove dup rules. Single defaults to true
             target._rules = target._rules.filter(({ name }) => name !== rule.name);
         }
 
@@ -509,16 +537,19 @@ internals.Schema = class {
     }
 
     $createError(value, code, settings, state, local, options = {}) {
+
         return Errors.create(this, value, code, settings, state, local || {}, options);
     }
 
     $validate(value, settings, state, overrides = {}) {
+
         return Validate.schema(this, value, settings, state, overrides);
     }
 
     // Private
 
     _applyConditions(value, settings, state) {
+
         let schema = this;
         for (const condition of schema.$terms.conditions) {
             const result = condition.is.$validate(condition.subject.resolve(value, settings, state), settings, state);
@@ -546,6 +577,7 @@ internals.Schema = class {
     }
 
     _assign(target) {
+
         target.type = this.type;
         target._definition = this._definition;
         target._refs = this._refs.clone();
@@ -569,14 +601,14 @@ internals.Schema = class {
 
         target.$super = {};
         for (const key of Object.keys(this.$super)) {
-            // Rebound otherwise the method will point to the original extended schema
-            target.$super[key] = this._definition.super[key].bind(target);
+            target.$super[key] = this._definition.super[key].bind(target);                          // Rebound otherwise the method will point to the original extended schema
         }
 
         return target;
     }
 
     _register(value, register) {
+
         if (!IsObject(value)) {
             return;
         }
@@ -607,6 +639,7 @@ internals.Schema.prototype[Utils.symbols.schema] = true;
 internals.Schema.prototype.immutable = true;
 
 internals.setup = function () {
+
     for (const [method, ...aliases] of [
         ['required', 'exists', 'present'],
         ['forbidden', 'absent'],
@@ -626,15 +659,18 @@ internals.setup();
 module.exports = new internals.Schema();
 
 internals.assertOptions = function (options) {
+
     Assert(options.label === undefined || options.label === 'path' || options.label === 'key', 'Option label must be path or key');
     Assert(options.presence === undefined || internals.presence(options.presence), 'Option presence must be optional, required or forbidden');
 };
 
 internals.presence = function (presence) {
+
     return presence === 'optional' || presence === 'required' || presence === 'forbidden';
 };
 
 internals.describe = function (value, parent = true) {
+
     if (value === Utils.symbols.deepDefault) {
         return { deep: true };
     }
@@ -644,10 +680,9 @@ internals.describe = function (value, parent = true) {
     }
 
     if (value instanceof RegExp ||
-        value instanceof Date ||
-        value instanceof Error) {
+        value instanceof Date) {
 
-        return value;
+        return Clone(value);
     }
 
     if (value[Utils.symbols.callable]) {

@@ -4,7 +4,9 @@ const Lyra = require('../../src');
 const Utils = require('../utils');
 
 describe('string()', () => {
+
     it('should validate strings', () => {
+
         const schema = Lyra.str();
 
         Utils.validate(schema, [
@@ -37,12 +39,14 @@ describe('string()', () => {
     });
 
     it('should allow empty string if specified', () => {
+
         const schema = Lyra.str().allow('');
 
         Utils.validate(schema, [{ value: '' }]);
     });
 
     it('should coerce to strings', () => {
+
         const schema = Lyra.str().convert();
 
         Utils.validate(schema, [
@@ -59,12 +63,15 @@ describe('string()', () => {
     });
 
     describe('length()', () => {
+
         it('should throw on incorrect parameters', () => {
+
             expect(() => Lyra.str().length('x')).toThrow('limit must be a number or a valid reference');
             expect(() => Lyra.str().length(NaN)).toThrow('limit must be a number or a valid reference');
         });
 
         it('should validate lengths', () => {
+
             const schema = Lyra.str().length(2);
 
             Utils.validate(schema, [
@@ -81,6 +88,7 @@ describe('string()', () => {
         });
 
         it('should support references', () => {
+
             const ref = Lyra.ref('b');
             const schema = Lyra.obj({
                 a: Lyra.str().length(ref),
@@ -101,6 +109,7 @@ describe('string()', () => {
         });
 
         it('should error on invalid references', () => {
+
             const ref = Lyra.ref('b');
             const schema = Lyra.obj({
                 a: Lyra.str().length(ref),
@@ -120,6 +129,7 @@ describe('string()', () => {
         });
 
         it('should override lengths', () => {
+
             const schema = Lyra.str().length(1).length(2);
 
             Utils.validate(schema, [
@@ -137,12 +147,15 @@ describe('string()', () => {
     });
 
     describe('max()', () => {
+
         it('should throw on incorrect parameters', () => {
+
             expect(() => Lyra.str().max('x')).toThrow('limit must be a number or a valid reference');
             expect(() => Lyra.str().max(NaN)).toThrow('limit must be a number or a valid reference');
         });
 
         it('should validate max lengths', () => {
+
             const schema = Lyra.str().max(2);
 
             Utils.validate(schema, [
@@ -159,6 +172,7 @@ describe('string()', () => {
         });
 
         it('should support references', () => {
+
             const ref = Lyra.ref('b');
             const schema = Lyra.obj({
                 a: Lyra.str().max(ref),
@@ -179,6 +193,7 @@ describe('string()', () => {
         });
 
         it('should error on invalid references', () => {
+
             const ref = Lyra.ref('b');
             const schema = Lyra.obj({
                 a: Lyra.str().max(ref),
@@ -198,6 +213,7 @@ describe('string()', () => {
         });
 
         it('should override max lengths', () => {
+
             const schema = Lyra.str().max(2).max(1);
 
             Utils.validate(schema, [
@@ -215,12 +231,15 @@ describe('string()', () => {
     });
 
     describe('min()', () => {
+
         it('should throw on incorrect parameters', () => {
+
             expect(() => Lyra.str().min('x')).toThrow('limit must be a number or a valid reference');
             expect(() => Lyra.str().min(NaN)).toThrow('limit must be a number or a valid reference');
         });
 
         it('should validate min lengths', () => {
+
             const schema = Lyra.str().min(2);
 
             Utils.validate(schema, [
@@ -237,6 +256,7 @@ describe('string()', () => {
         });
 
         it('should support references', () => {
+
             const ref = Lyra.ref('b');
             const schema = Lyra.obj({
                 a: Lyra.str().min(ref),
@@ -257,6 +277,7 @@ describe('string()', () => {
         });
 
         it('should error on invalid references', () => {
+
             const ref = Lyra.ref('b');
             const schema = Lyra.obj({
                 a: Lyra.str().min(ref),
@@ -276,6 +297,7 @@ describe('string()', () => {
         });
 
         it('should override min lengths', () => {
+
             const schema = Lyra.str().min(1).min(2);
 
             Utils.validate(schema, [
@@ -293,13 +315,16 @@ describe('string()', () => {
     });
 
     describe('insensitive()', () => {
+
         it('should avoid cloning if called twice', () => {
+
             const schema = Lyra.str().insensitive();
 
             expect(schema.insensitive()).toBe(schema);
         });
 
         it('should match strings insensitively', () => {
+
             const a = Lyra.str().min(3).allow('xx');
             const b = a.insensitive();
 
@@ -327,6 +352,7 @@ describe('string()', () => {
         });
 
         it('should cancel insensitive match', () => {
+
             const schema = Lyra.str().min(3).allow('xx').insensitive().insensitive(false);
 
             Utils.validate(schema, [
@@ -343,16 +369,18 @@ describe('string()', () => {
     });
 
     describe('dataUri()', () => {
+
         it('should validate dataUris with paddingRequired and urlSafe enabled implicitly', () => {
+
             const schema = Lyra.str().dataUri();
 
             Utils.validate(schema, [
                 { value: 'data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==' },
-                { value: 'data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAA-_LAAAAAABAAEAAAICTAEAOw==' },    // urlSafe
-                { value: 'data:image/gif;charset=utf-8,=R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==' },    // charset=... with invalid base 64
+                { value: 'data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAA-_LAAAAAABAAEAAAICTAEAOw==' },                                // urlSafe
+                { value: 'data:image/gif;charset=utf-8,=R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==' },                        // charset=... with invalid base 64
                 { value: 'data:text/x-script.python;charset=utf-8,=R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==' },
                 {
-                    value: 'data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAA+/LAAAAAABAAEAAAICTAEAOw==',    // non urlSafe
+                    value: 'data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAA+/LAAAAAABAAEAAAICTAEAOw==',                                // non urlSafe
                     error: {
                         code: 'string.dataUri',
                         message: 'unknown must be a data uri',
@@ -360,7 +388,7 @@ describe('string()', () => {
                     },
                 },
                 {
-                    value: 'data:image/gif;base64,=R0lGODlhAQABAAAAACH5BAEKAA-_LAAAAAABAAEAAAICTAEAOw==',   // urlSafe but invalid base64 format
+                    value: 'data:image/gif;base64,=R0lGODlhAQABAAAAACH5BAEKAA-_LAAAAAABAAEAAAICTAEAOw==',                               // urlSafe but invalid base64 format
                     error: {
                         code: 'string.dataUri',
                         message: 'unknown must be a data uri',
@@ -368,7 +396,7 @@ describe('string()', () => {
                     },
                 },
                 {
-                    value: 'data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAA-_LAAAAAABAAEAAAICTAEAOw',  // urlSafe but no padding
+                    value: 'data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAA-_LAAAAAABAAEAAAICTAEAOw',                                  // urlSafe but no padding
                     error: {
                         code: 'string.dataUri',
                         message: 'unknown must be a data uri',
@@ -376,7 +404,7 @@ describe('string()', () => {
                     },
                 },
                 {
-                    value: 'data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw',  // No padding
+                    value: 'data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw',                                  // No padding
                     error: {
                         code: 'string.dataUri',
                         message: 'unknown must be a data uri',
@@ -384,7 +412,7 @@ describe('string()', () => {
                     },
                 },
                 {
-                    value: 'data:image/gif;base64,=R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==',   // Invalid base64 string
+                    value: 'data:image/gif;base64,=R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==',                               // Invalid base64 string
                     error: {
                         code: 'string.dataUri',
                         message: 'unknown must be a data uri',
@@ -392,7 +420,7 @@ describe('string()', () => {
                     },
                 },
                 {
-                    value: 'ata:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==', // data: mispelled
+                    value: 'ata:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==',                                 // data: mispelled
                     error: {
                         code: 'string.dataUri',
                         message: 'unknown must be a data uri',
@@ -400,7 +428,7 @@ describe('string()', () => {
                     },
                 },
                 {
-                    value: 'base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==',   // No media type
+                    value: 'base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==',                                               // No media type
                     error: {
                         code: 'string.dataUri',
                         message: 'unknown must be a data uri',
@@ -408,7 +436,7 @@ describe('string()', () => {
                     },
                 },
                 {
-                    value: 'base,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==', // Base 64 mispelled
+                    value: 'base,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==',                                                 // Base 64 mispelled
                     error: {
                         code: 'string.dataUri',
                         message: 'unknown must be a data uri',
@@ -416,7 +444,7 @@ describe('string()', () => {
                     },
                 },
                 {
-                    value: 'image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==', // No data:
+                    value: 'image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==',                                     // No data:
                     error: {
                         code: 'string.dataUri',
                         message: 'unknown must be a data uri',
@@ -424,7 +452,7 @@ describe('string()', () => {
                     },
                 },
                 {
-                    value: 'data:base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==',  // Invalid media type
+                    value: 'data:base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==',                                          // Invalid media type
                     error: {
                         code: 'string.dataUri',
                         message: 'unknown must be a data uri',
@@ -435,6 +463,7 @@ describe('string()', () => {
         });
 
         it('should validate dataUris without paddings and urlSafe enabled implicitly', () => {
+
             const schema = Lyra.str().dataUri({ paddingRequired: false });
 
             Utils.validate(schema, [
@@ -462,6 +491,7 @@ describe('string()', () => {
         });
 
         it('should validate non url safe dataUris and paddingRequired enabled implicitly', () => {
+
             const schema = Lyra.str().dataUri({ urlSafe: false });
 
             Utils.validate(schema, [
@@ -503,6 +533,7 @@ describe('string()', () => {
         });
 
         it('should validate non url safe dataUris without padding', () => {
+
             const schema = Lyra.str().dataUri({ urlSafe: false, paddingRequired: false });
 
             Utils.validate(schema, [
@@ -531,14 +562,16 @@ describe('string()', () => {
     });
 
     describe('base64()', () => {
+
         it('should validate base64 strings with paddingRequired and urlSafe enabled implicitly', () => {
+
             const schema = Lyra.str().base64();
 
             Utils.validate(schema, [
                 { value: 'R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==' },
-                { value: 'R0lGODlhAQABAAAAACH5BAEKAA-_LAAAAAABAAEAAAICTAEAOw==' }, // urlSafe
+                { value: 'R0lGODlhAQABAAAAACH5BAEKAA-_LAAAAAABAAEAAAICTAEAOw==' },                                  // urlSafe
                 {
-                    value: 'R0lGODlhAQABAAAAACH5BAEKAA+/LAAAAAABAAEAAAICTAEAOw==', // non urlSafe
+                    value: 'R0lGODlhAQABAAAAACH5BAEKAA+/LAAAAAABAAEAAAICTAEAOw==',                                  // non urlSafe
                     error: {
                         code: 'string.base64',
                         message: 'unknown must be a base64 string',
@@ -546,7 +579,7 @@ describe('string()', () => {
                     },
                 },
                 {
-                    value: '=R0lGODlhAQABAAAAACH5BAEKAA-_LAAAAAABAAEAAAICTAEAOw==', // urlSafe but invalid base64 format
+                    value: '=R0lGODlhAQABAAAAACH5BAEKAA-_LAAAAAABAAEAAAICTAEAOw==',                                 // urlSafe but invalid base64 format
                     error: {
                         code: 'string.base64',
                         message: 'unknown must be a base64 string',
@@ -554,7 +587,7 @@ describe('string()', () => {
                     },
                 },
                 {
-                    value: 'R0lGODlhAQABAAAAACH5BAEKAA-_LAAAAAABAAEAAAICTAEAOw', // urlSafe but no padding
+                    value: 'R0lGODlhAQABAAAAACH5BAEKAA-_LAAAAAABAAEAAAICTAEAOw',                                    // urlSafe but no padding
                     error: {
                         code: 'string.base64',
                         message: 'unknown must be a base64 string',
@@ -562,7 +595,7 @@ describe('string()', () => {
                     },
                 },
                 {
-                    value: 'R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw', // No padding
+                    value: 'R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw',                                    // No padding
                     error: {
                         code: 'string.base64',
                         message: 'unknown must be a base64 string',
@@ -570,7 +603,7 @@ describe('string()', () => {
                     },
                 },
                 {
-                    value: '=R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==', // Invalid base64 string
+                    value: '=R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==',                                 // Invalid base64 string
                     error: {
                         code: 'string.base64',
                         message: 'unknown must be a base64 string',
@@ -581,6 +614,7 @@ describe('string()', () => {
         });
 
         it('should validate base64 strings without paddings and urlSafe enabled implicitly', () => {
+
             const schema = Lyra.str().base64({ paddingRequired: false });
 
             Utils.validate(schema, [
@@ -608,6 +642,7 @@ describe('string()', () => {
         });
 
         it('should validate non url safe base64 strings and paddingRequired enabled implicitly', () => {
+
             const schema = Lyra.str().base64({ urlSafe: false });
 
             Utils.validate(schema, [
@@ -649,6 +684,7 @@ describe('string()', () => {
         });
 
         it('should validate non url safe base64 strings without padding', () => {
+
             const schema = Lyra.str().base64({ urlSafe: false, paddingRequired: false });
 
             Utils.validate(schema, [
@@ -677,37 +713,61 @@ describe('string()', () => {
     });
 
     describe('creditCard()', () => {
+
         it('should validate credit card numbers', () => {
+
             const schema = Lyra.str().creditCard();
 
             Utils.validate(schema, [
                 // American Express
+
                 { value: '378282246310005' },
                 { value: '371449635398431' },
+
                 // American Express Corporate
+
                 { value: '378734493671000' },
+
                 // Australian BankCard
+
                 { value: '5610591081018250' },
+
                 // Diners club
+
                 { value: '30569309025904' },
                 { value: '38520000023237' },
+
                 // Discover
+
                 { value: '6011111111111117' },
                 { value: '6011000990139424' },
+
                 // JCB
+
                 { value: '3530111333300000' },
                 { value: '3566002020360505' },
+
                 // MasterCard
+
                 { value: '5555555555554444' },
                 { value: '5105105105105100' },
+
                 // Visa
+
                 { value: '4111111111111111' },
                 { value: '4012888888881881' },
                 { value: '4222222222222' },
+
                 // Dankort (PBS)
+
                 { value: '5019717010103742' },
+
                 // Switch/Solo (Paymentech)
+
                 { value: '6331101999990016' },
+
+                // Invalid
+
                 {
                     value: '4111111111111112',
                     error: {
@@ -729,7 +789,9 @@ describe('string()', () => {
     });
 
     describe('pattern()', () => {
+
         it('should throw on incorrect parameters', () => {
+
             expect(() => Lyra.str().pattern('x')).toThrow('Regex must be a valid regular expression');
             expect(() => Lyra.str().pattern(/a/g)).toThrow('Regex must not contain global and sticky flags');
             expect(() => Lyra.str().pattern(/a/y)).toThrow('Regex must not contain global and sticky flags');
@@ -737,6 +799,7 @@ describe('string()', () => {
         });
 
         it('should set patterns without names', () => {
+
             const schema = Lyra.str().pattern(/^abc/);
 
             Utils.validate(schema, [
@@ -753,6 +816,7 @@ describe('string()', () => {
         });
 
         it('should set patterns with names', () => {
+
             const schema = Lyra.str().pattern(/^abc/, 'abc');
 
             Utils.validate(schema, [
@@ -769,7 +833,9 @@ describe('string()', () => {
     });
 
     describe('email()', () => {
+
         it('should validate emails', () => {
+
             const schema = Lyra.str().email();
 
             Utils.validate(schema, [
@@ -815,7 +881,9 @@ describe('string()', () => {
     });
 
     describe('url()', () => {
+
         it('should validate urls', () => {
+
             const schema = Lyra.str().url();
 
             Utils.validate(schema, [
@@ -1045,7 +1113,9 @@ describe('string()', () => {
     });
 
     describe('alphanum()', () => {
+
         it('should validate alphanumeric strings', () => {
+
             const schema = Lyra.str().alphanum();
 
             Utils.validate(schema, [
@@ -1063,7 +1133,9 @@ describe('string()', () => {
     });
 
     describe('numeric()', () => {
+
         it('should validate numeric strings', () => {
+
             const schema = Lyra.str().numeric();
 
             Utils.validate(schema, [
@@ -1081,11 +1153,14 @@ describe('string()', () => {
     });
 
     describe('case()', () => {
+
         it('should throw on incorrect parameters', () => {
+
             expect(() => Lyra.str().case('x')).toThrow('Direction must be upper or lower');
         });
 
         it('should validate uppercase characters in strict mode', () => {
+
             const schema = Lyra.str().uppercase();
 
             Utils.validate(schema, [
@@ -1102,6 +1177,7 @@ describe('string()', () => {
         });
 
         it('should validate lowercase characters in strict mode', () => {
+
             const schema = Lyra.str().lowercase();
 
             Utils.validate(schema, [
@@ -1118,6 +1194,7 @@ describe('string()', () => {
         });
 
         it('should convert to uppercase if strict mode is disabled', () => {
+
             const schema = Lyra.str().uppercase().convert();
 
             Utils.validate(schema, [
@@ -1130,6 +1207,7 @@ describe('string()', () => {
         });
 
         it('should validate lowercase characters in strict mode', () => {
+
             const schema = Lyra.str().lowercase().convert();
 
             Utils.validate(schema, [
@@ -1143,7 +1221,9 @@ describe('string()', () => {
     });
 
     describe('trim()', () => {
+
         it('should validate trailing and leading whitespaces in strict mode', () => {
+
             const schema = Lyra.str().trim();
 
             Utils.validate(schema, [
@@ -1160,6 +1240,7 @@ describe('string()', () => {
         });
 
         it('should trim if strict mode is disabled', () => {
+
             const schema = Lyra.str().trim().convert();
 
             Utils.validate(schema, [
@@ -1172,12 +1253,14 @@ describe('string()', () => {
         });
 
         it('should cancel trim mode', () => {
+
             const schema = Lyra.str().trim().trim(false);
 
             Utils.validate(schema, [{ value: ' xyz ' }]);
         });
 
         it('should cancel trim mode if strict mode is disabled', () => {
+
             const schema = Lyra.str().trim().trim(false).convert();
 
             Utils.validate(schema, [{ value: ' xyz ' }]);
@@ -1185,12 +1268,15 @@ describe('string()', () => {
     });
 
     describe('replace()', () => {
+
         it('should throw on incorrect parameters', () => {
+
             expect(() => Lyra.str().replace(1)).toThrow('Pattern must be a valid regular expression or a string');
             expect(() => Lyra.str().replace('x', 1)).toThrow('Replacement must be a string');
         });
 
         it('should perform single replacement', () => {
+
             const schema = Lyra.str().replace('x', 'a').convert();
 
             Utils.validate(schema, [
@@ -1203,6 +1289,7 @@ describe('string()', () => {
         });
 
         it('should perform multiple replacements', () => {
+
             const schema = Lyra.str().replace('x', 'a').replace('y', 'b').convert();
 
             Utils.validate(schema, [

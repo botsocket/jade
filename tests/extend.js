@@ -4,7 +4,9 @@ const Lyra = require('../src');
 const Utils = require('./utils');
 
 describe('extend()', () => {
+
     it('should extend an existing type and its alias implicitly', () => {
+
         const custom = Lyra.extend({
             type: 'string',
             from: Lyra.str(),
@@ -12,6 +14,7 @@ describe('extend()', () => {
             rules: {
                 special: {
                     validate: () => {
+
                         return 'special';
                     },
                 },
@@ -37,6 +40,7 @@ describe('extend()', () => {
     });
 
     it('should extend an existing type with aliases', () => {
+
         const custom = Lyra.extend({
             type: 'string',
             alias: ['str', 'x'],
@@ -45,6 +49,7 @@ describe('extend()', () => {
             rules: {
                 special: {
                     validate: () => {
+
                         return 'special';
                     },
                 },
@@ -85,6 +90,7 @@ describe('extend()', () => {
     });
 
     it('should throw if provide an invalid type/alias', () => {
+
         expect(() => Lyra.extend({ type: 'ref' })).toThrow('Invalid extension ref');
         expect(() => Lyra.extend({ type: 'x', alias: 'string' })).toThrow('Invalid alias string');
         expect(() => Lyra.extend({ type: 'x', alias: ['y', 'string'] })).toThrow('Invalid alias string');
@@ -97,6 +103,7 @@ describe('extend()', () => {
     });
 
     it('should extend an alias to a different type', () => {
+
         const custom = Lyra.extend({
             type: 'bool',
             from: Lyra.num(),
@@ -148,6 +155,7 @@ describe('extend()', () => {
     });
 
     it('should throw if from or alias is provided on multiple types', () => {
+
         expect(() => Lyra.extend({ type: ['string', 'number'], from: Lyra.str() })).toThrow('from is forbidden');
         expect(() => Lyra.extend({ type: ['string'], from: Lyra.str() })).not.toThrow();
         expect(() => Lyra.extend({ type: /^s/, from: Lyra.str() })).toThrow('from is forbidden');
@@ -157,12 +165,14 @@ describe('extend()', () => {
     });
 
     it('should extend multiple types', () => {
+
         const custom = Lyra.extend({
             type: ['any', 'string', 'number'],
 
             rules: {
                 special: {
                     validate: () => {
+
                         return 'special';
                     },
                 },
@@ -204,12 +214,14 @@ describe('extend()', () => {
     });
 
     it('should extend multiple types using regular expressions', () => {
+
         const custom = Lyra.extend({
             type: /^a/,
 
             rules: {
                 special: {
                     validate: () => {
+
                         return 'special';
                     },
                 },
@@ -235,6 +247,7 @@ describe('extend()', () => {
     });
 
     it('should extend a complex base', () => {
+
         const custom = Lyra.extend({
             type: 'test',
             from: Lyra.arr(Lyra.str().required()),
@@ -242,7 +255,6 @@ describe('extend()', () => {
 
         const schema = custom.test();
 
-        // Known implementation limitation
         Utils.validate(schema, [
             { value: ['x', 'y'] },
             {
@@ -265,6 +277,7 @@ describe('extend()', () => {
     });
 
     it('should extend coerce', () => {
+
         const custom = Lyra.extend({
             type: 'string',
             from: Lyra.str(),
@@ -273,6 +286,7 @@ describe('extend()', () => {
             },
 
             coerce: (value, { error }) => {
+
                 if (value === 'true' ||
                     value === 'false') {
 
@@ -303,6 +317,7 @@ describe('extend()', () => {
     });
 
     it('should extend validate', () => {
+
         const custom = Lyra.extend({
             type: 'object',
             from: Lyra.obj(),
@@ -311,6 +326,7 @@ describe('extend()', () => {
             },
 
             validate: (value, { error }) => {
+
                 if (value instanceof Date) {
                     return error('object.date');
                 }
@@ -343,11 +359,13 @@ describe('extend()', () => {
     });
 
     it('should extend rebuild', () => {
+
         const custom = Lyra.extend({
             type: 'object',
             from: Lyra.obj(),
 
             rebuild: (schema) => {
+
                 if (!schema.$terms.keys) {
                     return;
                 }
@@ -360,6 +378,7 @@ describe('extend()', () => {
             rules: {
                 stripAll: {
                     method() {
+
                         return this.clone().$rebuild();
                     },
                 },
@@ -385,12 +404,14 @@ describe('extend()', () => {
     });
 
     it('should extend overrides', () => {
+
         const custom = Lyra.extend({
             type: 'object',
             from: Lyra.obj(),
 
             overrides: {
                 length(limit) {
+
                     if (limit === undefined) {
                         limit = 100;
                     }
@@ -415,13 +436,16 @@ describe('extend()', () => {
     });
 
     it('should throw when overriding a missing method', () => {
+
         expect(() => {
+
             Lyra.extend({
                 type: 'object',
                 from: Lyra.obj(),
 
                 overrides: {
                     someUnknownMethod() {
+
                         return 1;
                     },
                 },
@@ -430,11 +454,13 @@ describe('extend()', () => {
     });
 
     it('should extend args', () => {
+
         const custom = Lyra.extend({
             type: 'array',
             from: Lyra.arr(),
 
             args: (schema, ...items) => {
+
                 return schema.ordered(...items);
             },
         });
@@ -455,6 +481,7 @@ describe('extend()', () => {
     });
 
     it('should override flags', () => {
+
         const custom = Lyra.extend({
             type: 'string',
             from: Lyra.str(),
@@ -475,6 +502,7 @@ describe('extend()', () => {
     });
 
     it('should extend messages with templates', () => {
+
         const custom = Lyra.extend({
             type: 'number',
             from: Lyra.num(),
@@ -498,6 +526,7 @@ describe('extend()', () => {
     });
 
     it('should properly merge values terms', () => {
+
         const custom = Lyra.extend({
             type: 'test',
             terms: {
@@ -508,6 +537,7 @@ describe('extend()', () => {
             },
 
             validate: (value, { error, schema }) => {
+
                 if (!schema.$terms.x) {
                     return value;
                 }
@@ -522,6 +552,7 @@ describe('extend()', () => {
             rules: {
                 special: {
                     method(x) {
+
                         const target = this.clone();
 
                         target.$terms.x = target.$terms.x || Lyra.values();
@@ -573,6 +604,7 @@ describe('extend()', () => {
     });
 
     it('should extend complicated docs example', () => {
+
         const Semver = require('semver');
 
         const custom = Lyra.extend((root) => ({
@@ -591,6 +623,7 @@ describe('extend()', () => {
             },
 
             coerce: (value, { schema }) => {
+
                 const coerced = Semver.coerce(value);
 
                 if (!coerced) {
@@ -606,6 +639,7 @@ describe('extend()', () => {
             },
 
             validate: (value, { error, schema }) => {
+
                 if (!Semver.valid(value)) {
                     return error('semver.base');
                 }
@@ -623,12 +657,14 @@ describe('extend()', () => {
             rules: {
                 clean: {
                     method(enabled = true) {
+
                         return this.$setFlag('clean', enabled);
                     },
                 },
 
                 condition: {
                     method(condition) {
+
                         if (typeof condition !== 'string') {
                             throw new Error('Condition must be a string');
                         }
@@ -642,6 +678,7 @@ describe('extend()', () => {
                         limit: {
                             ref: true,
                             assert: root.str().custom((value) => {
+
                                 if (Semver.valid(value)) {
                                     return value;
                                 }
@@ -653,6 +690,7 @@ describe('extend()', () => {
 
                     method: false,
                     validate: (value, { error }, { limit }, { args, name, operator }) => {
+
                         if (!Semver.cmp(value, operator, limit)) {
                             return error(`semver.${name}`, { limit: args.limit });
                         }
@@ -663,24 +701,28 @@ describe('extend()', () => {
 
                 lt: {
                     method(limit) {
+
                         return this.$addRule({ name: 'lt', method: 'cmp', args: { limit }, operator: '<' });
                     },
                 },
 
                 lte: {
                     method(limit) {
+
                         return this.$addRule({ name: 'lte', method: 'cmp', args: { limit }, operator: '<=' });
                     },
                 },
 
                 gt: {
                     method(limit) {
+
                         return this.$addRule({ name: 'gt', method: 'cmp', args: { limit }, operator: '>' });
                     },
                 },
 
                 gte: {
                     method(limit) {
+
                         return this.$addRule({ name: 'gte', method: 'cmp', args: { limit }, operator: '>=' });
                     },
                 },
@@ -785,7 +827,9 @@ describe('extend()', () => {
     });
 
     it('should throw on defined terms', () => {
+
         expect(() => {
+
             Lyra.extend({
                 type: 'object',
                 from: Lyra.obj(),
@@ -798,7 +842,9 @@ describe('extend()', () => {
     });
 
     it('should throw on defined rules', () => {
+
         expect(() => {
+
             Lyra.extend({
                 type: 'number',
                 from: Lyra.num(),
@@ -806,6 +852,7 @@ describe('extend()', () => {
                 rules: {
                     max: {
                         method() {
+
                             return this;
                         },
                     },
@@ -815,7 +862,9 @@ describe('extend()', () => {
     });
 
     it('should throw on unsupported data types for terms', () => {
+
         expect(() => {
+
             Lyra.extend({
                 type: 'test',
                 terms: {
@@ -826,7 +875,9 @@ describe('extend()', () => {
     });
 
     it('should throw on empty rules', () => {
+
         expect(() => {
+
             Lyra.extend({
                 type: 'test',
                 rules: {
@@ -837,7 +888,9 @@ describe('extend()', () => {
     });
 
     it('should throw on private rules missing validate method', () => {
+
         expect(() => {
+
             Lyra.extend({
                 type: 'test',
                 rules: {
@@ -850,6 +903,7 @@ describe('extend()', () => {
     });
 
     it('should throw on missing error codes', () => {
+
         const custom = Lyra.extend({
             type: 'test',
             from: Lyra.str(),
@@ -857,6 +911,7 @@ describe('extend()', () => {
             rules: {
                 special: {
                     validate: (_, { error }) => {
+
                         return error('test.special');
                     },
                 },
@@ -869,7 +924,9 @@ describe('extend()', () => {
     });
 
     describe('$createError()', () => {
+
         it('should not allow passing custom labels', () => {
+
             const custom = Lyra.extend({
                 type: 'string',
                 from: Lyra.str(),
@@ -877,6 +934,7 @@ describe('extend()', () => {
                 rules: {
                     special: {
                         validate: (_, { error }) => {
+
                             return error('string.base', { label: 'x' });
                         },
                     },

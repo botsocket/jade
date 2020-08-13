@@ -20,10 +20,12 @@ module.exports = Extend.schema(Any, {
     },
 
     args: (schema, ...schemas) => {
+
         return schema.try(...schemas);
     },
 
     rebuild: (schema) => {
+
         const items = schema.$terms.items;
         for (let i = 0; i < items.length; i++) {
             const item = items[i];
@@ -39,6 +41,7 @@ module.exports = Extend.schema(Any, {
     },
 
     validate: (value, { schema, settings, state, error }) => {
+
         const mode = schema.$getFlag('mode');
         if (mode !== 'any') {
             let matches = 0;
@@ -102,6 +105,7 @@ module.exports = Extend.schema(Any, {
     rules: {
         try: {
             method(...items) {
+
                 Assert(items.length, 'Items must have at least one item');
 
                 const target = this.clone();
@@ -114,6 +118,7 @@ module.exports = Extend.schema(Any, {
         mode: {
             alias: 'match',
             method(mode) {
+
                 Assert(mode === 'all' || mode === 'one' || mode === 'any', 'Mode must be all, one or any');
 
                 return this.$setFlag('mode', mode);
@@ -123,6 +128,7 @@ module.exports = Extend.schema(Any, {
 
     overrides: {
         label(label) {
+
             const target = this.$super.label(label);
             return target.$rebuild();
         },

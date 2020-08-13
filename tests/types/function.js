@@ -4,7 +4,9 @@ const Lyra = require('../../src');
 const Utils = require('../utils');
 
 describe('function()', () => {
+
     it('should validate functions', () => {
+
         const schema = Lyra.fn();
 
         Utils.validate(schema, [
@@ -21,11 +23,14 @@ describe('function()', () => {
     });
 
     describe('inherit()', () => {
+
         it('should throw on incorrect parameters', () => {
+
             expect(() => Lyra.fn().inherit('x')).toThrow('Constructor must be a function');
         });
 
         it('should validate inheritance', () => {
+
             class X { }
 
             class Y extends X { }
@@ -54,6 +59,7 @@ describe('function()', () => {
         });
 
         it('should validate multiple inheritances', () => {
+
             class X { }
 
             class Y extends X { }

@@ -24,6 +24,7 @@ module.exports = Extend.schema(Any, {
     },
 
     coerce: (value) => {
+
         if (typeof value !== 'string') {
             return value;
         }
@@ -37,6 +38,7 @@ module.exports = Extend.schema(Any, {
     },
 
     validate: (value, { schema, error }) => {
+
         if (value === Infinity ||
             value === -Infinity) {
 
@@ -59,6 +61,7 @@ module.exports = Extend.schema(Any, {
     rules: {
         unsafe: {
             method(enabled = true) {
+
                 return this.$setFlag('unsafe', enabled);
             },
         },
@@ -74,6 +77,7 @@ module.exports = Extend.schema(Any, {
             },
 
             validate: (value, { error }, { limit }, { name, args, operator }) => {
+
                 if (Utils.compare(value, limit, operator)) {
                     return value;
                 }
@@ -84,6 +88,7 @@ module.exports = Extend.schema(Any, {
 
         integer: {
             validate: (value, { error }) => {
+
                 if (Number.isInteger(value)) {
                     return value;
                 }
@@ -94,24 +99,28 @@ module.exports = Extend.schema(Any, {
 
         min: {
             method(limit) {
+
                 return this.$addRule({ name: 'min', method: 'compare', args: { limit }, operator: '>=' });
             },
         },
 
         max: {
             method(limit) {
+
                 return this.$addRule({ name: 'max', method: 'compare', args: { limit }, operator: '<=' });
             },
         },
 
         greater: {
             method(limit) {
+
                 return this.$addRule({ name: 'greater', method: 'compare', args: { limit }, operator: '>' });
             },
         },
 
         less: {
             method(limit) {
+
                 return this.$addRule({ name: 'less', method: 'compare', args: { limit }, operator: '<' });
             },
         },
@@ -128,10 +137,12 @@ module.exports = Extend.schema(Any, {
             },
 
             method(factor) {
+
                 return this.$addRule({ name: 'multiple', args: { factor } });
             },
 
             validate: (value, { error }, { factor }, { args }) => {
+
                 if (value % factor === 0) {
                     return value;
                 }
@@ -142,6 +153,7 @@ module.exports = Extend.schema(Any, {
 
         even: {
             method() {
+
                 return this.multiple(2);
             },
         },
@@ -157,10 +169,12 @@ module.exports = Extend.schema(Any, {
             },
 
             method(dividend) {
+
                 return this.$addRule({ name: 'divide', args: { dividend } });
             },
 
             validate: (value, { error }, { dividend }, { args }) => {
+
                 if (dividend % value === 0) {
                     return value;
                 }

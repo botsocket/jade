@@ -4,7 +4,9 @@ const Lyra = require('../src');
 const Utils = require('./utils');
 
 describe('template()', () => {
+
     it('should support reference options', () => {
+
         const template = Lyra.template('This is {#a}', { prefix: false });
         const schema = Lyra.obj({
             '#a': 'x',

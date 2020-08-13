@@ -8,6 +8,7 @@ const Utils = require('./utils');
 const internals = {};
 
 exports.schema = function (schema, value, settings, state, overrides) {
+
     settings = Utils.settings(settings, schema._settings);
     schema = schema._applyConditions(value, settings, state);
 
@@ -166,6 +167,7 @@ exports.schema = function (schema, value, settings, state, overrides) {
 };
 
 internals.result = function (value, helpers) {
+
     const { schema, settings, state } = helpers;
 
     const result = schema.$getFlag('result');
