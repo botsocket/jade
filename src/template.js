@@ -30,14 +30,20 @@ module.exports = internals.Template = class {
         return this._template.toString();
     }
 
-    describe() {
-        const template = { source: this._template.source };
+    describe(options = {}) {
+        if (options.compact &&
+            !this._settings) {
 
-        if (this._settings) {
-            template.options = Clone(this._settings);
+            return this._template.source;
         }
 
-        return { template };
+        const desc = { template: this._template.source };
+
+        if (this._settings) {
+            desc.options = Clone(this._settings);
+        }
+
+        return desc;
     }
 };
 

@@ -18,7 +18,7 @@ module.exports = Extend.schema(Any, {
     terms: {
         keys: {
             default: null,
-            description: {
+            desc: {
                 mapped: { key: 'key', value: 'schema' },
             },
 
@@ -112,7 +112,7 @@ module.exports = Extend.schema(Any, {
             const references = child
                 .schema
                 .$references()
-                .filter((ref) => keys.has(ref)) // Filter out refs that point to nothing
+                .filter((ref) => keys.has(ref))                                     // Filter out refs that point to nothing
                 .map((ref) => keys.get(ref));
 
             sorter.add(child, references);
@@ -292,7 +292,10 @@ module.exports = Extend.schema(Any, {
                 }
 
                 const keysKeys = Object.keys(keys);
-                target.$terms.keys = !target.$terms.keys ? [] : target.$terms.keys.filter((child) => keys[child.key] === undefined);
+
+                target.$terms.keys = !target.$terms.keys
+                    ? []
+                    : target.$terms.keys.filter((child) => keys[child.key] === undefined);
 
                 const children = keysKeys.map((key) => ({ key, schema: this.$compile(keys[key]) }));
                 target.$terms.keys.push(...children);
@@ -480,7 +483,7 @@ module.exports = Extend.schema(Any, {
 });
 
 internals.deepDefault = function (schema) {
-    if (schema.$getFlag('default') !== undefined) { // Does not process if already has default
+    if (schema.$getFlag('default') !== undefined) {                             // Do not process if already has default
         return schema;
     }
 

@@ -1,9 +1,413 @@
 'use strict';
 
+const Dust = require('@botbind/dust');
+
 const Lyra = require('../../src');
 const Utils = require('../utils');
 
 describe('any()', () => {
+    describe('describe()', () => {
+        it('should describe example', () => {
+            const schema = Lyra.object({
+                a: Lyra.number().max(10),
+            });
+            const desc = {
+                type: 'object',
+                keys: {
+                    a: {
+                        type: 'number',
+                        rules: [
+                            { name: 'max', args: { limit: 10 } },
+                        ],
+                    },
+                },
+            };
+
+            expect(Dust.equal(schema.describe(), desc)).toBe(true);
+        });
+
+        describe('settings', () => {
+            it('should describe settings', () => {
+                const schema = Lyra.any().settings({ abortEarly: false });
+                const desc = {
+                    type: 'any',
+                    settings: { abortEarly: false },
+                };
+
+                expect(Dust.equal(schema.describe(), desc)).toBe(true);
+            });
+
+            it('should describe messages', () => {
+                const schema = Lyra.any().messages({ 'any.required': 'Test' });
+                const desc = {
+                    type: 'any',
+                    settings: {
+                        messages: {
+                            'any.required': 'Test',
+                        },
+                    },
+                };
+
+                expect(Dust.equal(schema.describe(), desc)).toBe(true);
+            });
+
+            it('should describe message templates with settings', () => {
+                const schema = Lyra.any().messages({ 'any.required': Lyra.template('Test', { ancestor: 0 }) });
+                const desc = {
+                    type: 'any',
+                    settings: {
+                        messages: {
+                            'any.required': {
+                                template: 'Test',
+                                options: { ancestor: 0 },
+                            },
+                        },
+                    },
+                };
+
+                expect(Dust.equal(schema.describe(), desc)).toBe(true);
+            });
+        });
+
+        describe('flags', () => {
+            it('should describe flags', () => {
+                const schema = Lyra.num().optional().cast('string').label('test').default(5);
+                const desc = {
+                    type: 'number',
+                    flags: {
+                        presence: 'optional',
+                        cast: 'string',
+                        label: 'test',
+                        default: 5,
+                    },
+                };
+
+                expect(Dust.equal(schema.describe(), desc)).toBe(true);
+            });
+
+            it('should not describe private flags', () => {
+                const schema = Lyra.arr(Lyra.arr());                            // Trigger _hasArrayItem
+                const desc = {
+                    type: 'array',
+                    items: [
+                        { type: 'array' },
+                    ],
+                };
+
+                expect(Dust.equal(schema.describe(), desc)).toBe(true);
+            });
+        });
+
+        describe('rules', () => {
+            it('should describe rules', () => {
+                const schema = Lyra.num().min(1).max(10);
+                const desc = {
+                    type: 'number',
+                    rules: [
+                        { name: 'min', args: { limit: 1 } },
+                        { name: 'max', args: { limit: 10 } },
+                    ],
+                };
+
+                expect(Dust.equal(schema.describe(), desc)).toBe(true);
+            });
+
+            it('should describe rules with reference and template arguments', () => {
+                const schema = Lyra.obj({
+                    a: Lyra.num(),
+                    b: Lyra.num().min(Lyra.ref('a')).max(Lyra.template('{a + 10}')),
+                });
+                const desc = {
+                    type: 'object',
+                    keys: {
+                        a: { type: 'number' },
+                        b: {
+                            type: 'number',
+                            rules: [
+                                {
+                                    name: 'min',
+                                    args: { limit: { ref: 'a' } },
+                                },
+                                {
+                                    name: 'max',
+                                    args: { limit: { template: '{a + 10}' } },
+                                },
+                            ],
+                        },
+                    },
+                };
+
+                expect(Dust.equal(schema.describe(), desc)).toBe(true);
+            });
+
+            it('should describe custom rules', () => {
+                const method = () => { };
+                const schema = Lyra.rule(method, 'some description');
+                const desc = {
+                    type: 'any',
+                    rules: [
+                        { name: 'rule', args: { method, description: 'some description' } },
+                    ],
+                };
+
+                expect(Dust.equal(schema.describe(), desc)).toBe(true);
+            });
+
+            it('should preserve date arguments', () => {
+                const date = new Date();
+                const schema = Lyra.date().min(date);
+                const desc = {
+                    type: 'date',
+                    rules: [
+                        { name: 'min', args: { limit: date } },
+                    ],
+                };
+
+                expect(Dust.equal(schema.describe(), desc)).toBe(true);
+            });
+
+            it('should preserve regex arguments', () => {
+                const regex = /a/;
+                const schema = Lyra.str().pattern(regex);
+                const desc = {
+                    type: 'string',
+                    rules: [
+                        { name: 'pattern', args: { regex } },
+                    ],
+                };
+
+                expect(Dust.equal(schema.describe(), desc)).toBe(true);
+            });
+
+            it('should describe options arguments', () => {
+                const schema = Lyra.str().dataUri({ paddingRequired: false });
+                const desc = {
+                    type: 'string',
+                    rules: [
+                        {
+                            name: 'dataUri',
+                            args: { options: { value: { paddingRequired: false } } },
+                        },
+                    ],
+                };
+
+                expect(Dust.equal(schema.describe(), desc)).toBe(true);
+            });
+        });
+
+        describe('default values', () => {
+            it('should describe default object', () => {
+                const schema = Lyra.num().default({ someKey: 'someValue' });
+                const desc = {
+                    type: 'number',
+                    flags: {
+                        default: {
+                            value: { someKey: 'someValue' },
+                        },
+                    },
+                };
+
+                expect(Dust.equal(schema.describe(), desc)).toBe(true);
+            });
+
+            it('should describe default array', () => {
+                const schema = Lyra.num().default(['someArray']);
+                const desc = {
+                    type: 'number',
+                    flags: {
+                        default: {
+                            value: ['someArray'],
+                        },
+                    },
+                };
+
+                expect(Dust.equal(schema.describe(), desc)).toBe(true);
+            });
+
+            it('should describe default function', () => {
+                const fn = () => 1;
+                const schema = Lyra.any().default(fn);
+                const desc = {
+                    type: 'any',
+                    flags: {
+                        default: { callable: fn },
+                    },
+                };
+
+                expect(Dust.equal(schema.describe(), desc)).toBe(true);
+            });
+
+            it('should describe deep default', () => {
+                const schema = Lyra.obj().default();
+                const desc = {
+                    type: 'object',
+                    flags: {
+                        default: { deep: true },
+                    },
+                };
+
+                expect(Dust.equal(schema.describe(), desc)).toBe(true);
+            });
+
+            it('should describe default template', () => {
+                const schema = Lyra.any().default(Lyra.template('Test'));
+                const desc = {
+                    type: 'any',
+                    flags: {
+                        default: { template: 'Test' },
+                    },
+                };
+
+                expect(Dust.equal(schema.describe(), desc)).toBe(true);
+            });
+
+            it('should describe default reference', () => {
+                const schema = Lyra.object({
+                    a: Lyra.num(),
+                    b: Lyra.num().default(Lyra.ref('a')),
+                });
+                const desc = {
+                    type: 'object',
+                    keys: {
+                        a: { type: 'number' },
+                        b: {
+                            type: 'number',
+                            flags: {
+                                default: { ref: 'a' },
+                            },
+                        },
+                    },
+                };
+
+                expect(Dust.equal(schema.describe(), desc)).toBe(true);
+            });
+        });
+
+        describe('valids/invalids', () => {
+            it('should describe allows/invalids', () => {
+                const schema = Lyra.num().allow(Infinity, { x: 1 }, [1]).invalid(0);
+                const desc = {
+                    type: 'number',
+                    allows: [
+                        Infinity,
+                        { value: { x: 1 } },
+                        { value: [1] },
+                    ],
+                    invalids: [0],
+                };
+
+                expect(Dust.equal(schema.describe(), desc)).toBe(true);
+            });
+
+            it('should describe valids', () => {
+                const schema = Lyra.valid('x');
+                const desc = {
+                    type: 'any',
+                    flags: { only: true },
+                    allows: ['x'],
+                };
+
+                expect(Dust.equal(schema.describe(), desc)).toBe(true);
+            });
+
+            it('should describe allows/invalids with templates and references', () => {
+                const schema = Lyra.obj({
+                    a: Lyra.num(),
+                    b: Lyra.num()
+                        .allow(Lyra.template('Test'))
+                        .invalid(Lyra.ref('a')),
+                });
+                const desc = {
+                    type: 'object',
+                    keys: {
+                        a: { type: 'number' },
+                        b: {
+
+                            type: 'number',
+                            allows: [{ template: 'Test' }],
+                            invalids: [{ ref: 'a' }],
+                        },
+                    },
+                };
+
+                expect(Dust.equal(schema.describe(), desc)).toBe(true);
+            });
+
+            it('should describe override', () => {
+                const schema = Lyra.any().allow(Lyra.override, 1);
+                const desc = {
+                    type: 'any',
+                    allows: [{ override: true }, 1],
+                };
+
+                expect(Dust.equal(schema.describe(), desc)).toBe(true);
+            });
+        });
+
+        describe('terms()', () => {
+            it('should describe truthy/falsy values', () => {
+                const schema = Lyra.bool().truthy('x', { x: 1 }, [1]).convert();
+                const desc = {
+                    type: 'boolean',
+                    settings: { strict: false },
+                    truthy: [
+                        'x',
+                        { value: { x: 1 } },
+                        { value: [1] },
+                    ],
+                };
+
+                expect(Dust.equal(schema.describe(), desc)).toBe(true);
+            });
+
+            it('should describe dependencies', () => {
+                const schema = Lyra.obj({
+                    a: Lyra.num(),
+                    b: Lyra.num(),
+                })
+                    .and('a', 'b');
+                const desc = {
+                    type: 'object',
+                    keys: {
+                        a: { type: 'number' },
+                        b: { type: 'number' },
+                    },
+                    dependencies: [
+                        {
+                            value: { type: 'and', peers: ['a', 'b'] },
+                        },
+                    ],
+                };
+
+                expect(Dust.equal(schema.describe(), desc)).toBe(true);
+            });
+
+            it('should describe replacements', () => {
+                const schema = Lyra.str().replace('a', 'b').replace('c', 'd');
+                const desc = {
+                    type: 'string',
+                    replacements: [
+                        { value: { pattern: 'a', replacement: 'b' } },
+                        { value: { pattern: 'c', replacement: 'd' } },
+                    ],
+                };
+
+                expect(Dust.equal(schema.describe(), desc)).toBe(true);
+            });
+
+            it('should describe annotations', () => {
+                const schema = Lyra.str().invalid('not this string').annotate('Some string', 'but not this string');
+                const desc = {
+                    type: 'string',
+                    invalids: ['not this string'],
+                    notes: ['Some string', 'but not this string'],
+                };
+
+                expect(Dust.equal(schema.describe(), desc)).toBe(true);
+            });
+        });
+    });
+
     describe('merge()', () => {
         it('should return the current schema if is merging itself', () => {
             const schema = Lyra.any();
@@ -2852,6 +3256,25 @@ describe('any()', () => {
                         code: 'any.required',
                         message: 'b is required',
                         local: { label: 'b' },
+                    },
+                },
+            ]);
+        });
+
+        it('should allow reference subjects', () => {
+            const schema = Lyra.obj({
+                a: Lyra.bool(),
+                b: Lyra.when(Lyra.ref('a'), { is: true, then: 1 }),
+            });
+
+            Utils.validate(schema, [
+                { value: { a: true, b: 1 } },
+                {
+                    value: { a: true, b: 2 },
+                    error: {
+                        code: 'any.only',
+                        message: 'b must be 1',
+                        local: { label: 'b', values: [1] },
                     },
                 },
             ]);

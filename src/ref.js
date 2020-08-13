@@ -95,7 +95,7 @@ internals.Ref = class {
     }
 
     describe() {
-        const ref = { path: this._path };
+        const ref = { ref: this._path };
 
         if (this._type !== 'value') {
             ref.type = this._type;
@@ -111,7 +111,7 @@ internals.Ref = class {
             ref.in = this._in;
         }
 
-        return { ref };
+        return ref;
     }
 };
 

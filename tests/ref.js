@@ -1,5 +1,7 @@
 'use strict';
 
+const Dust = require('@botbind/dust');
+
 const Lyra = require('../src');
 const Utils = require('./utils');
 
@@ -309,5 +311,36 @@ describe('ref()', () => {
                 },
             },
         ]);
+    });
+
+    it('should describe ancestors', () => {
+        const ref = Lyra.ref('...a');
+        const desc = {
+            ref: 'a',
+            ancestor: 2,
+        };
+
+        expect(Dust.equal(ref.describe(), desc)).toBe(true);
+    });
+
+    it('should describe type', () => {
+        const ref = Lyra.ref('$a');
+        const desc = {
+            ref: 'a',
+            type: 'global',
+        };
+
+        expect(Dust.equal(ref.describe(), desc)).toBe(true);
+    });
+
+    it('should describe in references', () => {
+        const ref = Lyra.in('$a');
+        const desc = {
+            ref: 'a',
+            type: 'global',
+            in: true,
+        };
+
+        expect(Dust.equal(ref.describe(), desc)).toBe(true);
     });
 });

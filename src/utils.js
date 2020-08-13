@@ -66,7 +66,12 @@ exports.settings = function (target, source) {
     Errors = Errors || require('./errors');
 
     const merged = { ...target, ...source };
-    merged.messages = Errors.messages(target.messages, source.messages);
+
+    const messages = Errors.messages(target.messages, source.messages);
+    if (messages) {
+        merged.messages = messages;
+    }
+
     return merged;
 };
 

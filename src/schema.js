@@ -34,27 +34,27 @@ internals.Schema = class {
     }
 
     describe() {
-        const description = { type: this.type, flags: {} };
+        const desc = { type: this.type, flags: {} };
 
         // Valids/invalids
 
         if (this._valids.size) {
-            description.allows = this._valids.describe();
+            desc.allows = this._valids.describe();
         }
 
         if (this._invalids.size) {
-            description.invalids = this._invalids.describe();
+            desc.invalids = this._invalids.describe();
         }
 
         // Settings
 
         if (Object.keys(this._settings).length) {
-            description.settings = Clone(this._settings);
+            desc.settings = Clone(this._settings);
 
-            const messages = description.settings.messages;
+            const messages = desc.settings.messages;
             if (messages) {
                 for (const code of Object.keys(messages)) {
-                    messages[code] = messages[code].describe();
+                    messages[code] = messages[code].describe({ compact: true });
                 }
             }
         }
@@ -66,18 +66,18 @@ internals.Schema = class {
                 continue;
             }
 
-            description.flags[key] = internals.describe(this._flags[key]);
+            desc.flags[key] = internals.describe(this._flags[key]);
         }
 
-        if (!Object.keys(description.flags).length) {
-            delete description.flags;
+        if (!Object.keys(desc.flags).length) {
+            delete desc.flags;
         }
 
         // Rules
 
         for (const { name, args } of this._rules) {
-            if (!description.rules) {
-                description.rules = [];
+            if (!desc.rules) {
+                desc.rules = [];
             }
 
             const rule = { name };
@@ -86,10 +86,10 @@ internals.Schema = class {
                     rule.args = {};
                 }
 
-                rule.args[key] = internals.describe(args[key], { arg: true });
+                rule.args[key] = internals.describe(args[key]);
             }
 
-            description.rules.push(rule);
+            desc.rules.push(rule);
         }
 
         // Terms
@@ -102,7 +102,7 @@ internals.Schema = class {
                 continue;
             }
 
-            Assert(!description[key], 'Cannot generate description for this schema due to internal key conflicts');
+            Assert(!desc[key], 'Cannot generate description for this schema due to internal key conflicts');
 
             const terms = this.$terms[key];
             if (!terms) {
@@ -111,35 +111,35 @@ internals.Schema = class {
 
             if (Utils.isValues(terms)) {
                 if (terms.size) {
-                    description[key] = terms.describe();
+                    desc[key] = terms.describe();
                 }
 
                 continue;
             }
 
             if (!terms.length &&
-                !def.description) {
+                !def.desc) {
 
                 continue;
             }
 
-            const normalized = terms.map(internals.describe);
+            const normalized = terms.map((item) => internals.describe(item));                       // We don't do internals.describe(terms) because the array is not the parent
 
-            if (def.description) {
-                const { key: mapKey, value } = def.description.mapped;
+            if (def.desc) {
+                const { key: mapKey, value } = def.desc.mapped;
 
-                description[key] = {};
-                for (const term of normalized) {
-                    description[key][term[mapKey]] = term[value];
+                desc[key] = {};
+                for (const { value: term } of normalized) {
+                    desc[key][term[mapKey]] = term[value];
                 }
 
                 continue;
             }
 
-            description[key] = normalized;
+            desc[key] = normalized;
         }
 
-        return description;
+        return desc;
     }
 
     clone() {
@@ -634,6 +634,40 @@ internals.presence = function (presence) {
     return presence === 'optional' || presence === 'required' || presence === 'forbidden';
 };
 
-internals.describe = function () {
-    return {};
+internals.describe = function (value, parent = true) {
+    if (value === Utils.symbols.deepDefault) {
+        return { deep: true };
+    }
+
+    if (!IsObject(value)) {
+        return value;
+    }
+
+    if (value instanceof RegExp ||
+        value instanceof Date ||
+        value instanceof Error) {
+
+        return value;
+    }
+
+    if (value[Utils.symbols.callable]) {
+        return { callable: value.fn };
+    }
+
+    if (typeof value.describe === 'function') {
+        return value.describe();
+    }
+
+    let desc;
+    if (Array.isArray(value)) {
+        desc = value.map((item) => internals.describe(item, false));
+    }
+    else {
+        desc = {};
+        for (const key of Object.keys(value)) {
+            desc[key] = internals.describe(value[key], false);
+        }
+    }
+
+    return parent ? { value: desc } : desc;
 };

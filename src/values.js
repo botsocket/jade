@@ -170,21 +170,21 @@ module.exports = internals.Values = class {
     }
 
     describe() {
-        const description = [];
+        const desc = [];
 
         if (this._override) {
-            description.push({ override: true });
+            desc.push({ override: true });
         }
 
         for (const value of this._values) {
-            description.push(typeof value === 'object' ? { value } : value);
+            desc.push(typeof value === 'object' ? { value } : value);
         }
 
         for (const ref of this._refs) {
-            description.push(ref.describe());
+            desc.push(ref.describe());
         }
 
-        return description;
+        return desc;
     }
 
     static add(values, target, other) {
