@@ -6,14 +6,14 @@ const Clone = require('@botbind/dust/src/clone');
 const IsObject = require('@botbind/dust/src/isObject');
 const SplitPath = require('@botbind/dust/src/splitPath');
 
-const Any = require('./any');
+const BaseObject = require('./baseObject');
 const Compile = require('../compile');
 const Extend = require('../extend');
 const Utils = require('../utils');
 
 const internals = {};
 
-module.exports = Extend.schema(Any, {
+module.exports = Extend.schema(BaseObject, {
     type: 'object',
     terms: {
         keys: {
@@ -489,18 +489,6 @@ module.exports = Extend.schema(Any, {
 
                 return internals.dependency(this, peers, 'oxor');
             },
-        },
-    },
-
-    overrides: {
-        default(value, options) {
-
-            if (value === undefined) {
-                const target = this.$super.default(Utils.symbols.deepDefault, options);
-                return target.$rebuild();
-            }
-
-            return this.$super.default(value, options);
         },
     },
 

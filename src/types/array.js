@@ -4,13 +4,13 @@ const Assert = require('@botbind/dust/src/assert');
 const Get = require('@botbind/dust/src/get');
 const Equal = require('@botbind/dust/src/equal');
 
-const Any = require('./any');
+const BaseObject = require('./baseObject');
 const Extend = require('../extend');
 const Utils = require('../utils');
 
 const internals = {};
 
-module.exports = Extend.schema(Any, {
+module.exports = Extend.schema(BaseObject, {
     type: 'array',
     flags: {
         sparse: false,
