@@ -87,11 +87,11 @@ module.exports = Extend.schema(Any, {
 
     validate: (value, { error, state, schema, settings }) => {
 
-        let clone = true;
+        let single = false;
 
         if (!Array.isArray(value)) {
             if (schema.$getFlag('single')) {
-                clone = false;
+                single = true;
                 value = [value];
             }
             else {
@@ -99,17 +99,27 @@ module.exports = Extend.schema(Any, {
             }
         }
 
-        const errors = [];
         const sparse = schema.$getFlag('sparse');
+
+        // No rules to test
+
+        if (!schema.$terms.items.length &&
+            !schema.$terms.ordereds.length &&
+            sparse) {
+
+            return value;
+        }
+
+        // Clone if not single
+
+        if (!single) {
+            value = [...value];
+        }
+
+        const errors = [];
         const ordereds = [...schema.$terms.ordereds];
         const requireds = [...schema.$terms._requireds];
         const inclusions = [...schema.$terms._inclusions, ...schema.$terms._requireds];
-
-        // Shallow clone value
-
-        if (clone) {
-            value = [...value];
-        }
 
         for (let i = 0; i < value.length; i++) {
             const item = value[i];

@@ -91,6 +91,15 @@ describe('array()', () => {
         ]);
     });
 
+    it('should not clone sparse arrays if there are no rules to validate', () => {
+
+        const schema = Lyra.arr().sparse();
+        const arr = [1];
+
+        const result = schema.validate(arr);
+        expect(result.value).toBe(arr);
+    });
+
     describe('items()', () => {
 
         it('should throw on incorrect parameters', () => {

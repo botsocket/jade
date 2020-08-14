@@ -106,7 +106,16 @@ describe('object()', () => {
         ]);
     });
 
-    it('should not clone nested objects recursively if it does not have any rules to validate', () => {
+    it('should not clone if there are no rules to validate', () => {
+
+        const schema = Lyra.obj();
+        const obj = {};
+
+        const result = schema.validate(obj);
+        expect(result.value).toBe(obj);
+    });
+
+    it('should clone shallowly on each depth', () => {
 
         const schema = Lyra.obj({
             a: Lyra.obj(),
@@ -117,8 +126,8 @@ describe('object()', () => {
 
         const a = {};
         const b = { c: 1 };
-        const result = schema.validate({ a, b });
 
+        const result = schema.validate({ a, b });
         expect(result.value.a).toBe(a);
         expect(result.value.b).not.toBe(b);
     });
