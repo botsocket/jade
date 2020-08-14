@@ -635,26 +635,18 @@ internals.Schema = class {
     }
 };
 
+// Signatures
+
 internals.Schema.prototype[Utils.symbols.schema] = true;
 internals.Schema.prototype.immutable = true;
 
-internals.setup = function () {
+// Aliases
 
-    for (const [method, ...aliases] of [
-        ['required', 'exists', 'present'],
-        ['forbidden', 'absent'],
-        ['valid', 'equal', 'is'],
-        ['invalid', 'deny', 'disallow', 'not'],
-        ['settings', 'options'],
-    ]) {
-
-        for (const alias of aliases) {
-            internals.Schema.prototype[alias] = internals.Schema.prototype[method];
-        }
-    }
-};
-
-internals.setup();
+internals.Schema.prototype.present = internals.Schema.prototype.exists = internals.Schema.prototype.required;
+internals.Schema.prototype.absent = internals.Schema.prototype.forbidden;
+internals.Schema.prototype.is = internals.Schema.prototype.equal = internals.Schema.prototype.valid;
+internals.Schema.prototype.not = internals.Schema.prototype.disallow = internals.Schema.prototype.deny = internals.Schema.prototype.invalid;
+internals.Schema.prototype.options = internals.Schema.prototype.settings;
 
 module.exports = new internals.Schema();
 
