@@ -1,6 +1,6 @@
 {
-    "name": "@botbind/lyra",
-    "version": "3.0.2",
+    "name": "@botsocket/jade",
+    "version": "1.0.0",
     "description": "A robust and powerful data validator",
     "main": "src/index.js",
     "types": "src/index.d.ts",
@@ -9,19 +9,16 @@
     ],
     "repository": {
         "type": "git",
-        "url": "git+https://github.com/botbind/lyra.git"
+        "url": "git+https://github.com/botsocket/jade.git"
     },
-    "author": "Bot Bind's Team",
+    "author": "BotSocket",
     "license": "MIT",
     "bugs": {
-        "url": "https://github.com/botbind/lyra/issues"
+        "url": "https://github.com/botsocket/jade/issues"
     },
-    "homepage": "https://github.com/botbind/lyra#readme",
+    "homepage": "https://github.com/botsocket/jade#readme",
     "scripts": {
-        "lint": "eslint . --report-unused-disable-directives && echo \"No errors found\"",
-        "lint:fix": "eslint . --fix && echo \"No errors found\"",
-        "test": "jest --coverage && tsc && npm run lint && echo \"No errors found\"",
-        "test:watch": "jest --watchAll"
+        "test": "jest --coverage && echo \"All tests passed\" && tsc && echo \"All type tests passed\" && eslint . --report-unused-disable-directives && echo \"No linting errors\""
     },
     "devDependencies": {
         "@hapi/eslint-plugin-hapi": "^4.3.5",
@@ -31,9 +28,9 @@
         "typescript": "^3.8.3"
     },
     "dependencies": {
-        "@botbind/constellation": "^7.0.1",
-        "@botbind/dust": "^14.0.0",
-        "@botbind/template": "^5.0.1"
+        "@botsocket/topaz": "^1.0.0",
+        "@botsocket/bone": "^1.0.0",
+        "@botsocket/copal": "^1.0.0"
     },
     "engines": {
         "node": ">=12.0.0"

@@ -1,8 +1,8 @@
 'use strict';
 
-const Assert = require('@botbind/dust/src/assert');
-const Get = require('@botbind/dust/src/get');
-const Equal = require('@botbind/dust/src/equal');
+const Assert = require('@botsocket/bone/src/assert');
+const Get = require('@botsocket/bone/src/get');
+const Equal = require('@botsocket/bone/src/equal');
 
 const BaseObject = require('./baseObject');
 const Extend = require('../extend');

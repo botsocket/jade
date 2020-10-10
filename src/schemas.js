@@ -1,105 +1,105 @@
 'use strict';
 
-const Lyra = require('.');
+const Jade = require('.');
 
 const internals = {
     nameRx: /^[\w-]+$/,
 };
 
-exports.extensions = Lyra.arr(Lyra.obj(), Lyra.fn()).min(1);
+exports.extensions = Jade.arr(Jade.obj(), Jade.fn()).min(1);
 
-internals.rule = Lyra.obj({
-    method: Lyra.fn().allow(false),
-    alias: Lyra.arr(Lyra.str())
+internals.rule = Jade.obj({
+    method: Jade.fn().allow(false),
+    alias: Jade.arr(Jade.str())
         .single()
         .when('method', {
-            is: Lyra.absent(),
-            then: Lyra.forbidden(),
+            is: Jade.absent(),
+            then: Jade.forbidden(),
         }),
-    validate: Lyra.fn().when('method', {
-        is: Lyra.alt(
+    validate: Jade.fn().when('method', {
+        is: Jade.alt(
             false,
-            Lyra.absent(),
+            Jade.absent(),
         ),
-        then: Lyra.required(),
+        then: Jade.required(),
     }),
-    single: Lyra.bool(),
-    convert: Lyra.bool(),
-    args: Lyra.alt(
-        Lyra.arr(Lyra.str()),
-        Lyra.obj().pattern(internals.nameRx, {
-            normalize: Lyra.fn(),
-            ref: Lyra.bool(),
-            assert: Lyra.alt(
-                Lyra.obj().schema(),
-                Lyra.fn(),
+    single: Jade.bool(),
+    convert: Jade.bool(),
+    args: Jade.alt(
+        Jade.arr(Jade.str()),
+        Jade.obj().pattern(internals.nameRx, {
+            normalize: Jade.fn(),
+            ref: Jade.bool(),
+            assert: Jade.alt(
+                Jade.obj().schema(),
+                Jade.fn(),
             )
                 .when('ref', {
                     is: true,
-                    then: Lyra.required(),
+                    then: Jade.required(),
                 }),
-            message: Lyra.str().when('assert', {
-                is: Lyra.fn().required(),
-                then: Lyra.required(),
-                else: Lyra.forbidden(),
+            message: Jade.str().when('assert', {
+                is: Jade.fn().required(),
+                then: Jade.required(),
+                else: Jade.forbidden(),
             }),
         }),
     ),
 })
     .when('.validate', {
-        is: Lyra.absent(),
+        is: Jade.absent(),
         then: {
-            single: Lyra.forbidden(),
-            convert: Lyra.forbidden(),
-            args: Lyra.forbidden(),
+            single: Jade.forbidden(),
+            convert: Jade.forbidden(),
+            args: Jade.forbidden(),
         },
     });
 
-exports.extension = Lyra.obj({
-    type: Lyra.alt(
-        Lyra.arr(Lyra.str()).single(),
-        Lyra.obj().regex(),
+exports.extension = Jade.obj({
+    type: Jade.alt(
+        Jade.arr(Jade.str()).single(),
+        Jade.obj().regex(),
     )
         .required(),
-    alias: Lyra.arr(Lyra.str()).single(),
-    from: Lyra.obj().schema(),
-    flags: Lyra.obj().pattern(internals.nameRx, Lyra.required()),
-    messages: Lyra.obj().pattern(Lyra.str(), Lyra.alt(
-        Lyra.str(),
-        Lyra.obj().template(),
+    alias: Jade.arr(Jade.str()).single(),
+    from: Jade.obj().schema(),
+    flags: Jade.obj().pattern(internals.nameRx, Jade.required()),
+    messages: Jade.obj().pattern(Jade.str(), Jade.alt(
+        Jade.str(),
+        Jade.obj().template(),
     )),
-    terms: Lyra.obj().pattern(internals.nameRx, {
-        default: Lyra.alt(
-            Lyra.arr(),
-            Lyra.obj().values(),
+    terms: Jade.obj().pattern(internals.nameRx, {
+        default: Jade.alt(
+            Jade.arr(),
+            Jade.obj().values(),
             null,
         )
             .required(),
-        merge: Lyra.fn(),
-        desc: Lyra.obj({
-            mapped: Lyra.obj({
-                from: Lyra.str().required(),
-                to: Lyra.str().required(),
+        merge: Jade.fn(),
+        desc: Jade.obj({
+            mapped: Jade.obj({
+                from: Jade.str().required(),
+                to: Jade.str().required(),
             })
                 .required(),
         }),
-        register: Lyra.num(),
+        register: Jade.num(),
     }),
-    args: Lyra.fn(),
-    rebuild: Lyra.fn(),
-    coerce: Lyra.fn(),
-    validate: Lyra.fn(),
-    rules: Lyra.obj().pattern(internals.nameRx, internals.rule),
-    overrides: Lyra.obj().pattern(internals.nameRx, Lyra.fn()),
-    casts: Lyra.obj().pattern(internals.nameRx, Lyra.fn()),
+    args: Jade.fn(),
+    rebuild: Jade.fn(),
+    coerce: Jade.fn(),
+    validate: Jade.fn(),
+    rules: Jade.obj().pattern(internals.nameRx, internals.rule),
+    overrides: Jade.obj().pattern(internals.nameRx, Jade.fn()),
+    casts: Jade.obj().pattern(internals.nameRx, Jade.fn()),
 })
     .when('.type', {
-        is: Lyra.alt(
-            Lyra.arr().min(2),
-            Lyra.obj().regex(),
+        is: Jade.alt(
+            Jade.arr().min(2),
+            Jade.obj().regex(),
         ),
         then: {
-            alias: Lyra.forbidden(),
-            from: Lyra.forbidden(),
+            alias: Jade.forbidden(),
+            from: Jade.forbidden(),
         },
     });

@@ -1,23 +1,23 @@
 'use strict';
 
-const Dust = require('@botbind/dust');
+const Bone = require('@botsocket/bone');
 
-const Lyra = require('../src');
+const Jade = require('../src');
 const Utils = require('./utils');
 
 describe('ref()', () => {
 
     it('should throw on incorrect parameters', () => {
 
-        expect(() => Lyra.ref(1)).toThrow('Path must be a string');
-        expect(() => Lyra.ref('x', { ancestor: 'x' })).toThrow('Option ancestor must be a number');
-        expect(() => Lyra.ref('...x', { ancestor: 0 })).toThrow('Cannot use both the ancestor option with the ancestor prefix');
+        expect(() => Jade.ref(1)).toThrow('Path must be a string');
+        expect(() => Jade.ref('x', { ancestor: 'x' })).toThrow('Option ancestor must be a number');
+        expect(() => Jade.ref('...x', { ancestor: 0 })).toThrow('Cannot use both the ancestor option with the ancestor prefix');
     });
 
     it('should resolve siblings', () => {
 
-        const ref = Lyra.ref('b');
-        const schema = Lyra.obj({
+        const ref = Jade.ref('b');
+        const schema = Jade.obj({
             a: ref,
             b: 'x',
         });
@@ -37,8 +37,8 @@ describe('ref()', () => {
 
     it('should resolve ancestors', () => {
 
-        const ref = Lyra.ref('...a');
-        const schema = Lyra.obj({
+        const ref = Jade.ref('...a');
+        const schema = Jade.obj({
             a: 'x',
             b: {
                 c: ref,
@@ -60,8 +60,8 @@ describe('ref()', () => {
 
     it('should resolve ancestors with ancestor option', () => {
 
-        const ref = Lyra.ref('a', { ancestor: 2 });
-        const schema = Lyra.obj({
+        const ref = Jade.ref('a', { ancestor: 2 });
+        const schema = Jade.obj({
             a: 'x',
             b: {
                 c: ref,
@@ -83,8 +83,8 @@ describe('ref()', () => {
 
     it('should resolve global', () => {
 
-        const ref = Lyra.ref('$a.b');
-        const schema = Lyra.obj({
+        const ref = Jade.ref('$a.b');
+        const schema = Jade.obj({
             a: ref,
         });
 
@@ -103,9 +103,9 @@ describe('ref()', () => {
 
     it('should resolve self', () => {
 
-        const ref = Lyra.ref('.a');
-        const schema = Lyra.obj({
-            a: Lyra.num(),
+        const ref = Jade.ref('.a');
+        const schema = Jade.obj({
+            a: Jade.num(),
         })
             .min(ref)
             .unknown();
@@ -125,10 +125,10 @@ describe('ref()', () => {
 
     it('should support in references for arrays', () => {
 
-        const ref = Lyra.in('b');
-        const schema = Lyra.obj({
+        const ref = Jade.in('b');
+        const schema = Jade.obj({
             a: ref,
-            b: Lyra.arr(Lyra.str()),
+            b: Jade.arr(Jade.str()),
         });
 
         Utils.validate(schema, [
@@ -160,8 +160,8 @@ describe('ref()', () => {
 
     it('should support in reference for objects', () => {
 
-        const ref = Lyra.in('b');
-        const schema = Lyra.obj({
+        const ref = Jade.in('b');
+        const schema = Jade.obj({
             a: ref,
             b: { x: 'x', y: 'y' },
         });
@@ -214,8 +214,8 @@ describe('ref()', () => {
 
     it('should treat in references as normal if resolved value is not an object', () => {
 
-        const ref = Lyra.in('b');
-        const schema = Lyra.obj({
+        const ref = Jade.in('b');
+        const schema = Jade.obj({
             a: ref,
             b: 'x',
         });
@@ -235,10 +235,10 @@ describe('ref()', () => {
 
     it('should support deep in references', () => {
 
-        const ref = Lyra.in('b.*.a');
-        const schema = Lyra.obj({
+        const ref = Jade.in('b.*.a');
+        const schema = Jade.obj({
             a: ref,
-            b: Lyra.arr({ a: Lyra.str() }),
+            b: Jade.arr({ a: Jade.str() }),
         });
 
         Utils.validate(schema, [
@@ -275,10 +275,10 @@ describe('ref()', () => {
 
     it('should support insensitive in references', () => {
 
-        const ref = Lyra.in('b');
-        const schema = Lyra.obj({
-            a: Lyra.bool().truthy(ref).insensitive().convert(),
-            b: Lyra.arr(Lyra.str()),
+        const ref = Jade.in('b');
+        const schema = Jade.obj({
+            a: Jade.bool().truthy(ref).insensitive().convert(),
+            b: Jade.arr(Jade.str()),
         });
 
         Utils.validate(schema, [
@@ -297,8 +297,8 @@ describe('ref()', () => {
 
     it('should throw when ancestor is outside of schema', () => {
 
-        const schema = Lyra.obj({
-            a: Lyra.ref('...c'),
+        const schema = Jade.obj({
+            a: Jade.ref('...c'),
         });
 
         expect(() => schema.validate({ a: 1 })).toThrow('Reference to "...c" exceeds the schema root');
@@ -306,8 +306,8 @@ describe('ref()', () => {
 
     it('should ignore prefixes if prefix is set to false', () => {
 
-        const ref = Lyra.ref('#a.b', { prefix: false });
-        const schema = Lyra.obj({
+        const ref = Jade.ref('#a.b', { prefix: false });
+        const schema = Jade.obj({
             a: ref,
             '#a': {
                 b: 'x',
@@ -329,35 +329,35 @@ describe('ref()', () => {
 
     it('should describe ancestors', () => {
 
-        const ref = Lyra.ref('...a');
+        const ref = Jade.ref('...a');
         const desc = {
             ref: 'a',
             ancestor: 2,
         };
 
-        expect(Dust.equal(ref.describe(), desc)).toBe(true);
+        expect(Bone.equal(ref.describe(), desc)).toBe(true);
     });
 
     it('should describe type', () => {
 
-        const ref = Lyra.ref('$a');
+        const ref = Jade.ref('$a');
         const desc = {
             ref: 'a',
             type: 'global',
         };
 
-        expect(Dust.equal(ref.describe(), desc)).toBe(true);
+        expect(Bone.equal(ref.describe(), desc)).toBe(true);
     });
 
     it('should describe in references', () => {
 
-        const ref = Lyra.in('$a');
+        const ref = Jade.in('$a');
         const desc = {
             ref: 'a',
             type: 'global',
             in: true,
         };
 
-        expect(Dust.equal(ref.describe(), desc)).toBe(true);
+        expect(Bone.equal(ref.describe(), desc)).toBe(true);
     });
 });

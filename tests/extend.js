@@ -1,15 +1,15 @@
 'use strict';
 
-const Lyra = require('../src');
+const Jade = require('../src');
 const Utils = require('./utils');
 
 describe('extend()', () => {
 
     it('should extend an existing type and its alias implicitly', () => {
 
-        const custom = Lyra.extend({
+        const custom = Jade.extend({
             type: 'string',
-            from: Lyra.str(),
+            from: Jade.str(),
 
             rules: {
                 special: {
@@ -41,10 +41,10 @@ describe('extend()', () => {
 
     it('should extend an existing type with aliases', () => {
 
-        const custom = Lyra.extend({
+        const custom = Jade.extend({
             type: 'string',
             alias: ['str', 'x'],
-            from: Lyra.str(),
+            from: Jade.str(),
 
             rules: {
                 special: {
@@ -91,12 +91,12 @@ describe('extend()', () => {
 
     it('should throw if provide an invalid type/alias', () => {
 
-        expect(() => Lyra.extend({ type: 'ref' })).toThrow('Invalid extension ref');
-        expect(() => Lyra.extend({ type: 'x', alias: 'string' })).toThrow('Invalid alias string');
-        expect(() => Lyra.extend({ type: 'x', alias: ['y', 'string'] })).toThrow('Invalid alias string');
-        expect(() => Lyra.extend({ type: 'special', alias: 'special' })).toThrow('Invalid alias special');
+        expect(() => Jade.extend({ type: 'ref' })).toThrow('Invalid extension ref');
+        expect(() => Jade.extend({ type: 'x', alias: 'string' })).toThrow('Invalid alias string');
+        expect(() => Jade.extend({ type: 'x', alias: ['y', 'string'] })).toThrow('Invalid alias string');
+        expect(() => Jade.extend({ type: 'special', alias: 'special' })).toThrow('Invalid alias special');
 
-        const custom = Lyra.extend({ type: 'x', alias: 'y' });
+        const custom = Jade.extend({ type: 'x', alias: 'y' });
 
         expect(() => custom.extend({ type: 'z', alias: 'x' })).toThrow('Invalid alias x');
         expect(() => custom.extend({ type: 'y' })).not.toThrow();
@@ -104,9 +104,9 @@ describe('extend()', () => {
 
     it('should extend an alias to a different type', () => {
 
-        const custom = Lyra.extend({
+        const custom = Jade.extend({
             type: 'bool',
-            from: Lyra.num(),
+            from: Jade.num(),
         });
 
         const a = custom.bool();
@@ -156,17 +156,17 @@ describe('extend()', () => {
 
     it('should throw if from or alias is provided on multiple types', () => {
 
-        expect(() => Lyra.extend({ type: ['string', 'number'], from: Lyra.str() })).toThrow('from is forbidden');
-        expect(() => Lyra.extend({ type: ['string'], from: Lyra.str() })).not.toThrow();
-        expect(() => Lyra.extend({ type: /^s/, from: Lyra.str() })).toThrow('from is forbidden');
+        expect(() => Jade.extend({ type: ['string', 'number'], from: Jade.str() })).toThrow('from is forbidden');
+        expect(() => Jade.extend({ type: ['string'], from: Jade.str() })).not.toThrow();
+        expect(() => Jade.extend({ type: /^s/, from: Jade.str() })).toThrow('from is forbidden');
 
-        expect(() => Lyra.extend({ type: ['string', 'number'], alias: 'combo' })).toThrow('alias is forbidden');
-        expect(() => Lyra.extend({ type: /^s/, alias: 'combo' })).toThrow('alias is forbidden');
+        expect(() => Jade.extend({ type: ['string', 'number'], alias: 'combo' })).toThrow('alias is forbidden');
+        expect(() => Jade.extend({ type: /^s/, alias: 'combo' })).toThrow('alias is forbidden');
     });
 
     it('should extend multiple types', () => {
 
-        const custom = Lyra.extend({
+        const custom = Jade.extend({
             type: ['any', 'string', 'number'],
 
             rules: {
@@ -215,7 +215,7 @@ describe('extend()', () => {
 
     it('should extend multiple types using regular expressions', () => {
 
-        const custom = Lyra.extend({
+        const custom = Jade.extend({
             type: /^a/,
 
             rules: {
@@ -248,9 +248,9 @@ describe('extend()', () => {
 
     it('should extend a complex base', () => {
 
-        const custom = Lyra.extend({
+        const custom = Jade.extend({
             type: 'test',
-            from: Lyra.arr(Lyra.str().required()),
+            from: Jade.arr(Jade.str().required()),
         });
 
         const schema = custom.test();
@@ -278,9 +278,9 @@ describe('extend()', () => {
 
     it('should extend coerce', () => {
 
-        const custom = Lyra.extend({
+        const custom = Jade.extend({
             type: 'string',
-            from: Lyra.str(),
+            from: Jade.str(),
             messages: {
                 'string.coerce': 'Must not be a boolean',
             },
@@ -318,9 +318,9 @@ describe('extend()', () => {
 
     it('should extend validate', () => {
 
-        const custom = Lyra.extend({
+        const custom = Jade.extend({
             type: 'object',
-            from: Lyra.obj(),
+            from: Jade.obj(),
             messages: {
                 'object.date': 'Must not be a date',
             },
@@ -360,9 +360,9 @@ describe('extend()', () => {
 
     it('should extend rebuild', () => {
 
-        const custom = Lyra.extend({
+        const custom = Jade.extend({
             type: 'object',
-            from: Lyra.obj(),
+            from: Jade.obj(),
 
             rebuild: (schema) => {
 
@@ -387,8 +387,8 @@ describe('extend()', () => {
 
         const schema = custom
             .obj({
-                a: Lyra.valid('x'),
-                b: Lyra.num(),
+                a: Jade.valid('x'),
+                b: Jade.num(),
             })
             .stripAll();
 
@@ -405,9 +405,9 @@ describe('extend()', () => {
 
     it('should extend overrides', () => {
 
-        const custom = Lyra.extend({
+        const custom = Jade.extend({
             type: 'object',
-            from: Lyra.obj(),
+            from: Jade.obj(),
 
             overrides: {
                 length(limit) {
@@ -439,9 +439,9 @@ describe('extend()', () => {
 
         expect(() => {
 
-            Lyra.extend({
+            Jade.extend({
                 type: 'object',
-                from: Lyra.obj(),
+                from: Jade.obj(),
 
                 overrides: {
                     someUnknownMethod() {
@@ -455,9 +455,9 @@ describe('extend()', () => {
 
     it('should extend args', () => {
 
-        const custom = Lyra.extend({
+        const custom = Jade.extend({
             type: 'array',
-            from: Lyra.arr(),
+            from: Jade.arr(),
 
             args: (schema, ...items) => {
 
@@ -482,9 +482,9 @@ describe('extend()', () => {
 
     it('should override flags', () => {
 
-        const custom = Lyra.extend({
+        const custom = Jade.extend({
             type: 'string',
-            from: Lyra.str(),
+            from: Jade.str(),
 
             flags: {
                 trim: true,
@@ -503,11 +503,11 @@ describe('extend()', () => {
 
     it('should extend messages with templates', () => {
 
-        const custom = Lyra.extend({
+        const custom = Jade.extend({
             type: 'number',
-            from: Lyra.num(),
+            from: Jade.num(),
             messages: {
-                'number.base': Lyra.template('{$label} is not good enough!'),
+                'number.base': Jade.template('{$label} is not good enough!'),
             },
         });
 
@@ -527,7 +527,7 @@ describe('extend()', () => {
 
     it('should properly merge values terms', () => {
 
-        const custom = Lyra.extend({
+        const custom = Jade.extend({
             type: 'test',
             terms: {
                 x: { default: null },
@@ -555,7 +555,7 @@ describe('extend()', () => {
 
                         const target = this.clone();
 
-                        target.$terms.x = target.$terms.x || Lyra.values();
+                        target.$terms.x = target.$terms.x || Jade.values();
                         target.$terms.x.add(x);
                         return target;
                     },
@@ -607,7 +607,7 @@ describe('extend()', () => {
 
         const Semver = require('semver');
 
-        const custom = Lyra.extend((root) => ({
+        const custom = Jade.extend((root) => ({
             type: 'semver',
             from: root.str(),
             flags: {
@@ -830,9 +830,9 @@ describe('extend()', () => {
 
         expect(() => {
 
-            Lyra.extend({
+            Jade.extend({
                 type: 'object',
-                from: Lyra.obj(),
+                from: Jade.obj(),
 
                 terms: {
                     keys: { default: ['x'] },
@@ -845,9 +845,9 @@ describe('extend()', () => {
 
         expect(() => {
 
-            Lyra.extend({
+            Jade.extend({
                 type: 'number',
-                from: Lyra.num(),
+                from: Jade.num(),
 
                 rules: {
                     max: {
@@ -865,7 +865,7 @@ describe('extend()', () => {
 
         expect(() => {
 
-            Lyra.extend({
+            Jade.extend({
                 type: 'test',
                 terms: {
                     value: { default: 1 },
@@ -878,7 +878,7 @@ describe('extend()', () => {
 
         expect(() => {
 
-            Lyra.extend({
+            Jade.extend({
                 type: 'test',
                 rules: {
                     special: {},
@@ -891,7 +891,7 @@ describe('extend()', () => {
 
         expect(() => {
 
-            Lyra.extend({
+            Jade.extend({
                 type: 'test',
                 rules: {
                     special: {
@@ -904,9 +904,9 @@ describe('extend()', () => {
 
     it('should throw on missing error codes', () => {
 
-        const custom = Lyra.extend({
+        const custom = Jade.extend({
             type: 'test',
-            from: Lyra.str(),
+            from: Jade.str(),
 
             rules: {
                 special: {
@@ -927,9 +927,9 @@ describe('extend()', () => {
 
         it('should not allow passing custom labels', () => {
 
-            const custom = Lyra.extend({
+            const custom = Jade.extend({
                 type: 'string',
-                from: Lyra.str(),
+                from: Jade.str(),
 
                 rules: {
                     special: {

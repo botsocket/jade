@@ -2,39 +2,39 @@
 
 ## Introduction
 
-Lyra is a robust and powerful data validator. It uses a human-readable language heavily inspired by `@hapi/joi` to compose complex and reusable schemas.
+Jade is a robust and powerful data validator. It uses a human-readable language heavily inspired by `@hapi/joi` to compose complex and reusable schemas.
 
 ## Installation
 
-Lyra is available on npm:
+Jade is available on npm:
 
 ```bash
-npm install @botbind/lyra
+npm install @botsocket/jade
 ```
 
 ## Usage
 
 ```js
-const Lyra = require('@botbind/lyra');
+const Jade = require('@botsocket/jade');
 
-const schema = Lyra.object({
-    username: Lyra.string().alphanum().min(5).max(30).required(),
-    email: Lyra.string().email().required(),
-    dob: Lyra.date().max('now').required(),
-    password: Lyra.string()
+const schema = Jade.object({
+    username: Jade.string().alphanum().min(5).max(30).required(),
+    email: Jade.string().email().required(),
+    dob: Jade.date().max('now').required(),
+    password: Jade.string()
         .pattern(/^[a-zA-Z0-9@]{5,30}$/)
         .required(),
-    repeatPassword: Lyra.ref('password'),
+    repeatPassword: Jade.ref('password'),
 })
     .xor('username', 'email')
     .required();
 
 schema.validate({
-    username: 'BotBind',
-    email: 'example@botbind.com',
+    username: 'BotSocket',
+    email: 'example@botsocket.com',
     dob: '01/01/2020',
-    password: 'BotBindIsAwesome',
-    repeatPassword: 'BotBindIsAwesome',
+    password: 'BotSocketIsAwesome',
+    repeatPassword: 'BotSocketIsAwesome',
 });
 ```
 
@@ -56,22 +56,22 @@ A schema must be constructed prior to validation. The one in the above example d
 -   `repeatPassword`:
     -   Must equal to `password`.
 
-Note that Lyra's schemas are immutable and will be cloned whenever additional rules are specified:
+Note that Jade's schemas are immutable and will be cloned whenever additional rules are specified:
 
 ```js
-const schema = Lyra.number();
+const schema = Jade.number();
 const schema2 = schema.min(1);
 
 schema === schema2; // false
 ```
 
-Lyra returns an object representing the result of a validation once it finishes where:
+Jade returns an object representing the result of a validation once it finishes where:
 
 -   `value`: The modified value. Not provided if validation fails.
 -   `errors`: An array of validation errors. Not provided if validation succeeds.
 
 ```js
-const schema = Lyra.string().uppercase();
+const schema = Jade.string().uppercase();
 let result = schema.validate('a', { strict: false });
 
 result; // { value: 'A' }
@@ -198,12 +198,12 @@ Creates a new template where:
 -   `source`: The source of the template.
 -   `options`: Optional options passed to [references](#refpath-options).
 
-Templates perform complex evaluation of references at validation-time. The syntax is documented [here](#https://github.com/botbind/template/blob/master/Documentation.md#parsesource-options).
+Templates perform complex evaluation of references at validation-time. The syntax is documented [here](#https://github.com/botsocket/copal/blob/master/Documentation.md#parsesource-options).
 
 ```js
-const schema = Lyra.object({
-    a: Lyra.string(),
-    b: Lyra.valid(Lyra.template('This is {a}')),
+const schema = Jade.object({
+    a: Jade.string(),
+    b: Jade.valid(Jade.template('This is {a}')),
 });
 
 schema.validate({
@@ -220,9 +220,9 @@ schema.validate({
 With expressions:
 
 ```js
-const schema = Lyra.object({
-    a: Lyra.number(),
-    b: Lyra.valid(Lyra.template('{a + 1}')),
+const schema = Jade.object({
+    a: Jade.number(),
+    b: Jade.valid(Jade.template('{a + 1}')),
 });
 
 schema.validate({
@@ -251,8 +251,8 @@ Creates a new reference where:
 By default, a reference is relative to its parent:
 
 ```js
-const schema = Lyra.object({
-    a: Lyra.ref('b'),
+const schema = Jade.object({
+    a: Jade.ref('b'),
     b: 'x',
 });
 
@@ -270,10 +270,10 @@ schema.validate({
 To reference uncle nodes, use the ancestor notation:
 
 ```js
-const schema = Lyra.object({
+const schema = Jade.object({
     a: 'x',
     b: {
-        c: Lyra.ref('...a'),
+        c: Jade.ref('...a'),
     },
 });
 
@@ -303,10 +303,10 @@ The notation is interpreted as follows:
 The `ancestor` option can also be used:
 
 ```js
-const schema = Lyra.object({
+const schema = Jade.object({
     a: 'x',
     b: {
-        c: Lyra.ref('a', { ancestor: 2 }),
+        c: Jade.ref('a', { ancestor: 2 }),
     },
 });
 
@@ -335,8 +335,8 @@ schema.validate({
 In addition to referencing values, you can also reference global context provided via [`any.validate()`](#anyvalidationvalue-options) and local context (only in error messages).
 
 ```js
-const schema = Lyra.object({
-    a: Lyra.ref('$a.b'),
+const schema = Jade.object({
+    a: Jade.ref('$a.b'),
 });
 
 schema.validate({ a: 'x' }, {
@@ -364,9 +364,9 @@ Creates an in reference that resolves to array items and object keys where:
 Note that if the created reference does not point to an array or object, it will behave like a normal reference.
 
 ```js
-const schema = Lyra.object({
-    a: Lyra.in('b'),
-    b: Lyra.array(Lyra.string()),
+const schema = Jade.object({
+    a: Jade.in('b'),
+    b: Jade.array(Jade.string()),
 });
 
 schema.validate({
@@ -388,9 +388,9 @@ schema.validate({
 Example using [`object.pattern()`](#objectpatternkey-value):
 
 ```js
-const schema = Lyra.object({
-    a: Lyra.array(Lyra.string()),
-    b: Lyra.object().pattern(Lyra.in('a'), Lyra.string()),
+const schema = Jade.object({
+    a: Jade.array(Jade.string()),
+    b: Jade.object().pattern(Jade.in('a'), Jade.string()),
 });
 
 schema.validate({
@@ -421,9 +421,9 @@ schema.validate({
 Deep in reference:
 
 ```js
-const schema = Lyra.object({
-    a: Lyra.in('b.*.a'),
-    b: Lyra.array().items({ a: Lyra.string() }),
+const schema = Jade.object({
+    a: Jade.in('b.*.a'),
+    b: Jade.array().items({ a: Jade.string() }),
 });
 
 schema.validate({
@@ -446,55 +446,55 @@ schema.validate({
 
 ### `isSchema(value)`
 
-Checks if a value is a valid Lyra's schema where:
+Checks if a value is a valid Jade's schema where:
 
 -   `value`: The value to check.
 
 ```js
-Lyra.isSchema(Lyra.number()); // true
-Lyra.isSchema(null); // false
+Jade.isSchema(Jade.number()); // true
+Jade.isSchema(null); // false
 ```
 
 [Back to top](#api)
 
 ### `isRef(value)`
 
-Checks if a value is a valid Lyra's reference where:
+Checks if a value is a valid Jade's reference where:
 
 -   `value`: The value to check.
 
 ```js
-Lyra.isRef(Lyra.ref('x')); // true
-Lyra.isRef(null); // false
+Jade.isRef(Jade.ref('x')); // true
+Jade.isRef(null); // false
 ```
 
 [Back to top](#api)
 
 ### `isTemplate(value)`
 
-Checks if a value is valid Lyra's template where:
+Checks if a value is valid Jade's template where:
 
 -   `value`: The value to check.
 
 ```js
-Lyra.isTemplate(Lyra.template('x')); // true
-Lyra.isTemplate(null); // false
+Jade.isTemplate(Jade.template('x')); // true
+Jade.isTemplate(null); // false
 ```
 
 [Back to top](#api)
 
 ### `isResolvable(value)`
 
-Checks if a value is a valid Lyra's reference or [template](#templatesource-options) where:
+Checks if a value is a valid Jade's reference or [template](#templatesource-options) where:
 
 -   `value`: The value to check.
 
-Equivalent to `Lyra.isRef(value) || Lyra.isTemplate(value)`.
+Equivalent to `Jade.isRef(value) || Jade.isTemplate(value)`.
 
 ```js
-Lyra.isResolvable(Lyra.ref('x')); // true
-Lyra.isResolvable(Lyra.template('x')); // true
-Lyra.isResolvable(null); // false
+Jade.isResolvable(Jade.ref('x')); // true
+Jade.isResolvable(Jade.template('x')); // true
+Jade.isResolvable(null); // false
 ```
 
 [Back to top](#api)
@@ -514,9 +514,9 @@ const validateFn = function (value) {
     throw new Error('Invalid');
 };
 
-const schema = Lyra.compile({
+const schema = Jade.compile({
     a: 'x',
-    b: [Lyra.ref('a'), 1],
+    b: [Jade.ref('a'), 1],
     c: /^abc$/,
     d: validateFn,
     e: {
@@ -526,13 +526,13 @@ const schema = Lyra.compile({
 
 // Is equivalent to
 
-const schema2 = Lyra.object({
-    a: Lyra.any().valid(Lyra.override, 'x'),
-    b: Lyra.any().valid(Lyra.override, ref, 1),
-    c: Lyra.string().pattern(/^abc$/),
-    d: Lyra.any().rule(validateFn),
-    e: Lyra.object({
-        f: Lyra.any().valid(Lyra.override, 1),
+const schema2 = Jade.object({
+    a: Jade.any().valid(Jade.override, 'x'),
+    b: Jade.any().valid(Jade.override, ref, 1),
+    c: Jade.string().pattern(/^abc$/),
+    d: Jade.any().rule(validateFn),
+    e: Jade.object({
+        f: Jade.any().valid(Jade.override, 1),
     }),
 });
 ```
@@ -543,7 +543,7 @@ const schema2 = Lyra.object({
 
 **Note:** Due to the complexity of the extension system, only a few options are documented. Please open an issue if you need help extending your schemas.
 
-Extends the default Lyra instance to include new types where:
+Extends the default Jade instance to include new types where:
 
 -   `extensions`: An array of extension objects or factory functions of signature `function (root) {}` generating extension objects where:
     -   `type`: The type of the extension. Can be a string, an array of strings or a regular expression matching the desired types.
@@ -581,8 +581,8 @@ Schema supports the following extension methods:
 -   `$isType`: A function of signature `function (type) {}` that checks if the schema is extended from the specified type.
 
 ```js
-Lyra.object().$isType('any'); // true
-Lyra.object().type === 'any'; // false
+Jade.object().$isType('any'); // true
+Jade.object().type === 'any'; // false
 ```
 
 -   `$compile`: A function of signature `function (value) {}` that compiles a literal to a schema. Similar to (but not exactly the same) [`compile()`](#compilevalue).
@@ -622,10 +622,10 @@ If you need to deal with references, you can resolve them by calling `resolve(va
 The following example demonstrates how the string schema can be extended to validate semantic versions using the `semver` module:
 
 ```js
-const Lyra = require('@botbind/lyra');
+const Jade = require('@botsocket/jade');
 const Semver = require('semver');
 
-const custom = Lyra.extend((root) => ({
+const custom = Jade.extend((root) => ({
     type: 'semver',
     from: root.string(),
     flags: {
@@ -763,9 +763,9 @@ const f = custom.obj({
 Complex schemas can also be extended:
 
 ```js
-const custom = Lyra.extend({
+const custom = Jade.extend({
     type: 'myComplexArray',
-    from: Lyra.array().items(Lyra.string().required()),
+    from: Jade.array().items(Jade.string().required()),
 });
 
 const schema = custom.myComplexArray();
@@ -781,54 +781,54 @@ schema.validate([]); // unknown does not have 1 required value
 Signifies [`any.valid()`](#anyvalidvalues), [`any.allow()`](#anyallowvalues), [`any.invalid()`](#anyinvalidvalues), [`boolean.truthy()`](#booleantruthyvalues) and [`boolean.falsy()`](#booleanfalsyvalues) to override any previously registered values.
 
 ```js
-const schema = Lyra.valid('x').valid(Lyra.override, 'y');
+const schema = Jade.valid('x').valid(Jade.override, 'y');
 
 schema.validate('x'); // unknown must be y
 schema.validate('y'); // Pass
 ```
 
-Note that `Lyra.override` must be provided as the first value.
+Note that `Jade.override` must be provided as the first value.
 
 [Back to top](#api)
 
 ### Shortcuts
 
-Lyra offers a few shortcuts for [`any()`](#any) methods to increase readability when building complex schemas:
+Jade offers a few shortcuts for [`any()`](#any) methods to increase readability when building complex schemas:
 
 ```js
-Lyra.allow(); // Equivalent to Lyra.any().allow()
+Jade.allow(); // Equivalent to Jade.any().allow()
 
-Lyra.rule(); // Equivalent to Lyra.any().rule()
-Lyra.custom(); // Alias of Lyra.rule()
+Jade.rule(); // Equivalent to Jade.any().rule()
+Jade.custom(); // Alias of Jade.rule()
 
-Lyra.invalid(); // Equivalent to Lyra.any().invalid()
-Lyra.disallow(); // Alias of Lyra.invalid()
-Lyra.deny(); // Alias of Lyra.invalid()
-Lyra.not(); // Alias of Lyra.invalid()
+Jade.invalid(); // Equivalent to Jade.any().invalid()
+Jade.disallow(); // Alias of Jade.invalid()
+Jade.deny(); // Alias of Jade.invalid()
+Jade.not(); // Alias of Jade.invalid()
 
-Lyra.valid(); // Equivalent to Lyra.any().valid()
-Lyra.equal(); // Alias of Lyra.valid()
-Lyra.is(); // Alias of Lyra.valid()
+Jade.valid(); // Equivalent to Jade.any().valid()
+Jade.equal(); // Alias of Jade.valid()
+Jade.is(); // Alias of Jade.valid()
 
-Lyra.required(); // Equivalent to Lyra.any().required()
-Lyra.exists(); // Alias of Lyra.required()
-Lyra.present(); // Alias of Lyra.present()
+Jade.required(); // Equivalent to Jade.any().required()
+Jade.exists(); // Alias of Jade.required()
+Jade.present(); // Alias of Jade.present()
 
-Lyra.forbidden(); // Equivalent to Lyra.any().forbidden()
-Lyra.absent(); // Alias of Lyra.forbidden()
+Jade.forbidden(); // Equivalent to Jade.any().forbidden()
+Jade.absent(); // Alias of Jade.forbidden()
 
-Lyra.optional(); // Equivalent to Lyra.any().optional()
+Jade.optional(); // Equivalent to Jade.any().optional()
 
-Lyra.only(); // Equivalent to Lyra.any().only()
+Jade.only(); // Equivalent to Jade.any().only()
 
-Lyra.settings(); // Equivalent to Lyra.any().settings()
-Lyra.options(); // Alias of Lyra.settings()
+Jade.settings(); // Equivalent to Jade.any().settings()
+Jade.options(); // Alias of Jade.settings()
 
-Lyra.strip(); // Equivalent to Lyra.any().strip()
+Jade.strip(); // Equivalent to Jade.any().strip()
 
-Lyra.switch(); // Equivalent to Lyra.any().switch()
+Jade.switch(); // Equivalent to Jade.any().switch()
 
-Lyra.when(); // Equivalent to Lyra.any().when()
+Jade.when(); // Equivalent to Jade.any().when()
 ```
 
 [Back to top](#api)
@@ -838,7 +838,7 @@ Lyra.when(); // Equivalent to Lyra.any().when()
 Generates a schema that matches any data type.
 
 ```js
-const schema = Lyra.any();
+const schema = Jade.any();
 ```
 
 [Back to top](#api)
@@ -848,7 +848,7 @@ const schema = Lyra.any();
 Returns the type of the current schema.
 
 ```js
-const schema = Lyra.number();
+const schema = Jade.number();
 schema.type; // number
 ```
 
@@ -859,7 +859,7 @@ schema.type; // number
 Clones the current schema.
 
 ```js
-const schema = Lyra.any();
+const schema = Jade.any();
 const schema2 = schema.clone();
 
 schema === schema2; // false
@@ -874,8 +874,8 @@ Merges two schemas and return a schema that is the result of adding the rules to
 -   `source`: The source schema to merge to the current schema.
 
 ```js
-const a = Lyra.number().multiple(2);
-const b = Lyra.number().multiple(5);
+const a = Jade.number().multiple(2);
+const b = Jade.number().multiple(5);
 const c = a.merge(b);
 
 c.validate(10); // Pass
@@ -890,8 +890,8 @@ c.validate(2); // unknown must be a multiple of 5
 Generates a description for the current schema. Useful for exposing internal configurations to other systems.
 
 ```js
-const schema = Lyra.object({
-    a: Lyra.number().max(10),
+const schema = Jade.object({
+    a: Jade.number().max(10),
 });
 
 const desc = {
@@ -923,7 +923,7 @@ Overrides the validation options for the current schema and its children (if app
 -   `options`: Optional options passed to [`any.validate()`](#anyvalidatevalue-options) (without `context`).
 
 ```js
-const schema = Lyra.number().settings({ strict: false });
+const schema = Jade.number().settings({ strict: false });
 
 schema.validate('1').value; // 1
 ```
@@ -945,7 +945,7 @@ Each schema type supports its own set of destination types:
 -   `object` supports casting to `Map`.
 
 ```js
-const schema = Lyra.object().cast('map');
+const schema = Jade.object().cast('map');
 
 schema.validate({ a: 1 }).value; // Map(1) { a => 1 }
 ```
@@ -961,7 +961,7 @@ Disables strict mode for the current schema and its children (if apply) where:
 -   `enabled`: Whether to enable the behavior. Defaults to `true`.
 
 ```js
-const schema = Lyra.number().convert();
+const schema = Jade.number().convert();
 
 schema.validate('1').value; // 1
 ```
@@ -977,7 +977,7 @@ Extends or overrides error messages for the current schema where:
 -   `messages`: A hash of error codes and their messages (can be templates or raw strings).
 
 ```js
-const schema = Lyra.number()
+const schema = Jade.number()
     .min(1)
     .messages({ 'number.base': '{#label} is not good enough' })
     .messages({ 'number.min': '{#label} is not big enough' });
@@ -997,7 +997,7 @@ Annotates the current schema with a set of explanation notes where:
 -   `notes`: A list of notes.
 
 ```js
-const schema = Lyra.number().max(10).annotate('Must be a number', 'Must be greater than 10');
+const schema = Jade.number().max(10).annotate('Must be a number', 'Must be greater than 10');
 ```
 
 [Back to top](#api)
@@ -1012,7 +1012,7 @@ Defines a custom validation rule on the current schema where:
 -   `description`: Optional description explanation what the rule is doing.
 
 ```js
-const schema = Lyra.rule((value) => {
+const schema = Jade.rule((value) => {
     if (value === 'test') {
         return value;
     }
@@ -1027,7 +1027,7 @@ schema.validate('x'); // unknown fails validation due to invalid!
 You can also define a custom error message and return it:
 
 ```js
-const schema = Lyra.any()
+const schema = Jade.any()
     .rule((value, { error }) => {
         if (value === 'special') {
             return value;
@@ -1050,11 +1050,11 @@ Sets the presence mode for a schema where:
 
 -   presence: The mode to set. Can be one of `optional`, `required` or `forbidden`.
 
-Lyra by default allows `undefined` (due to the mode being `optional`). To reject `undefined`, call `any.presence('required')` or `any.required()`. To reject anything but `undefined`, call `any.presence('forbidden')` or `any.forbidden()`.
+Jade by default allows `undefined` (due to the mode being `optional`). To reject `undefined`, call `any.presence('required')` or `any.required()`. To reject anything but `undefined`, call `any.presence('forbidden')` or `any.forbidden()`.
 
 ```js
-const schema = Lyra.object({
-    a: Lyra.number().required(),
+const schema = Jade.object({
+    a: Jade.number().required(),
 });
 
 schema.validate({}); // a is required
@@ -1064,8 +1064,8 @@ schema.validate({ a: 1 }); // Pass
 To override the global presence mode:
 
 ```js
-const schema = Lyra.object({
-    a: Lyra.number(),
+const schema = Jade.object({
+    a: Jade.number(),
 });
 
 schema.validate({}, { presence: 'required' }); // a is required
@@ -1106,8 +1106,8 @@ Sets a default value to fallback to when the provided value is `undefined` where
 Note that no further validation is performed on the default value.
 
 ```js
-const schema = Lyra.object({
-    a: Lyra.number().default(1);
+const schema = Jade.object({
+    a: Jade.number().default(1);
 });
 
 schema.validate({}).value; // { a: 1 }
@@ -1116,9 +1116,9 @@ schema.validate({}).value; // { a: 1 }
 With reference:
 
 ```js
-const schema = Lyra.obj({
+const schema = Jade.obj({
     a: 'x',
-    b: Lyra.any().default(Lyra.ref('a')),
+    b: Jade.any().default(Jade.ref('a')),
 });
 
 schema.validate({ a: 'x' }).value; // { a: 'x', b: 'x' }
@@ -1127,25 +1127,25 @@ schema.validate({ a: 'x' }).value; // { a: 'x', b: 'x' }
 To generate the default value of a key based on its peers:
 
 ```js
-const schema = Lyra.obj({
-    x: Lyra.str(),
-    y: Lyra.str(),
-    z: Lyra.str().default((parent) => {
+const schema = Jade.obj({
+    x: Jade.str(),
+    y: Jade.str(),
+    z: Jade.str().default((parent) => {
         return `${parent.x} ${parent.y}`;
     }),
 });
 
 schema.validate({
-    x: 'Bot Bind',
+    x: 'BotSocket',
     y: 'Open source',
-}).value.z;  // Bot Bind Open source
+}).value.z;  // BotSocket Open source
 ```
 
 To default to a function:
 
 ```js
 const fn = () => { };
-const schema = Lyra.any().default(fn, { literal: true });
+const schema = Jade.any().default(fn, { literal: true });
 
 schema.validate(undefined).value; // fn
 ```
@@ -1153,13 +1153,13 @@ schema.validate(undefined).value; // fn
 To generate deep defaults for an object:
 
 ```js
-const schema = Lyra.obj({
-    a: Lyra.any().default('x'),
+const schema = Jade.obj({
+    a: Jade.any().default('x'),
     b: {
-        c: Lyra.any().default('x'),
+        c: Jade.any().default('x'),
         d: {
-            e: Lyra.any().default('x'),
-            f: Lyra.any().default('x'),
+            e: Jade.any().default('x'),
+            f: Jade.any().default('x'),
         },
     },
 })
@@ -1188,7 +1188,7 @@ Sets the label for the schema to be displayed in error messages where:
 -   `label`: The label to set.
 
 ```js
-const schema = Lyra.number().label('myAwesomeLabel');
+const schema = Jade.number().label('myAwesomeLabel');
 
 schema.validate('x'); // myAwesomeLabel must be a number
 ```
@@ -1202,7 +1202,7 @@ Marks the values registered via [`any.allow()`](anyallowvalues) to be the only a
 -   `enabled`: Whether to enable this flag. Defaults to `true`.
 
 ```js
-const schema = Lyra.allow('x').only(); // Equivalent to Lyra.any().valid('x')
+const schema = Jade.allow('x').only(); // Equivalent to Jade.any().valid('x')
 
 schema.validate('x'); // Pass
 schema.validate('y'); // unknown must be x
@@ -1211,11 +1211,11 @@ schema.validate('y'); // unknown must be x
 Note that the flag will be disabled implicitly when all registered valid values are removed:
 
 ```js
-const schema = Lyra.any().valid('x').valid(Lyra.override);
+const schema = Jade.any().valid('x').valid(Jade.override);
 
 // Or
 
-const schema = Lyra.any().valid('x').invalid('x');
+const schema = Jade.any().valid('x').invalid('x');
 ```
 
 [Back to top](#api)
@@ -1227,7 +1227,7 @@ Allows a set of values in addition to the permitted values where:
 -   `values`: A list of allowed values.
 
 ```js
-const schema = Lyra.boolean().allow(1, 0);
+const schema = Jade.boolean().allow(1, 0);
 
 schema.validate(true); // Pass
 schema.validate(1); // Pass
@@ -1236,13 +1236,13 @@ schema.validate(1); // Pass
 Multiple calls:
 
 ```js
-const schema = Lyra.boolean().allow(1).allow(0);
+const schema = Jade.boolean().allow(1).allow(0);
 ```
 
 Note that invoking this rule after [`any.valid()`](#anyvalidvalues) will retain the flag [`only`](#anyonlyenabled) and concatenate the values:
 
 ```js
-const schema = Lyra.number().valid('x');
+const schema = Jade.number().valid('x');
 
 schema.validate('x'); // Pass
 schema.validate(1); // unknown must be x
@@ -1252,7 +1252,7 @@ schema.allow('y').validate(1); // unknown must be x, y
 Override previous allowed values:
 
 ```js
-const schema = Lyra.number().allow('x').allow(Lyra.override, 'y');
+const schema = Jade.number().allow('x').allow(Jade.override, 'y');
 
 schema.validate('y'); // Pass
 schema.validate('x'); // unknown must be a number
@@ -1261,9 +1261,9 @@ schema.validate('x'); // unknown must be a number
 With reference:
 
 ```js
-const schema = Lyra.object({
-    a: Lyra.number(),
-    b: Lyra.string().allow(Lyra.ref('a')),
+const schema = Jade.object({
+    a: Jade.number(),
+    b: Jade.string().allow(Jade.ref('a')),
 });
 
 schema.validate({
@@ -1285,9 +1285,9 @@ schema.validate({
 With in reference:
 
 ```js
-const schema = Lyra.object({
-    a: Lyra.array(Lyra.number()),
-    b: Lyra.string().allow(Lyra.in('a')),
+const schema = Jade.object({
+    a: Jade.array(Jade.number()),
+    b: Jade.string().allow(Jade.in('a')),
 });
 
 schema.validate({
@@ -1317,7 +1317,7 @@ Restricts the input value to only a set of values where:
 -   `values`: A list of valid values.
 
 ```js
-const schema = Lyra.boolean().valid(1, 0);
+const schema = Jade.boolean().valid(1, 0);
 
 schema.validate(true); // unknown must be 1, 0
 schema.validate(1); // Pass
@@ -1326,13 +1326,13 @@ schema.validate(1); // Pass
 Multiple calls:
 
 ```js
-const schema = Lyra.valid(1).valid(0);
+const schema = Jade.valid(1).valid(0);
 ```
 
 Override previous valid values:
 
 ```js
-const schema = Lyra.valid('x').valid(Lyra.override, 'y');
+const schema = Jade.valid('x').valid(Jade.override, 'y');
 
 schema.validate('y'); // Pass
 schema.validate('x'); // unknown must be y
@@ -1341,9 +1341,9 @@ schema.validate('x'); // unknown must be y
 With reference:
 
 ```js
-const schema = Lyra.object({
-    a: Lyra.number(),
-    b: Lyra.valid(Lyra.ref('a')),
+const schema = Jade.object({
+    a: Jade.number(),
+    b: Jade.valid(Jade.ref('a')),
 });
 
 schema.validate({
@@ -1360,9 +1360,9 @@ schema.validate({
 or shorter:
 
 ```js
-const schema = Lyra.object({
-    a: Lyra.number(),
-    b: Lyra.ref('a'),
+const schema = Jade.object({
+    a: Jade.number(),
+    b: Jade.ref('a'),
 });
 
 schema.validate({
@@ -1379,9 +1379,9 @@ schema.validate({
 With in reference:
 
 ```js
-const schema = Lyra.object({
-    a: Lyra.array(Lyra.number()),
-    b: Lyra.in('a');
+const schema = Jade.object({
+    a: Jade.array(Jade.number()),
+    b: Jade.in('a');
 });
 
 schema.validate({
@@ -1411,7 +1411,7 @@ Defines a set of invalid values where:
 -   `values`: A list of disallowed values.
 
 ```js
-const schema = Lyra.number().even().invalid(4);
+const schema = Jade.number().even().invalid(4);
 
 schema.validate(2); // Pass
 schema.validate(4); // unknown must not be 4
@@ -1420,13 +1420,13 @@ schema.validate(4); // unknown must not be 4
 Multiple calls:
 
 ```js
-const schema = Lyra.number().even().invalid(2).invalid(4);
+const schema = Jade.number().even().invalid(2).invalid(4);
 ```
 
 Override previous invalid values:
 
 ```js
-const schema = Lyra.number().even().invalid(4).invalid(Lyra.override, 8);
+const schema = Jade.number().even().invalid(4).invalid(Jade.override, 8);
 
 schema.validate(4); // Pass
 schema.validate(8); // unknown must not be 8
@@ -1435,9 +1435,9 @@ schema.validate(8); // unknown must not be 8
 With reference:
 
 ```js
-const schema = Lyra.object({
-    a: Lyra.number(),
-    b: Lyra.number().invalid(Lyra.ref('a')),
+const schema = Jade.object({
+    a: Jade.number(),
+    b: Jade.number().invalid(Jade.ref('a')),
 });
 
 schema.validate({
@@ -1454,9 +1454,9 @@ schema.validate({
 With in reference:
 
 ```js
-const schema = Lyra.object({
-    a: Lyra.array(Lyra.number()),
-    b: Lyra.number().invalid(Lyra.in('a')),
+const schema = Jade.object({
+    a: Jade.array(Jade.number()),
+    b: Jade.number().invalid(Jade.in('a')),
 });
 
 schema.validate({
@@ -1479,8 +1479,8 @@ Signifies a schema to return `undefined` after validation or to be stripped from
 -   `enabled`: Whether to enable the behavior. Defaults to `true`.
 
 ```js
-const schema = Lyra.object({
-    a: Lyra.number().strip(),
+const schema = Jade.object({
+    a: Jade.number().strip(),
 });
 
 schema.validate({ a: 1 }).value; // {}
@@ -1489,7 +1489,7 @@ schema.validate({ a: 1 }).value; // {}
 With arrays:
 
 ```js
-const schema = Lyra.array(Lyra.string().strip());
+const schema = Jade.array(Jade.string().strip());
 
 schema.validate(['x', 'y']).value; // []
 ```
@@ -1503,7 +1503,7 @@ Signifies a schema to return the raw unmodified value after validation where:
 -   `enabled`: Whether to enable the behavior. Defaults to `true`.
 
 ```js
-const schema = Lyra.number().raw().convert();
+const schema = Jade.number().raw().convert();
 
 schema.validate('5').value; // '5'
 ```
@@ -1518,11 +1518,11 @@ Provides a set of conditions and modifies the current schema accordingly at vali
 -   `branches`: An array of options or single options passed via multiple arguments. Same as the ones passed to [`any.when()`](#anywhensubject-options) (with the exception of `otherwise` can only be in the last branch).
 
 ```js
-const schema = Lyra.object({
-    a: Lyra.number(),
-    b: Lyra.any().switch('a',
-        { is: Lyra.number().multiple(2), then: 'x' },
-        { is: Lyra.number().multiple(5), then: 'y', otherwise: 'z' },
+const schema = Jade.object({
+    a: Jade.number(),
+    b: Jade.any().switch('a',
+        { is: Jade.number().multiple(2), then: 'x' },
+        { is: Jade.number().multiple(5), then: 'y', otherwise: 'z' },
     ),
 });
 
@@ -1560,7 +1560,7 @@ Specifies a condition and modifies the current schema accordingly at validation 
 
 -   `subject`: The subject of the condition. Can be a reference or a string.
 -   `options`: Options where:
-    -   `is`: A literal or a schema that is matched against the resolved subject. Omitting the option is equivalent to `Lyra.any().invalid(null, 0, '', NaN)` (disallowing falsy values).
+    -   `is`: A literal or a schema that is matched against the resolved subject. Omitting the option is equivalent to `Jade.any().invalid(null, 0, '', NaN)` (disallowing falsy values).
     -   `not`: The opposite of `is`. If `is` is provided, this key is forbidden and vice versa.
     -   `then`: The schema to apply if the condition matches.
     -   `otherwise`: The schema to apply if the condition fails to match. If `then` is not provided, this key is required and vice versa.
@@ -1569,12 +1569,12 @@ Specifies a condition and modifies the current schema accordingly at validation 
 Conditional rules:
 
 ```js
-const schema = Lyra.object({
-    a: Lyra.number(),
-    b: Lyra.any().when('a', {
-        is: Lyra.number().greater(20),
-        then: Lyra.number().greater(10),
-        otherwise: Lyra.number().less(10)
+const schema = Jade.object({
+    a: Jade.number(),
+    b: Jade.any().when('a', {
+        is: Jade.number().greater(20),
+        then: Jade.number().greater(10),
+        otherwise: Jade.number().less(10)
     });
 })
 ```
@@ -1582,12 +1582,12 @@ const schema = Lyra.object({
 Conditional presence:
 
 ```js
-const schema = Lyra.object({
-    a: Lyra.any(),
-    b: Lyra.any().when('a', {
-        is: Lyra.present(),
-        then: Lyra.forbidden(),
-        otherwise: Lyra.required(),
+const schema = Jade.object({
+    a: Jade.any(),
+    b: Jade.any().when('a', {
+        is: Jade.present(),
+        then: Jade.forbidden(),
+        otherwise: Jade.required(),
     }),
 });
 ```
@@ -1595,10 +1595,10 @@ const schema = Lyra.object({
 Multiple conditions with `break`:
 
 ```js
-const schema = Lyra.object({
-    a: Lyra.boolean(),
-    b: Lyra.boolean(),
-    c: Lyra.any()
+const schema = Jade.object({
+    a: Jade.boolean(),
+    b: Jade.boolean(),
+    c: Jade.any()
         .when('a', {
             is: true,
             then: 1,
@@ -1638,16 +1638,16 @@ schema.validate({
 Condition on multiple object keys:
 
 ```js
-const schema = Lyra.object({
-    a: Lyra.any(),
-    b: Lyra.any(),
-    c: Lyra.any(),
+const schema = Jade.object({
+    a: Jade.any(),
+    b: Jade.any(),
+    c: Jade.any(),
 })
     .when('.a', {
-        is: Lyra.present(),
+        is: Jade.present(),
         then: {
-            b: Lyra.required(),
-            c: Lyra.required(),
+            b: Jade.required(),
+            c: Jade.required(),
         },
     });
 ```
@@ -1655,13 +1655,13 @@ const schema = Lyra.object({
 Nested conditions:
 
 ```js
-const schema = Lyra.object({
-    a: Lyra.number(),
-    b: Lyra.any().when('a', {
-        is: Lyra.number().max(10),
+const schema = Jade.object({
+    a: Jade.number(),
+    b: Jade.any().when('a', {
+        is: Jade.number().max(10),
         then: 1,
-        otherwise: Lyra.any().when('a', {
-            is: Lyra.number().max(5),
+        otherwise: Jade.any().when('a', {
+            is: Jade.number().max(5),
             then: 2,
             otherwise: 3,
         }),
@@ -1689,7 +1689,7 @@ Validates a value against the current schema where:
 Note that options will be overridden by the ones passed via [`any.settings()`](#anysettingsoptions).
 
 ```js
-const schema = Lyra.number().max(10).multiple(2);
+const schema = Jade.number().max(10).multiple(2);
 
 schema.validate(11, { abortEarly: false }); // [ unknown must be less than or equal to 10, unknown must be a multiple of 2 ]
 ```
@@ -1702,7 +1702,7 @@ Validates and returns the modified value if validation passes instead of the res
 -   `options`: Optional options passed to [`any.validate()`](#anyvalidationvalue-options)
 
 ```js
-const schema = Lyra.number();
+const schema = Jade.number();
 
 schema.attempt('x'); // Throws 'unknown must be a number'
 schema.attempt(1); // 1
@@ -1718,7 +1718,7 @@ Generates a schema that matches the boolean type.
 Supports the same methods as [`any()`](#any)
 
 ```js
-const schema = Lyra.boolean();
+const schema = Jade.boolean();
 
 schema.validate(true); // Pass
 schema.validate(1); // unknown must be a boolean
@@ -1735,7 +1735,7 @@ Allows string values provided via [`boolean.truthy()`](#booleantruthyvalues) and
 Note that strict mode has to be disabled for this behavior.
 
 ```js
-const schema = Lyra.boolean().insensitive().truthy('yes').convert();
+const schema = Jade.boolean().insensitive().truthy('yes').convert();
 
 schema.validate('YeS').value; // true
 ```
@@ -1751,7 +1751,7 @@ Adds additional values to coerce to `true` where:
 Note that strict mode has to be disabled for this behavior.
 
 ```js
-const schema = Lyra.boolean().truthy('yes').convert();
+const schema = Jade.boolean().truthy('yes').convert();
 
 schema.validate('yes').value; // true
 ```
@@ -1759,13 +1759,13 @@ schema.validate('yes').value; // true
 Multiple calls:
 
 ```js
-const schema = Lyra.boolean().truthy('yes').truthy('yup').convert();
+const schema = Jade.boolean().truthy('yes').truthy('yup').convert();
 ```
 
 Override previous truthy values:
 
 ```js
-const schema = Lyra.boolean().truthy('yes').truthy(Lyra.override, 'yup').convert();
+const schema = Jade.boolean().truthy('yes').truthy(Jade.override, 'yup').convert();
 
 schema.validate('yup').value; // true
 schema.validate('yes'); // unknown must be a boolean
@@ -1774,9 +1774,9 @@ schema.validate('yes'); // unknown must be a boolean
 With reference:
 
 ```js
-const schema = Lyra.object({
-    a: Lyra.string(),
-    b: Lyra.boolean().truthy(Lyra.ref('a')).convert(),
+const schema = Jade.object({
+    a: Jade.string(),
+    b: Jade.boolean().truthy(Jade.ref('a')).convert(),
 });
 
 schema.validate({
@@ -1788,9 +1788,9 @@ schema.validate({
 With in reference:
 
 ```js
-const schema = Lyra.object({
-    a: Lyra.array(Lyra.string()),
-    b: Lyra.boolean().truthy(Lyra.in('a')).convert(),
+const schema = Jade.object({
+    a: Jade.array(Jade.string()),
+    b: Jade.boolean().truthy(Jade.in('a')).convert(),
 });
 
 schema.validate({
@@ -1807,7 +1807,7 @@ schema.validate({
 Remove an existing truthy values by [`boolean.falsy()`](#booleanfalsyvalues):
 
 ```js
-const schema = Lyra.boolean().truthy('hmmTrueOrFalse').falsy('hmmTruOrFalse').convert();
+const schema = Jade.boolean().truthy('hmmTrueOrFalse').falsy('hmmTruOrFalse').convert();
 
 schema.validate('hmmTrueOrFalse').value; // false
 ```
@@ -1823,7 +1823,7 @@ Adds additional values to coerce to `false` where:
 Note that strict mode has to be disabled for this behavior.
 
 ```js
-const schema = Lyra.boolean().falsy('no').convert();
+const schema = Jade.boolean().falsy('no').convert();
 
 schema.validate('no').value; // false
 ```
@@ -1831,13 +1831,13 @@ schema.validate('no').value; // false
 Multiple calls:
 
 ```js
-const schema = Lyra.boolean().falsy('no').falsy('nope').convert();
+const schema = Jade.boolean().falsy('no').falsy('nope').convert();
 ```
 
 Override previous falsy values:
 
 ```js
-const schema = Lyra.boolean().falsy('no').falsy(Lyra.override, 'nope').convert();
+const schema = Jade.boolean().falsy('no').falsy(Jade.override, 'nope').convert();
 
 schema.validate('nope').value; // false
 schema.validate('no'); // unknown must be a boolean
@@ -1846,9 +1846,9 @@ schema.validate('no'); // unknown must be a boolean
 With reference:
 
 ```js
-const schema = Lyra.object({
-    a: Lyra.string(),
-    b: Lyra.boolean().falsy(Lyra.ref('a')).convert(),
+const schema = Jade.object({
+    a: Jade.string(),
+    b: Jade.boolean().falsy(Jade.ref('a')).convert(),
 });
 
 schema.validate({
@@ -1860,9 +1860,9 @@ schema.validate({
 With in reference:
 
 ```js
-const schema = Lyra.object({
-    a: Lyra.array(Lyra.string()),
-    b: Lyra.boolean().falsy(Lyra.in('a')).convert(),
+const schema = Jade.object({
+    a: Jade.array(Jade.string()),
+    b: Jade.boolean().falsy(Jade.in('a')).convert(),
 });
 
 schema.validate({
@@ -1879,7 +1879,7 @@ schema.validate({
 Remove an existing truthy values by [`boolean.truthy()`](#booleantruthyvalues):
 
 ```js
-const schema = Lyra.boolean().falsy('hmmTrueOrFalse').truthy('hmmTruOrFalse').convert();
+const schema = Jade.boolean().falsy('hmmTrueOrFalse').truthy('hmmTruOrFalse').convert();
 
 schema.validate('hmmTrueOrFalse').value; // true
 ```
@@ -1893,7 +1893,7 @@ schema.validate('hmmTrueOrFalse').value; // true
 Generates a schema that matches the string type. Empty strings (`''`) are ignored by default. Supports the same methods as [`any()`](#any)
 
 ```js
-const schema = Lyra.string();
+const schema = Jade.string();
 
 schema.validate('x'); // Pass
 schema.validate(''); // unknown must not be an empty string
@@ -1909,7 +1909,7 @@ Specifies the exact number of characters the input string must have where:
 -   `limit`: The number of characters required.
 
 ```js
-const schema = Lyra.string().length(3);
+const schema = Jade.string().length(3);
 
 schema.validate('xyz'); // Pass
 schema.validate('xy'); // unknown must have 3 characters
@@ -1918,9 +1918,9 @@ schema.validate('xy'); // unknown must have 3 characters
 With reference:
 
 ```js
-const schema = Lyra.object({
-    a: Lyra.number(),
-    b: Lyra.string().length(Lyra.ref('a')),
+const schema = Jade.object({
+    a: Jade.number(),
+    b: Jade.string().length(Jade.ref('a')),
 });
 
 schema.validate({
@@ -1943,7 +1943,7 @@ Specifies the minimum number of characters the input string must have where:
 -   `limit`: The minimum number of characters required.
 
 ```js
-const schema = Lyra.string().min(3);
+const schema = Jade.string().min(3);
 
 schema.validate('xyz'); // Pass
 schema.validate('xyzt'); // Pass
@@ -1953,9 +1953,9 @@ schema.validate('xy'); // unknown must have at least 3 characters
 With reference:
 
 ```js
-const schema = Lyra.object({
-    a: Lyra.number(),
-    b: Lyra.string().min(Lyra.ref('a')),
+const schema = Jade.object({
+    a: Jade.number(),
+    b: Jade.string().min(Jade.ref('a')),
 });
 
 schema.validate({
@@ -1978,7 +1978,7 @@ Specifies the maximum number of characters the input string can have where:
 -   `limit`: The maximum number of characters required.
 
 ```js
-const schema = Lyra.string().max(3);
+const schema = Jade.string().max(3);
 
 schema.validate('xyz'); // Pass
 schema.validate('xy'); // Pass
@@ -1988,9 +1988,9 @@ schema.validate('xyzt'); // unknown must have at most 3  characters
 With reference:
 
 ```js
-const schema = Lyra.object({
-    a: Lyra.number(),
-    b: Lyra.string().max(Lyra.ref('a')),
+const schema = Jade.object({
+    a: Jade.number(),
+    b: Jade.string().max(Jade.ref('a')),
 });
 
 schema.validate({
@@ -2013,7 +2013,7 @@ Allows string values provided via [`any.allow()`](#anyallowvalues), [`any.valid(
 -   `enabled`: Whether to enable this behavior. Defaults to `true`.
 
 ```js
-const schema = Lyra.string().valid('someValidString').insensitive();
+const schema = Jade.string().valid('someValidString').insensitive();
 
 schema.validate('someValidString'); // Pass
 schema.validate('sOmEvAlIdStRiNg'); // Pass
@@ -2028,7 +2028,7 @@ Requires the input string to be a valid data uri where:
 -   `options`: Optional base64 options passed to [`string.base64()`](#stringbase64options)
 
 ```js
-const schema = Lyra.string().dataUri();
+const schema = Jade.string().dataUri();
 
 schema.validate('data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw=='); // Pass
 schema.validate('R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw=='); // unknown must be a data uri
@@ -2037,7 +2037,7 @@ schema.validate('R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw=='); // unkn
 Without padding:
 
 ```js
-const schema = Lyra.string().dataUri({ paddingRequired: false });
+const schema = Jade.string().dataUri({ paddingRequired: false });
 
 schema.validate('data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw'); // Pass
 ```
@@ -2053,7 +2053,7 @@ Requires the input string to be a valid base64 string where:
     -   `urlSafe`: Requires the bas64 portion of the string to be URL safe. Defaults to `true`.
 
 ```js
-const schema = Lyra.string().base64();
+const schema = Jade.string().base64();
 
 schema.validate('R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw=='); // Pass
 
@@ -2063,7 +2063,7 @@ schema.validate('someRandomString'); // unknown must be a base64 string
 Without padding:
 
 ```js
-const schema = Lyra.string().base64({ paddingRequired: false });
+const schema = Jade.string().base64({ paddingRequired: false });
 
 schema.validate('R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw'); // Pass
 ```
@@ -2071,7 +2071,7 @@ schema.validate('R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw'); // Pass
 Non URL safe:
 
 ```js
-const schema = Lyra.string().base64({ urlSafe: false });
+const schema = Jade.string().base64({ urlSafe: false });
 
 schema.validate('R0lGODlhAQABAAAAACH5BAEKAA+/LAAAAAABAAEAAAICTAEAOw=='); // Pass
 
@@ -2085,7 +2085,7 @@ schema.validate('R0lGODlhAQABAAAAACH5BAEKAA-_LAAAAAABAAEAAAICTAEAOw=='); // unkn
 Requires the input string to be a credit card number.
 
 ```js
-const schema = Lyra.string().creditCard();
+const schema = Jade.string().creditCard();
 
 schema.validate('378282246310005'); // Pass
 schema.validate('111111111111112'); // unknown must be a credit card number
@@ -2103,7 +2103,7 @@ Specifies a regular expression the input string must match where:
 -   `name`: Optional name for the pattern. Defaults to `unknown`.
 
 ```js
-const schema = Lyra.string().regex(/^abc/, 'myPattern');
+const schema = Jade.string().regex(/^abc/, 'myPattern');
 
 schema.validate('abc'); // Pass
 schema.validate('xabc'); // unknown must have pattern myPattern
@@ -2116,7 +2116,7 @@ schema.validate('xabc'); // unknown must have pattern myPattern
 Requires the input string to be an email.
 
 ```js
-const schema = Lyra.string().email();
+const schema = Jade.string().email();
 
 schema.validate('someone@example.com'); // Pass
 schema.validate('someRandomString'); // unknown must be an email
@@ -2129,9 +2129,9 @@ schema.validate('someRandomString'); // unknown must be an email
 Requires the input string to be a valid URL.
 
 ```js
-const schema = Lyra.string().url();
+const schema = Jade.string().url();
 
-schema.validate('https://botbind.com'); // Pass
+schema.validate('https://botsocket.com'); // Pass
 schema.validate('https://'); // unknown must be an email
 ```
 
@@ -2142,7 +2142,7 @@ schema.validate('https://'); // unknown must be an email
 Requires the input string to contain only alphanumeric characters.
 
 ```js
-const schema = Lyra.string().alphanum();
+const schema = Jade.string().alphanum();
 
 schema.validate('Abc123'); // Pass
 schema.validate('Abc 123'); // unknown must only contain alphanumeric characters
@@ -2155,7 +2155,7 @@ schema.validate('Abc 123'); // unknown must only contain alphanumeric characters
 Requires the input string to contain only numeric characters.
 
 ```js
-const schema = Lyra.string().numeric();
+const schema = Jade.string().numeric();
 
 schema.validate('123456789'); // Pass
 schema.validate('12345b789'); // unknown must only contain numeric characters
@@ -2170,7 +2170,7 @@ Validates or sets the input string case where:
 -   `dir`: The casing direction. Can be `lower` or `upper`.
 
 ```js
-const schema = Lyra.string().case('upper');
+const schema = Jade.string().case('upper');
 
 schema.validate('abc'); // unknown must only contain uppercase characters.
 ```
@@ -2178,7 +2178,7 @@ schema.validate('abc'); // unknown must only contain uppercase characters.
 With strict mode disabled:
 
 ```js
-const schema = Lyra.string().case('upper').convert();
+const schema = Jade.string().case('upper').convert();
 
 schema.validate('abc').value; // ABC
 ```
@@ -2204,7 +2204,7 @@ Trims the input string or validates the presence of leading and trailing whitesp
 -   `enabled`: Whether to enable this behavior. Defaults to `true`.
 
 ```js
-const schema = Lyra.string().trim();
+const schema = Jade.string().trim();
 
 schema.validate('xy'); // Pass
 schema.validate(' xy '); // unknown must not contain leading and trailing whitespaces
@@ -2213,7 +2213,7 @@ schema.validate(' xy '); // unknown must not contain leading and trailing whites
 With strict mode disabled:
 
 ```js
-const schema = Lyra.string().trim();
+const schema = Jade.string().trim();
 
 schema.validate('xy'); // Pass
 schema.validate(' xy ').value; // xy
@@ -2231,7 +2231,7 @@ Replaces some or all characters where:
 Note that strict mode has to be disabled for this behavior.
 
 ```js
-const schema = Lyra.string().replace(/^abc/, 'xyz').convert();
+const schema = Jade.string().replace(/^abc/, 'xyz').convert();
 
 schema.validate('abcxyz').value; // xyzxyz
 ```
@@ -2245,7 +2245,7 @@ schema.validate('abcxyz').value; // xyzxyz
 Generates a schema that matches the number type. Rejects `Infinity`, `-Infinity` and other unsafe numbers by default. Supports the same methods as [`any()`](#any)
 
 ```js
-const schema = Lyra.number();
+const schema = Jade.number();
 
 schema.validate(1); // Pass
 schema.validate(Infinity); // unknown must not be infinity
@@ -2257,7 +2257,7 @@ schema.validate('x'); // unknown must be a number
 To allow `Infinity` and `-Infinity`:
 
 ```js
-const schema = Lyra.number().allow(Infinity, -Infinity);
+const schema = Jade.number().allow(Infinity, -Infinity);
 
 schema.validate(Infinity); // Pass
 ```
@@ -2273,7 +2273,7 @@ Allows unsafe numbers where:
 Use it at your own risk.
 
 ```js
-const schema = Lyra.number().unsafe();
+const schema = Jade.number().unsafe();
 
 schema.validate(Number.MAX_SAFE_INTEGER + 1); // Pass
 ```
@@ -2285,7 +2285,7 @@ schema.validate(Number.MAX_SAFE_INTEGER + 1); // Pass
 Requires the input number to be an integer.
 
 ```js
-const schema = Lyra.number().integer();
+const schema = Jade.number().integer();
 
 schema.validate(1); // Pass
 schema.validate(1.2); // unknown must be an integer
@@ -2300,7 +2300,7 @@ Specifies the minimum value where:
 -   `limit`: The minimum value.
 
 ```js
-const schema = Lyra.number().min(2);
+const schema = Jade.number().min(2);
 
 schema.validate(2); // Pass
 schema.validate(1); // unknown must be greater than or equal to 2
@@ -2309,9 +2309,9 @@ schema.validate(1); // unknown must be greater than or equal to 2
 With reference:
 
 ```js
-const schema = Lyra.object({
-    a: Lyra.number(),
-    b: Lyra.number().min(Lyra.ref('a')),
+const schema = Jade.object({
+    a: Jade.number(),
+    b: Jade.number().min(Jade.ref('a')),
 });
 
 schema.validate({
@@ -2334,7 +2334,7 @@ Specifies the maximum value where:
 -   `limit`: The maximum value.
 
 ```js
-const schema = Lyra.number().max(2);
+const schema = Jade.number().max(2);
 
 schema.validate(2); // Pass
 schema.validate(3); // unknown must be less than or equal to 2
@@ -2343,9 +2343,9 @@ schema.validate(3); // unknown must be less than or equal to 2
 With reference:
 
 ```js
-const schema = Lyra.object({
-    a: Lyra.number(),
-    b: Lyra.number().max(Lyra.ref('a')),
+const schema = Jade.object({
+    a: Jade.number(),
+    b: Jade.number().max(Jade.ref('a')),
 });
 
 schema.validate({
@@ -2368,7 +2368,7 @@ Requires the input number to be greater than a provided value where:
 -   `limit`: The value to check.
 
 ```js
-const schema = Lyra.number().greater(2);
+const schema = Jade.number().greater(2);
 
 schema.validate(3); // Pass
 schema.validate(1); // unknown must be greater than 2
@@ -2377,9 +2377,9 @@ schema.validate(1); // unknown must be greater than 2
 With reference:
 
 ```js
-const schema = Lyra.object({
-    a: Lyra.number(),
-    b: Lyra.number().greater(Lyra.ref('a')),
+const schema = Jade.object({
+    a: Jade.number(),
+    b: Jade.number().greater(Jade.ref('a')),
 });
 
 schema.validate({
@@ -2400,7 +2400,7 @@ Requires the input number to be less than a provided value where:
 -   `limit`: The value to check.
 
 ```js
-const schema = Lyra.number().less(2);
+const schema = Jade.number().less(2);
 
 schema.validate(1); // Pass
 schema.validate(3); // unknown must be less than 2
@@ -2409,9 +2409,9 @@ schema.validate(3); // unknown must be less than 2
 With reference:
 
 ```js
-const schema = Lyra.object({
-    a: Lyra.number(),
-    b: Lyra.number().less(Lyra.ref('a')),
+const schema = Jade.object({
+    a: Jade.number(),
+    b: Jade.number().less(Jade.ref('a')),
 });
 
 schema.validate({
@@ -2432,7 +2432,7 @@ Requires the input number to be a multiple of a provided value where:
 -   `factor`: The value to check.
 
 ```js
-const schema = Lyra.number().multiple(2);
+const schema = Jade.number().multiple(2);
 
 schema.validate(2); // Pass
 schema.validate(3); // unknown must be a multiple of 2
@@ -2441,7 +2441,7 @@ schema.validate(3); // unknown must be a multiple of 2
 Multiple factors:
 
 ```js
-const schema = Lyra.number().multiple(2).multiple(3);
+const schema = Jade.number().multiple(2).multiple(3);
 
 schema.validate(6); // Pass
 schema.validate(2); // unknown must be a multiple of 3
@@ -2451,9 +2451,9 @@ schema.validate(3); // unknown must be a multiple of 2
 With reference:
 
 ```js
-const schema = Lyra.object({
-    a: Lyra.number(),
-    b: Lyra.number().multiple(Lyra.ref('a')),
+const schema = Jade.object({
+    a: Jade.number(),
+    b: Jade.number().multiple(Jade.ref('a')),
 });
 
 schema.validate({
@@ -2482,7 +2482,7 @@ Requires the input number to divde another where:
 -   `dividend`: The value to check.
 
 ```js
-const schema = Lyra.number().divide(4);
+const schema = Jade.number().divide(4);
 
 schema.validate(2); // Pass
 schema.validate(3); // unknown must divide 4
@@ -2491,7 +2491,7 @@ schema.validate(3); // unknown must divide 4
 Multiple dividends:
 
 ```js
-const schema = Lyra.number().divide(16).divide(24);
+const schema = Jade.number().divide(16).divide(24);
 
 schema.validate(4); // Pass
 schema.validate(16); // unknown must divide 24
@@ -2501,9 +2501,9 @@ schema.validate(3); // unknown must divide 16
 With reference:
 
 ```js
-const schema = Lyra.object({
-    a: Lyra.number(),
-    b: Lyra.number().divide(Lyra.ref('a')),
+const schema = Jade.object({
+    a: Jade.number(),
+    b: Jade.number().divide(Jade.ref('a')),
 });
 
 schema.validate({
@@ -2524,7 +2524,7 @@ schema.validate({
 Generates a schema that matches Javascript `Date`. Supports the same methods as [`any()`](#any).
 
 ```js
-const schema = Lyra.date();
+const schema = Jade.date();
 
 schema.validate(new Date('01/01/2020')); // Pass
 schema.validate('01/01/2020'); // unknown must be a valid date
@@ -2533,7 +2533,7 @@ schema.validate('01/01/2020'); // unknown must be a valid date
 To enable parsing date strings:
 
 ```js
-const schema = Lyra.date().convert();
+const schema = Jade.date().convert();
 
 schema.validate('01/01/2020'); // Pass
 ```
@@ -2547,7 +2547,7 @@ Specifies the minimum date where:
 -   `limit`: The minimum date. Can be a JavaScript `Date` object, a date string or `now`.
 
 ```js
-const schema = Lyra.date().min('01/01/2020').convert();
+const schema = Jade.date().min('01/01/2020').convert();
 
 schema.validate('01/02/2020'); // Pass
 schema.validate('12/31/2019'); // unknown must be greater than or equal to Wed Jan 01 2020 00:00:00 GMT+0000 (Greenwich Mean Time)
@@ -2556,7 +2556,7 @@ schema.validate('12/31/2019'); // unknown must be greater than or equal to Wed J
 To compare to the current timestamp:
 
 ```js
-const schema = Lyra.date().min('now').convert();
+const schema = Jade.date().min('now').convert();
 
 schema.validate('someTimeInThePast'); // unknown must be greater than or equal to now
 ```
@@ -2564,9 +2564,9 @@ schema.validate('someTimeInThePast'); // unknown must be greater than or equal t
 With reference:
 
 ```js
-const schema = Lyra.object({
-    a: Lyra.string(),
-    b: Lyra.date().min(Lyra.ref('a')).convert(),
+const schema = Jade.object({
+    a: Jade.string(),
+    b: Jade.date().min(Jade.ref('a')).convert(),
 });
 
 schema.validate({
@@ -2589,7 +2589,7 @@ Specifies the maximum date where:
 -   `limit`: The maximum date. Can be a JavaScript `Date` object, a date string or `now`.
 
 ```js
-const schema = Lyra.date().max('01/01/2020').convert();
+const schema = Jade.date().max('01/01/2020').convert();
 
 schema.validate('12/31/2019'); // Pass
 schema.validate('01/02/2020'); // unknown must be less than or equal to Wed Jan 01 2020 00:00:00 GMT+0000 (Greenwich Mean Time)
@@ -2598,7 +2598,7 @@ schema.validate('01/02/2020'); // unknown must be less than or equal to Wed Jan 
 To compare to the current timestamp:
 
 ```js
-const schema = Lyra.date().max('now').convert();
+const schema = Jade.date().max('now').convert();
 
 schema.validate('someTimeInTheFuture'); // unknown must be less than or equal to now
 ```
@@ -2606,9 +2606,9 @@ schema.validate('someTimeInTheFuture'); // unknown must be less than or equal to
 With reference:
 
 ```js
-const schema = Lyra.object({
-    a: Lyra.string(),
-    b: Lyra.date().max(Lyra.ref('a')).convert(),
+const schema = Jade.object({
+    a: Jade.string(),
+    b: Jade.date().max(Jade.ref('a')).convert(),
 });
 
 schema.validate({
@@ -2631,7 +2631,7 @@ Requires the input date to be greater than a specified value where:
 -   `limit`: The date to compare to. Can be a JavaScript `Date` object, a date string or `now`.
 
 ```js
-const schema = Lyra.date().greater('01/01/2020').convert();
+const schema = Jade.date().greater('01/01/2020').convert();
 
 schema.validate('01/02/2020'); // Pass
 schema.validate('12/31/2019'); // unknown must be greater than Wed Jan 01 2020 00:00:00 GMT+0000 (Greenwich Mean Time)
@@ -2640,7 +2640,7 @@ schema.validate('12/31/2019'); // unknown must be greater than Wed Jan 01 2020 0
 To compare to the current timestamp:
 
 ```js
-const schema = Lyra.date().greater('now').convert();
+const schema = Jade.date().greater('now').convert();
 
 schema.validate('someTimeInThePast'); // unknown must be greater than now
 ```
@@ -2648,9 +2648,9 @@ schema.validate('someTimeInThePast'); // unknown must be greater than now
 With reference:
 
 ```js
-const schema = Lyra.object({
-    a: Lyra.string(),
-    b: Lyra.date().greater(Lyra.ref('a')).convert(),
+const schema = Jade.object({
+    a: Jade.string(),
+    b: Jade.date().greater(Jade.ref('a')).convert(),
 });
 
 schema.validate({
@@ -2673,7 +2673,7 @@ Requires the input date to be less than a specified value where:
 -   `limit`: The date to compare to. Can be a JavaScript `Date` object, a date string or `now`.
 
 ```js
-const schema = Lyra.date().less('01/01/2020').convert();
+const schema = Jade.date().less('01/01/2020').convert();
 
 schema.validate('12/31/2019'); // Pass
 schema.validate('01/02/2020'); // unknown must be less than Wed Jan 01 2020 00:00:00 GMT+0000 (Greenwich Mean Time)
@@ -2682,7 +2682,7 @@ schema.validate('01/02/2020'); // unknown must be less than Wed Jan 01 2020 00:0
 To compare to the current timestamp:
 
 ```js
-const schema = Lyra.date().less('now').convert();
+const schema = Jade.date().less('now').convert();
 
 schema.validate('someTimeInThePast'); // unknown must be less than now
 ```
@@ -2690,9 +2690,9 @@ schema.validate('someTimeInThePast'); // unknown must be less than now
 With reference:
 
 ```js
-const schema = Lyra.object({
-    a: Lyra.string(),
-    b: Lyra.date().less(Lyra.ref('a')).convert(),
+const schema = Jade.object({
+    a: Jade.string(),
+    b: Jade.date().less(Jade.ref('a')).convert(),
 });
 
 schema.validate({
@@ -2715,7 +2715,7 @@ schema.validate({
 Generates a schema that matches the function type. Supports the same methods as [`any()`](#any).
 
 ```js
-const schema = Lyra.function();
+const schema = Jade.function();
 
 schema.validate(() => {}); // Pass
 schema.validate('x'); // unknown must be a function
@@ -2733,7 +2733,7 @@ Requires the input function to inherit a provided constructor where:
 class X {}
 class Y extends X {}
 
-const schema = Lyra.function().inherit(X);
+const schema = Jade.function().inherit(X);
 
 schema.validate(Y); // Pass
 schema.validate(() => {}); // unknown must inherit X
@@ -2748,7 +2748,7 @@ schema.validate(() => {}); // unknown must inherit X
 Generates a schema that matches the array type. Supports the same methods as [`any()`](#any)
 
 ```js
-const schema = Lyra.array();
+const schema = Jade.array();
 
 schema.validate([]); // Pass
 schema.validate({}); // unknown must be an array
@@ -2769,7 +2769,7 @@ Note that if the schema is `.required()`, there must be at least a matching item
 To allow only strings:
 
 ```js
-const schema = Lyra.array().items(Lyra.string());
+const schema = Jade.array().items(Jade.string());
 
 schema.validate(['x']); // Pass
 schema.validate([]); // Pass
@@ -2779,7 +2779,7 @@ schema.validate([1]); // 0 must be a string
 Or shorter:
 
 ```js
-const schema = Lyra.array(Lyra.string());
+const schema = Jade.array(Jade.string());
 
 schema.validate(['x']); // Pass
 schema.validate([]); // Pass
@@ -2789,7 +2789,7 @@ schema.validate([1]); // 0 must be a string
 To allow multiple item types:
 
 ```js
-const schema = Lyra.array().items(Lyra.string(), Lyra.number());
+const schema = Jade.array().items(Jade.string(), Jade.number());
 
 schema.validate(['x']); // Pass
 schema.validate([1]); // Pass
@@ -2800,7 +2800,7 @@ schema.validate([true]); // 0 is not allowed
 To require at least a string and a number:
 
 ```js
-const schema = Lyra.array().items(Lyra.string().required().label('Some label'), Lyra.number().required());
+const schema = Jade.array().items(Jade.string().required().label('Some label'), Jade.number().required());
 
 schema.validate(['x', 1]); // Pass
 schema.validate(['x', 1, 1]); // Pass
@@ -2813,7 +2813,7 @@ schema.validate([]); // unknown does not have Some label and 1 other required va
 Note that the first matching schema is processed:
 
 ```js
-const schema = Lyra.array().items(Lyra.number().convert(), Lyra.string());
+const schema = Jade.array().items(Jade.number().convert(), Jade.string());
 
 schema.validate(['1']).value; // [1] (number.convert() is matched first)
 ```
@@ -2821,8 +2821,8 @@ schema.validate(['1']).value; // [1] (number.convert() is matched first)
 To require multiple matching items:
 
 ```js
-const item = Lyra.string().min(2).required();
-const schema = Lyra.array().items(item, item, Lyra.number());
+const item = Jade.string().min(2).required();
+const schema = Jade.array().items(item, item, Jade.number());
 
 schema.validate(['xy', 'xx']); // Pass
 schema.validate(['xx', 'xy', 1]); // Pass
@@ -2833,10 +2833,10 @@ schema.validate([1]); // unknown does not have 2 required value(s)
 To allow only strings, but none with 4 characters and at least one with 3 characters:
 
 ```js
-const schema = Lyra.array().items(
-    Lyra.string(),
-    Lyra.string().length(4).forbidden()
-    Lyra.string().length(3).required().label('Some label')
+const schema = Jade.array().items(
+    Jade.string(),
+    Jade.string().length(4).forbidden()
+    Jade.string().length(3).required().label('Some label')
 );
 
 schema.validate(['xyz', 'x']); // Pass
@@ -2848,7 +2848,7 @@ schema.validate(['xyz', 'xyzt']); // 1 is forbidden
 Nested objects:
 
 ```js
-const schema = Lyra.array().items({ a: Lyra.string() });
+const schema = Jade.array().items({ a: Jade.string() });
 
 schema.validate([{ a: 'x' }]); // Pass
 schema.validate([{ a: 1 }]); // 0.a must be a string
@@ -2865,7 +2865,7 @@ Same as [`array.items()`](#arrayitemsitems) but requires the items to be in orde
 To require a number followed by a string:
 
 ```js
-const schema = Lyra.array().ordered(Lyra.number(), Lyra.string());
+const schema = Jade.array().ordered(Jade.number(), Jade.string());
 
 schema.validate([1, 'x']); // Pass
 schema.validate([1]); // Pass
@@ -2877,7 +2877,7 @@ schema.validate([1, 'x', 2]); // unknown must have at most 2 item(s)
 To require a number followed by a required string:
 
 ```js
-const schema = Lyra.array().ordered(Lyra.number(), Lyra.string().required());
+const schema = Jade.array().ordered(Jade.number(), Jade.string().required());
 
 schema.validate([1]); // unknown does not have 1 required value(s)
 ```
@@ -2885,7 +2885,7 @@ schema.validate([1]); // unknown does not have 1 required value(s)
 To require a number followed by a string and subsequent items to be objects of defined shape:
 
 ```js
-const schema = Lyra.array().ordered(Lyra.number(), Lyra.string()).items({ a: Lyra.string() });
+const schema = Jade.array().ordered(Jade.number(), Jade.string()).items({ a: Jade.string() });
 
 schema.validate([1, 'x']); // Pass
 schema.validate([1]); // Pass
@@ -2904,18 +2904,18 @@ Allows single values to be validated against the provided constraints as if it w
 Note that the provided value will be returned as an array regardless of the `strict` option.
 
 ```js
-const schema = Lyra.array().items(Lyra.string()).single();
+const schema = Jade.array().items(Jade.string()).single();
 
 schema.validate('x').value; // [ x ]
 schema.validate(1); // 0 must be a string
 ```
 
-Lyra will throw an error if it detects array items:
+Jade will throw an error if it detects array items:
 
 ```js
-Lyra.array().items(Lyra.array()).single(); // Throws
+Jade.array().items(Jade.array()).single(); // Throws
 
-Lyra.array().items(Lyra.alternatives(Lyra.array(), Lyra.string())).single(); // Throws
+Jade.array().items(Jade.alternatives(Jade.array(), Jade.string())).single(); // Throws
 ```
 
 [Back to top](#api)
@@ -2927,7 +2927,7 @@ Allows sparse array items where:
 -   `enabled`: Whether to enable this behavior. Defaults to `true`.
 
 ```js
-const schema = Lyra.array().sparse();
+const schema = Jade.array().sparse();
 
 schema.validate([undefined]); // Pass
 schema.validate([1, undefined, 3]); // Pass
@@ -2942,7 +2942,7 @@ Requires the input array to have a specific length where:
 -   `limit`: The length required.
 
 ```js
-const schema = Lyra.array().length(2);
+const schema = Jade.array().length(2);
 
 schema.validate([1, 2]); // Pass
 schema.validate([]); // unknown must have 2 item(s)
@@ -2951,9 +2951,9 @@ schema.validate([]); // unknown must have 2 item(s)
 With reference:
 
 ```js
-const schema = Lyra.object({
-    a: Lyra.number(),
-    b: Lyra.array().length(Lyra.ref('a')),
+const schema = Jade.object({
+    a: Jade.number(),
+    b: Jade.array().length(Jade.ref('a')),
 });
 
 schema.validate({
@@ -2976,7 +2976,7 @@ Specifies the maximum length the input array can have where:
 -   `limit`: The maximum length required.
 
 ```js
-const schema = Lyra.array().max(2);
+const schema = Jade.array().max(2);
 
 schema.validate([1, 2]); // Pass
 schema.validate([1, 2, 3]); // unknown must have at most 2 item(s)
@@ -2985,9 +2985,9 @@ schema.validate([1, 2, 3]); // unknown must have at most 2 item(s)
 With reference:
 
 ```js
-const schema = Lyra.object({
-    a: Lyra.number(),
-    b: Lyra.array().max(Lyra.ref('a')),
+const schema = Jade.object({
+    a: Jade.number(),
+    b: Jade.array().max(Jade.ref('a')),
 });
 
 schema.validate({
@@ -3010,7 +3010,7 @@ Specifies the minimum length the input array must have where:
 -   `limit`: The minimum length required.
 
 ```js
-const schema = Lyra.array().min(2);
+const schema = Jade.array().min(2);
 
 schema.validate([1, 2]); // Pass
 schema.validate([]); // unknown must have at least 2 item(s)
@@ -3019,9 +3019,9 @@ schema.validate([]); // unknown must have at least 2 item(s)
 With reference:
 
 ```js
-const schema = Lyra.object({
-    a: Lyra.number(),
-    b: Lyra.array().min(Lyra.ref('a')),
+const schema = Jade.object({
+    a: Jade.number(),
+    b: Jade.array().min(Jade.ref('a')),
 });
 
 schema.validate({
@@ -3044,7 +3044,7 @@ Requires the input array to have unique items where:
 -   `comparator`: Optional comparator that determines whether two items are the same. Can be a function of signature `function (first, second) {}` or a path if the item is nested.
 
 ```js
-const schema = Lyra.array().unique();
+const schema = Jade.array().unique();
 
 schema.validate([1, 2]); // Pass
 schema.validate([1, 2, 1]); // unknown must not have duplicate items at 0 and 2
@@ -3054,7 +3054,7 @@ schema.validate([{ a: 1 }, { a: 1 }]); // unknown must not have duplicate items 
 To compare nested keys:
 
 ```js
-const schema = Lyra.array().items({ id: Lyra.string() }).unique('id');
+const schema = Jade.array().items({ id: Jade.string() }).unique('id');
 
 schema.validate([{ id: 'x' }, { id: 'y' }]); // Pass
 schema.validate([{ id: 'x' }, { id: 'x' }]); // unknown must not have duplicate items at 0 and 1
@@ -3063,8 +3063,8 @@ schema.validate([{ id: 'x' }, { id: 'x' }]); // unknown must not have duplicate 
 To compare using a function:
 
 ```js
-const schema = Lyra.array()
-    .items({ id: Lyra.string() })
+const schema = Jade.array()
+    .items({ id: Jade.string() })
     .unique((first, second) => first.id === second.id);
 
 schema.validate([{ id: 'x' }, { id: 'y' }]); // Pass
@@ -3080,7 +3080,7 @@ schema.validate([{ id: 'x' }, { id: 'x' }]); // unknown must not have duplicate 
 Generates a schema that matches the object type. Rejects arrays. Supports the same methods as [`any()`](#any)
 
 ```js
-const schema = Lyra.object();
+const schema = Jade.object();
 
 schema.validate({}); // Pass
 schema.validate({ someRandomKey: 1 }); // Pass
@@ -3099,10 +3099,10 @@ Allows unknown keys only on the current schema not its children where:
 To allow unknown keys deeply, use the [`allowUnknown` option](#anyvalidatevalue-options)
 
 ```js
-const schema = Lyra.object({
-    a: Lyra.string(),
+const schema = Jade.object({
+    a: Jade.string(),
     b: {
-        c: Lyra.string(),
+        c: Jade.string(),
     },
 })
     .unknown();
@@ -3136,13 +3136,13 @@ Extracts a child schema given its path where:
 -   `path`: The path to the schema. Can be a string of dot-separated keys or an array of individual keys.
 
 ```js
-const schema = Lyra.object({
+const schema = Jade.object({
     a: {
-        b: Lyra.string(),
+        b: Jade.string(),
     },
 });
 
-schema.extract('a.b'); // return Lyra.string()
+schema.extract('a.b'); // return Jade.string()
 schema.extract('a.b.c'); // undefined
 schema.extract('b'); // undefined
 ```
@@ -3160,9 +3160,9 @@ Specifies the shape of the object where:
 If no keys is provided, the schema will allow any keys. If an empty hash is passed without any additional rules, the schema will allow no keys.
 
 ```js
-const schema = Lyra.object({
-    a: Lyra.string(),
-    b: Lyra.number().required(),
+const schema = Jade.object({
+    a: Jade.string(),
+    b: Jade.number().required(),
 });
 
 schema.validate({
@@ -3191,13 +3191,13 @@ schema.validate({
 To override and extend defined keys:
 
 ```js
-const schema = Lyra.object({
-    a: Lyra.string(),
+const schema = Jade.object({
+    a: Jade.string(),
 });
 
 const myNewSchema = schema.keys({
-    a: Lyra.number(),
-    b: Lyra.string(),
+    a: Jade.number(),
+    b: Jade.string(),
 });
 
 myNewSchema.validate({
@@ -3209,7 +3209,7 @@ myNewSchema.validate({
 To allow no keys:
 
 ```js
-const schema = Lyra.object({});
+const schema = Jade.object({});
 
 schema.validate({}); // Pass
 schema.validate({ a: 1 }); // a is not allowed
@@ -3225,7 +3225,7 @@ Specifies patterns for unknown keys where:
 -   `value`: Optional schema tested against the key values. Can be a literal or a schema.
 
 ```js
-const schema = Lyra.object().pattern(/abc/, Lyra.string());
+const schema = Jade.object().pattern(/abc/, Jade.string());
 
 schema.validate({
     abc: 'x',
@@ -3250,7 +3250,7 @@ Specifies an exact number of entries the input object must have where:
 -   `limit`: The required number of entries.
 
 ```js
-const schema = Lyra.object().length(2);
+const schema = Jade.object().length(2);
 
 schema.validate({ a: 1, b: 1 }); // Pass
 schema.validate({ a: 1 }); // unknown must have 2 entries
@@ -3265,7 +3265,7 @@ Specifies a maximum number of entries the input object can have where:
 -   `limit`: The maximum number of entries.
 
 ```js
-const schema = Lyra.object().max(2);
+const schema = Jade.object().max(2);
 
 schema.validate({ a: 1, b: 1 }); // Pass
 schema.validate({ a: 1, b: 2, c: 3 }); // unknown must have at most 2 entries
@@ -3280,7 +3280,7 @@ Specifies a minimum number of entries the input object must have where:
 -   `limit`: The minimum number of entries.
 
 ```js
-const schema = Lyra.object().min(2);
+const schema = Jade.object().min(2);
 
 schema.validate({ a: 1, b: 1 }); // Pass
 schema.validate({ a: 1 }); // unknown must have at least 2 entries
@@ -3295,7 +3295,7 @@ Requires the input object to be an instance of a provided constructor where:
 -   `ctor`: The constructor to check.
 
 ```js
-const schema = Lyra.object().instance(Date);
+const schema = Jade.object().instance(Date);
 
 schema.validate(new Date()); // Pass
 schema.validate({}); // unknown must be an instance of Date
@@ -3311,34 +3311,34 @@ Same as [`object.instance(RegExp)`](#objectinstancector)
 
 #### `object.schema([type], [options])`
 
-Requires the input object to be a valid Lyra's schema where:
+Requires the input object to be a valid Jade's schema where:
 
 -   `type`: The type of the schema to match. Defaults to `any`.
 -   `options`: Optional options where:
     -   `allowBase`: Whether to check if the schema is extended from the given type.
 
 ```js
-const schema = Lyra.object().schema();
+const schema = Jade.object().schema();
 
-schema.validate(Lyra.any()); // Pass
+schema.validate(Jade.any()); // Pass
 schema.validate({}); // unknown must be a valid schema of type any
 ```
 
 To match a specific type:
 
 ```js
-const schema = Lyra.object().schema('array');
+const schema = Jade.object().schema('array');
 
-schema.validate(Lyra.array()); // Pass
-schema.validate(Lyra.any()); // unknown must be a valid schema of type array
+schema.validate(Jade.array()); // Pass
+schema.validate(Jade.any()); // unknown must be a valid schema of type array
 ```
 
 To check the schema's base:
 
 ```js
-const custom = Lyra.extend({
+const custom = Jade.extend({
     type: 'myCustomType',
-    from: Lyra.array(),
+    from: Jade.array(),
 });
 
 const schema = custom.object().schema('array', { allowBase: true });
@@ -3353,9 +3353,9 @@ schema.validate(custom.myCustomType()); // Pass
 Requires an object to be a valid reference.
 
 ```js
-const schema = Lyra.object().ref();
+const schema = Jade.object().ref();
 
-schema.validate(Lyra.ref('a')); // Pass
+schema.validate(Jade.ref('a')); // Pass
 schema.validate({}); // unknown must be a valid reference
 ```
 
@@ -3366,9 +3366,9 @@ schema.validate({}); // unknown must be a valid reference
 Requires an object to be a valid template.
 
 ```js
-const schema = Lyra.object().template();
+const schema = Jade.object().template();
 
-schema.validate(Lyra.template('This is {a}')); // Pass
+schema.validate(Jade.template('This is {a}')); // Pass
 schema.validate({}); // unknown must be a valid template
 ```
 
@@ -3381,9 +3381,9 @@ Establishes a dependency between the provided peers in which all the peers must 
 -   `peers`: The paths to the peers.
 
 ```js
-const schema = Lyra.object({
-    a: Lyra.string(),
-    b: Lyra.string(),
+const schema = Jade.object({
+    a: Jade.string(),
+    b: Jade.string(),
 })
     .and('a', 'b');
 
@@ -3402,9 +3402,9 @@ Establishes a dependency between the provided peers in which at least one of the
 -   `peers`: The paths to the peers.
 
 ```js
-const schema = Lyra.object({
-    a: Lyra.string(),
-    b: Lyra.string(),
+const schema = Jade.object({
+    a: Jade.string(),
+    b: Jade.string(),
 })
     .or('a', 'b');
 
@@ -3423,9 +3423,9 @@ Establishes a dependency between the provided peers in which exactly one of the 
 -   `peers`: The paths to the peers.
 
 ```js
-const schema = Lyra.object({
-    a: Lyra.string(),
-    b: Lyra.string(),
+const schema = Jade.object({
+    a: Jade.string(),
+    b: Jade.string(),
 })
     .xor('a', 'b');
 
@@ -3444,9 +3444,9 @@ Establishes a dependency between the provided peers in which none or one of the 
 -   `peers`: The paths to the peers.
 
 ```js
-const schema = Lyra.object({
-    a: Lyra.string(),
-    b: Lyra.string(),
+const schema = Jade.object({
+    a: Jade.string(),
+    b: Jade.string(),
 })
     .oxor('a', 'b');
 
@@ -3465,7 +3465,7 @@ schema.validate({ a: 'x', b: 'y' }); // unknown must contain exactly one of a, b
 Generates a schema that matches multiple data types. Attempts to match any of the provided schemas by default. Supports the same methods as [`any()`](#any).
 
 ```js
-const schema = Lyra.alternatives(Lyra.string(), Lyra.number());
+const schema = Jade.alternatives(Jade.string(), Jade.number());
 
 schema.validate('x'); // Pass
 schema.validate(1); // Pass
@@ -3481,7 +3481,7 @@ Adds schemas to match where:
 -   `items`: The schemas to match.
 
 ```js
-const schema = Lyra.alternatives().try(Lyra.string(), Lyra.number());
+const schema = Jade.alternatives().try(Jade.string(), Jade.number());
 
 schema.validate('x'); // Pass
 schema.validate(1); // Pass
@@ -3491,7 +3491,7 @@ schema.validate({}); // unknown must match at least one of the provided schema
 Or shorter:
 
 ```js
-const schema = Lyra.alternatives(Lyra.string(), Lyra.number());
+const schema = Jade.alternatives(Jade.string(), Jade.number());
 
 schema.validate('x'); // Pass
 schema.validate(1); // Pass
@@ -3510,7 +3510,7 @@ Specifies the mode for [`alternatives.try()`](#alternativestryitems) where:
 To match exactly one schema:
 
 ```js
-const schema = Lyra.alternatives().try(Lyra.number().multiple(2), Lyra.number().multiple(5)).match('one');
+const schema = Jade.alternatives().try(Jade.number().multiple(2), Jade.number().multiple(5)).match('one');
 
 schema.validate(2); // Pass
 schema.validate(5); // Pass
@@ -3521,7 +3521,7 @@ schema.validate(10); // unknown must not match more than one of the provided sch
 To match all schemas:
 
 ```js
-const schema = Lyra.alternatives().try(Lyra.number().convert(), Lyra.string()).match('all');
+const schema = Jade.alternatives().try(Jade.number().convert(), Jade.string()).match('all');
 
 schema.validate('2'); // Pass
 schema.validate(2); // unknown must match all of the provided schemas

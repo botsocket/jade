@@ -1,6 +1,6 @@
 'use strict';
 
-const Clone = require('@botbind/dust/src/clone');
+const Clone = require('@botsocket/bone/src/clone');
 
 const Errors = require('./errors');
 const Utils = require('./utils');

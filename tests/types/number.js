@@ -1,13 +1,13 @@
 'use strict';
 
-const Lyra = require('../../src');
+const Jade = require('../../src');
 const Utils = require('../utils');
 
 describe('number()', () => {
 
     it('should validate numbers', () => {
 
-        const schema = Lyra.num();
+        const schema = Jade.num();
 
         Utils.validate(schema, [
             { value: 1 },
@@ -59,14 +59,14 @@ describe('number()', () => {
 
     it('should allow infinity if specified', () => {
 
-        const schema = Lyra.num().allow(Infinity, -Infinity);
+        const schema = Jade.num().allow(Infinity, -Infinity);
 
         Utils.validate(schema, [{ value: Infinity }, { value: -Infinity }]);
     });
 
     it('should coerce to numbers', () => {
 
-        const schema = Lyra.num().convert();
+        const schema = Jade.num().convert();
 
         Utils.validate(schema, [
             { value: 1 },
@@ -99,7 +99,7 @@ describe('number()', () => {
 
     it('should cast to strings', () => {
 
-        const schema = Lyra.num().cast('string');
+        const schema = Jade.num().cast('string');
 
         Utils.validate(schema, [{ value: 1, output: '1' }]);
     });
@@ -108,21 +108,21 @@ describe('number()', () => {
 
         it('should avoid cloning if called twice', () => {
 
-            const schema = Lyra.num().unsafe();
+            const schema = Jade.num().unsafe();
 
             expect(schema.unsafe()).toBe(schema);
         });
 
         it('should allow unsafe numbers', () => {
 
-            const schema = Lyra.num().unsafe();
+            const schema = Jade.num().unsafe();
 
             Utils.validate(schema, [{ value: Number.MAX_SAFE_INTEGER + 1 }]);
         });
 
         it('should cancel unsafe mode', () => {
 
-            const schema = Lyra.num().unsafe().unsafe(false);
+            const schema = Jade.num().unsafe().unsafe(false);
 
             Utils.validate(schema, [
                 {
@@ -141,7 +141,7 @@ describe('number()', () => {
 
         it('should validate integers', () => {
 
-            const schema = Lyra.num().integer();
+            const schema = Jade.num().integer();
 
             Utils.validate(schema, [
                 { value: 1 },
@@ -161,13 +161,13 @@ describe('number()', () => {
 
         it('should throw on incorrect parameters', () => {
 
-            expect(() => Lyra.num().max('x')).toThrow('limit must be a number or a valid reference');
-            expect(() => Lyra.num().max(NaN)).toThrow('limit must be a number or a valid reference');
+            expect(() => Jade.num().max('x')).toThrow('limit must be a number or a valid reference');
+            expect(() => Jade.num().max(NaN)).toThrow('limit must be a number or a valid reference');
         });
 
         it('should compare numbers', () => {
 
-            const schema = Lyra.num().max(2);
+            const schema = Jade.num().max(2);
 
             Utils.validate(schema, [
                 { value: 1 },
@@ -186,10 +186,10 @@ describe('number()', () => {
 
         it('should support references', () => {
 
-            const ref = Lyra.ref('b');
-            const schema = Lyra.obj({
-                a: Lyra.num().max(ref),
-                b: Lyra.num(),
+            const ref = Jade.ref('b');
+            const schema = Jade.obj({
+                a: Jade.num().max(ref),
+                b: Jade.num(),
             });
 
             Utils.validate(schema, [
@@ -207,9 +207,9 @@ describe('number()', () => {
 
         it('should error on invalid references', () => {
 
-            const ref = Lyra.ref('b');
-            const schema = Lyra.obj({
-                a: Lyra.num().max(ref),
+            const ref = Jade.ref('b');
+            const schema = Jade.obj({
+                a: Jade.num().max(ref),
                 b: 'x',
             });
 
@@ -227,7 +227,7 @@ describe('number()', () => {
 
         it('should override compare value', () => {
 
-            const schema = Lyra.num().max(2).max(1);
+            const schema = Jade.num().max(2).max(1);
 
             Utils.validate(schema, [
                 { value: 1 },
@@ -247,13 +247,13 @@ describe('number()', () => {
 
         it('should throw on incorrect parameters', () => {
 
-            expect(() => Lyra.num().min('x')).toThrow('limit must be a number or a valid reference');
-            expect(() => Lyra.num().min(NaN)).toThrow('limit must be a number or a valid reference');
+            expect(() => Jade.num().min('x')).toThrow('limit must be a number or a valid reference');
+            expect(() => Jade.num().min(NaN)).toThrow('limit must be a number or a valid reference');
         });
 
         it('should compare numbers', () => {
 
-            const schema = Lyra.num().min(2);
+            const schema = Jade.num().min(2);
 
             Utils.validate(schema, [
                 { value: 2 },
@@ -272,10 +272,10 @@ describe('number()', () => {
 
         it('should support references', () => {
 
-            const ref = Lyra.ref('b');
-            const schema = Lyra.obj({
-                a: Lyra.num().min(ref),
-                b: Lyra.num(),
+            const ref = Jade.ref('b');
+            const schema = Jade.obj({
+                a: Jade.num().min(ref),
+                b: Jade.num(),
             });
 
             Utils.validate(schema, [
@@ -293,9 +293,9 @@ describe('number()', () => {
 
         it('should error on invalid references', () => {
 
-            const ref = Lyra.ref('b');
-            const schema = Lyra.obj({
-                a: Lyra.num().min(ref),
+            const ref = Jade.ref('b');
+            const schema = Jade.obj({
+                a: Jade.num().min(ref),
                 b: 'x',
             });
 
@@ -313,7 +313,7 @@ describe('number()', () => {
 
         it('should override compare value', () => {
 
-            const schema = Lyra.num().min(1).min(2);
+            const schema = Jade.num().min(1).min(2);
 
             Utils.validate(schema, [
                 { value: 2 },
@@ -333,13 +333,13 @@ describe('number()', () => {
 
         it('should throw on incorrect parameters', () => {
 
-            expect(() => Lyra.num().greater('x')).toThrow('limit must be a number or a valid reference');
-            expect(() => Lyra.num().greater(NaN)).toThrow('limit must be a number or a valid reference');
+            expect(() => Jade.num().greater('x')).toThrow('limit must be a number or a valid reference');
+            expect(() => Jade.num().greater(NaN)).toThrow('limit must be a number or a valid reference');
         });
 
         it('should compare numbers', () => {
 
-            const schema = Lyra.num().greater(2);
+            const schema = Jade.num().greater(2);
 
             Utils.validate(schema, [
                 { value: 3 },
@@ -356,10 +356,10 @@ describe('number()', () => {
 
         it('should support references', () => {
 
-            const ref = Lyra.ref('b');
-            const schema = Lyra.obj({
-                a: Lyra.num().greater(ref),
-                b: Lyra.num(),
+            const ref = Jade.ref('b');
+            const schema = Jade.obj({
+                a: Jade.num().greater(ref),
+                b: Jade.num(),
             });
 
             Utils.validate(schema, [
@@ -377,9 +377,9 @@ describe('number()', () => {
 
         it('should error on invalid references', () => {
 
-            const ref = Lyra.ref('b');
-            const schema = Lyra.obj({
-                a: Lyra.num().greater(ref),
+            const ref = Jade.ref('b');
+            const schema = Jade.obj({
+                a: Jade.num().greater(ref),
                 b: 'x',
             });
 
@@ -397,7 +397,7 @@ describe('number()', () => {
 
         it('should override compare value', () => {
 
-            const schema = Lyra.num().greater(2).greater(1);
+            const schema = Jade.num().greater(2).greater(1);
 
             Utils.validate(schema, [
                 { value: 2 },
@@ -417,13 +417,13 @@ describe('number()', () => {
 
         it('should throw on incorrect parameters', () => {
 
-            expect(() => Lyra.num().less('x')).toThrow('limit must be a number or a valid reference');
-            expect(() => Lyra.num().less(NaN)).toThrow('limit must be a number or a valid reference');
+            expect(() => Jade.num().less('x')).toThrow('limit must be a number or a valid reference');
+            expect(() => Jade.num().less(NaN)).toThrow('limit must be a number or a valid reference');
         });
 
         it('should compare numbers', () => {
 
-            const schema = Lyra.num().less(2);
+            const schema = Jade.num().less(2);
 
             Utils.validate(schema, [
                 { value: 1 },
@@ -440,10 +440,10 @@ describe('number()', () => {
 
         it('should support references', () => {
 
-            const ref = Lyra.ref('b');
-            const schema = Lyra.obj({
-                a: Lyra.num().less(ref),
-                b: Lyra.num(),
+            const ref = Jade.ref('b');
+            const schema = Jade.obj({
+                a: Jade.num().less(ref),
+                b: Jade.num(),
             });
 
             Utils.validate(schema, [
@@ -461,9 +461,9 @@ describe('number()', () => {
 
         it('should error on invalid references', () => {
 
-            const ref = Lyra.ref('b');
-            const schema = Lyra.obj({
-                a: Lyra.num().less(ref),
+            const ref = Jade.ref('b');
+            const schema = Jade.obj({
+                a: Jade.num().less(ref),
                 b: 'x',
             });
 
@@ -481,7 +481,7 @@ describe('number()', () => {
 
         it('should override compare value', () => {
 
-            const schema = Lyra.num().less(1).less(2);
+            const schema = Jade.num().less(1).less(2);
 
             Utils.validate(schema, [
                 { value: 1 },
@@ -501,13 +501,13 @@ describe('number()', () => {
 
         it('should throw on incorrect parameters', () => {
 
-            expect(() => Lyra.num().multiple('x')).toThrow('factor must be a number or a valid reference');
-            expect(() => Lyra.num().multiple(NaN)).toThrow('factor must be a number or a valid reference');
+            expect(() => Jade.num().multiple('x')).toThrow('factor must be a number or a valid reference');
+            expect(() => Jade.num().multiple(NaN)).toThrow('factor must be a number or a valid reference');
         });
 
         it('should validate factors', () => {
 
-            const schema = Lyra.num().multiple(3);
+            const schema = Jade.num().multiple(3);
 
             Utils.validate(schema, [
                 { value: 3 },
@@ -532,10 +532,10 @@ describe('number()', () => {
 
         it('should support references', () => {
 
-            const ref = Lyra.ref('b');
-            const schema = Lyra.obj({
-                a: Lyra.num().multiple(ref),
-                b: Lyra.num(),
+            const ref = Jade.ref('b');
+            const schema = Jade.obj({
+                a: Jade.num().multiple(ref),
+                b: Jade.num(),
             });
 
             Utils.validate(schema, [
@@ -553,9 +553,9 @@ describe('number()', () => {
 
         it('should error on invalid references', () => {
 
-            const ref = Lyra.ref('b');
-            const schema = Lyra.obj({
-                a: Lyra.num().multiple(ref),
+            const ref = Jade.ref('b');
+            const schema = Jade.obj({
+                a: Jade.num().multiple(ref),
                 b: 'x',
             });
 
@@ -573,7 +573,7 @@ describe('number()', () => {
 
         it('should validate multiple factors', () => {
 
-            const schema = Lyra.num().multiple(3).multiple(5);
+            const schema = Jade.num().multiple(3).multiple(5);
 
             Utils.validate(schema, [
                 { value: 15 },
@@ -601,7 +601,7 @@ describe('number()', () => {
 
         it('should validate parity', () => {
 
-            const schema = Lyra.num().even();
+            const schema = Jade.num().even();
 
             Utils.validate(schema, [
                 { value: 2 },
@@ -629,13 +629,13 @@ describe('number()', () => {
 
         it('should throw on incorrect parameters', () => {
 
-            expect(() => Lyra.num().divide('x')).toThrow('dividend must be a number or a valid reference');
-            expect(() => Lyra.num().divide(NaN)).toThrow('dividend must be a number or a valid reference');
+            expect(() => Jade.num().divide('x')).toThrow('dividend must be a number or a valid reference');
+            expect(() => Jade.num().divide(NaN)).toThrow('dividend must be a number or a valid reference');
         });
 
         it('should validate dividends', () => {
 
-            const schema = Lyra.num().divide(10);
+            const schema = Jade.num().divide(10);
 
             Utils.validate(schema, [
                 { value: 5 },
@@ -654,10 +654,10 @@ describe('number()', () => {
 
         it('should support references', () => {
 
-            const ref = Lyra.ref('b');
-            const schema = Lyra.obj({
-                a: Lyra.num().divide(ref),
-                b: Lyra.num(),
+            const ref = Jade.ref('b');
+            const schema = Jade.obj({
+                a: Jade.num().divide(ref),
+                b: Jade.num(),
             });
 
             Utils.validate(schema, [
@@ -675,9 +675,9 @@ describe('number()', () => {
 
         it('should error on invalid references', () => {
 
-            const ref = Lyra.ref('b');
-            const schema = Lyra.obj({
-                a: Lyra.num().divide(ref),
+            const ref = Jade.ref('b');
+            const schema = Jade.obj({
+                a: Jade.num().divide(ref),
                 b: 'x',
             });
 
@@ -695,7 +695,7 @@ describe('number()', () => {
 
         it('should validate multiple dividends', () => {
 
-            const schema = Lyra.num().divide(16).divide(24);
+            const schema = Jade.num().divide(16).divide(24);
 
             Utils.validate(schema, [
                 { value: 8 },

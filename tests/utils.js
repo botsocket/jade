@@ -2,8 +2,8 @@
 
 const Util = require('util');
 
-const Assert = require('@botbind/dust/src/assert');
-const Equal = require('@botbind/dust/src/equal');
+const Assert = require('@botsocket/bone/src/assert');
+const Equal = require('@botsocket/bone/src/equal');
 
 const Errors = require('../src/errors');
 

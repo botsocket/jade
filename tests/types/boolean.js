@@ -1,13 +1,13 @@
 'use strict';
 
-const Lyra = require('../../src');
+const Jade = require('../../src');
 const Utils = require('../utils');
 
 describe('boolean()', () => {
 
     it('should validate booleans', () => {
 
-        const schema = Lyra.bool();
+        const schema = Jade.bool();
 
         Utils.validate(schema, [
             { value: true },
@@ -33,7 +33,7 @@ describe('boolean()', () => {
 
     it('should coerce to booleans', () => {
 
-        const schema = Lyra.bool().convert();
+        const schema = Jade.bool().convert();
 
         Utils.validate(schema, [
             { value: true },
@@ -83,7 +83,7 @@ describe('boolean()', () => {
 
     it('should cast to strings', () => {
 
-        const schema = Lyra.bool().cast('string');
+        const schema = Jade.bool().cast('string');
 
         Utils.validate(schema, [
             {
@@ -99,7 +99,7 @@ describe('boolean()', () => {
 
     it('should cast to numbers', () => {
 
-        const schema = Lyra.bool().cast('number');
+        const schema = Jade.bool().cast('number');
 
         Utils.validate(schema, [
             {
@@ -117,14 +117,14 @@ describe('boolean()', () => {
 
         it('should avoid cloning if called twice', () => {
 
-            const schema = Lyra.bool().insensitive();
+            const schema = Jade.bool().insensitive();
 
             expect(schema.insensitive()).toBe(schema);
         });
 
         it('should convert strings insensitively', () => {
 
-            const schema = Lyra.bool().insensitive().convert();
+            const schema = Jade.bool().insensitive().convert();
 
             Utils.validate(schema, [
                 {
@@ -148,7 +148,7 @@ describe('boolean()', () => {
 
         it('should look up truthy and falsy values insensitively', () => {
 
-            const schema = Lyra.bool().truthy('truthy').falsy('falsy').insensitive().convert();
+            const schema = Jade.bool().truthy('truthy').falsy('falsy').insensitive().convert();
 
             Utils.validate(schema, [
                 {
@@ -164,7 +164,7 @@ describe('boolean()', () => {
 
         it('should cancel insensitive conversion', () => {
 
-            const schema = Lyra.bool().insensitive().insensitive(false);
+            const schema = Jade.bool().insensitive().insensitive(false);
 
             Utils.validate(schema, [
                 {
@@ -183,13 +183,13 @@ describe('boolean()', () => {
 
         it('should throw on incorrect parameters', () => {
 
-            expect(() => Lyra.bool().truthy()).toThrow('Values must have at least a value');
+            expect(() => Jade.bool().truthy()).toThrow('Values must have at least a value');
         });
 
         it('should support references', () => {
 
-            const schema = Lyra.obj({
-                a: Lyra.bool().truthy(Lyra.ref('b')).convert(),
+            const schema = Jade.obj({
+                a: Jade.bool().truthy(Jade.ref('b')).convert(),
                 b: 'x',
             });
 
@@ -209,9 +209,9 @@ describe('boolean()', () => {
 
         it('should support templates', () => {
 
-            const template = Lyra.template('This is {b}');
-            const schema = Lyra.obj({
-                a: Lyra.bool().truthy(template).insensitive().convert(),
+            const template = Jade.template('This is {b}');
+            const schema = Jade.obj({
+                a: Jade.bool().truthy(template).insensitive().convert(),
                 b: 'x',
             });
 
@@ -231,9 +231,9 @@ describe('boolean()', () => {
 
         it('should override truthy values', () => {
 
-            const schema = Lyra.bool()
+            const schema = Jade.bool()
                 .truthy('x')
-                .truthy(Lyra.override, 'y')
+                .truthy(Jade.override, 'y')
                 .convert();
 
             Utils.validate(schema, [
@@ -254,7 +254,7 @@ describe('boolean()', () => {
 
         it('should cancel out falsy calls', () => {
 
-            const schema = Lyra.bool()
+            const schema = Jade.bool()
                 .falsy('x')
                 .truthy('x')
                 .convert();
@@ -272,13 +272,13 @@ describe('boolean()', () => {
 
         it('should throw on incorrect parameters', () => {
 
-            expect(() => Lyra.bool().falsy()).toThrow('Values must have at least a value');
+            expect(() => Jade.bool().falsy()).toThrow('Values must have at least a value');
         });
 
         it('should support references', () => {
 
-            const schema = Lyra.obj({
-                a: Lyra.bool().falsy(Lyra.ref('b')).convert(),
+            const schema = Jade.obj({
+                a: Jade.bool().falsy(Jade.ref('b')).convert(),
                 b: 'x',
             });
 
@@ -298,9 +298,9 @@ describe('boolean()', () => {
 
         it('should support templates', () => {
 
-            const template = Lyra.template('This is {b}');
-            const schema = Lyra.obj({
-                a: Lyra.bool()
+            const template = Jade.template('This is {b}');
+            const schema = Jade.obj({
+                a: Jade.bool()
                     .falsy(template)
                     .insensitive()
                     .convert(),
@@ -323,9 +323,9 @@ describe('boolean()', () => {
 
         it('should override truthy values', () => {
 
-            const schema = Lyra.bool()
+            const schema = Jade.bool()
                 .falsy('x')
-                .falsy(Lyra.override, 'y')
+                .falsy(Jade.override, 'y')
                 .convert();
 
             Utils.validate(schema, [
@@ -346,7 +346,7 @@ describe('boolean()', () => {
 
         it('should cancel out truthy calls', () => {
 
-            const schema = Lyra.bool()
+            const schema = Jade.bool()
                 .truthy('x')
                 .falsy('x')
                 .convert();

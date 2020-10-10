@@ -1,6 +1,6 @@
 'use strict';
 
-const Lyra = require('../../src');
+const Jade = require('../../src');
 const Utils = require('../utils');
 
 describe('date()', () => {
@@ -24,7 +24,7 @@ describe('date()', () => {
 
     it('should validate dates', () => {
 
-        const schema = Lyra.date();
+        const schema = Jade.date();
 
         Utils.validate(schema, [
             { value: new Date() },
@@ -73,7 +73,7 @@ describe('date()', () => {
 
     it('should coerce to dates', () => {
 
-        const schema = Lyra.date().convert();
+        const schema = Jade.date().convert();
         const date = new Date('01/01/2020');
 
         Utils.validate(schema, [
@@ -135,7 +135,7 @@ describe('date()', () => {
     it('should cast to numbers', () => {
 
         const date = new Date('01/01/2020');
-        const schema = Lyra.date().cast('number');
+        const schema = Jade.date().cast('number');
 
         Utils.validate(schema, [
             {
@@ -148,7 +148,7 @@ describe('date()', () => {
     it('should cast to strings', () => {
 
         const date = new Date('01/01/2020');
-        const schema = Lyra.date().cast('string');
+        const schema = Jade.date().cast('string');
 
         Utils.validate(schema, [
             {
@@ -162,14 +162,14 @@ describe('date()', () => {
 
         it('should throw on incorrect parameters', () => {
 
-            expect(() => Lyra.date().max('x')).toThrow('limit must be now or a valid date or a valid reference');
-            expect(() => Lyra.date().max(NaN)).toThrow('limit must be now or a valid date or a valid reference');
+            expect(() => Jade.date().max('x')).toThrow('limit must be now or a valid date or a valid reference');
+            expect(() => Jade.date().max(NaN)).toThrow('limit must be now or a valid date or a valid reference');
         });
 
         it('should compare dates', () => {
 
             const date = new Date('01/01/2020');
-            const schema = Lyra.date().max(date);
+            const schema = Jade.date().max(date);
 
             Utils.validate(schema, [
                 { value: new Date('12/31/2019') },
@@ -188,7 +188,7 @@ describe('date()', () => {
         it('should normalize max dates passed as strings', () => {
 
             const date = new Date('01/01/2020');
-            const schema = Lyra.date().max(date.toString());
+            const schema = Jade.date().max(date.toString());
 
             Utils.validate(schema, [
                 { value: new Date('12/31/2019') },
@@ -206,7 +206,7 @@ describe('date()', () => {
 
         it('should compare with now', () => {
 
-            const schema = Lyra.date().max('now');
+            const schema = Jade.date().max('now');
 
             Utils.validate(schema, [
                 { value: new Date(Date.now() - 10000) },
@@ -224,9 +224,9 @@ describe('date()', () => {
 
         it('should support references', () => {
 
-            const ref = Lyra.ref('b');
-            const schema = Lyra.obj({
-                a: Lyra.date().max(ref),
+            const ref = Jade.ref('b');
+            const schema = Jade.obj({
+                a: Jade.date().max(ref),
                 b: '01/01/2020',
             });
 
@@ -253,9 +253,9 @@ describe('date()', () => {
 
         it('should error on invalid references', () => {
 
-            const ref = Lyra.ref('b');
-            const schema = Lyra.obj({
-                a: Lyra.date().max(ref),
+            const ref = Jade.ref('b');
+            const schema = Jade.obj({
+                a: Jade.date().max(ref),
                 b: 'x',
             });
 
@@ -278,7 +278,7 @@ describe('date()', () => {
 
             const date = new Date('01/01/2020');
             const date2 = new Date('01/02/2020');
-            const schema = Lyra.date().max(date2.toString()).max(date.toString());
+            const schema = Jade.date().max(date2.toString()).max(date.toString());
 
             Utils.validate(schema, [
                 { value: date },
@@ -298,14 +298,14 @@ describe('date()', () => {
 
         it('should throw on incorrect parameters', () => {
 
-            expect(() => Lyra.date().min('x')).toThrow('limit must be now or a valid date or a valid reference');
-            expect(() => Lyra.date().min(NaN)).toThrow('limit must be now or a valid date or a valid reference');
+            expect(() => Jade.date().min('x')).toThrow('limit must be now or a valid date or a valid reference');
+            expect(() => Jade.date().min(NaN)).toThrow('limit must be now or a valid date or a valid reference');
         });
 
         it('should compare dates', () => {
 
             const date = new Date('01/01/2020');
-            const schema = Lyra.date().min(date);
+            const schema = Jade.date().min(date);
 
             Utils.validate(schema, [
                 { value: new Date('01/02/2020') },
@@ -324,7 +324,7 @@ describe('date()', () => {
         it('should normalize min dates passed as strings', () => {
 
             const date = new Date('01/01/2020');
-            const schema = Lyra.date().min(date.toString());
+            const schema = Jade.date().min(date.toString());
 
             Utils.validate(schema, [
                 { value: new Date('01/02/2020') },
@@ -342,7 +342,7 @@ describe('date()', () => {
 
         it('should compare with now', () => {
 
-            const schema = Lyra.date().min('now');
+            const schema = Jade.date().min('now');
 
             Utils.validate(schema, [
                 { value: new Date(Date.now() + 10000) },
@@ -360,9 +360,9 @@ describe('date()', () => {
 
         it('should support references', () => {
 
-            const ref = Lyra.ref('b');
-            const schema = Lyra.obj({
-                a: Lyra.date().min(ref),
+            const ref = Jade.ref('b');
+            const schema = Jade.obj({
+                a: Jade.date().min(ref),
                 b: '01/01/2020',
             });
 
@@ -389,9 +389,9 @@ describe('date()', () => {
 
         it('should error on invalid references', () => {
 
-            const ref = Lyra.ref('b');
-            const schema = Lyra.obj({
-                a: Lyra.date().min(ref),
+            const ref = Jade.ref('b');
+            const schema = Jade.obj({
+                a: Jade.date().min(ref),
                 b: 'x',
             });
 
@@ -414,7 +414,7 @@ describe('date()', () => {
 
             const date = new Date('01/01/2020');
             const date2 = new Date('01/02/2020');
-            const schema = Lyra.date().min(date.toString()).min(date2.toString());
+            const schema = Jade.date().min(date.toString()).min(date2.toString());
 
             Utils.validate(schema, [
                 { value: date2 },
@@ -434,14 +434,14 @@ describe('date()', () => {
 
         it('should throw on incorrect parameters', () => {
 
-            expect(() => Lyra.date().greater('x')).toThrow('limit must be now or a valid date or a valid reference');
-            expect(() => Lyra.date().greater(NaN)).toThrow('limit must be now or a valid date or a valid reference');
+            expect(() => Jade.date().greater('x')).toThrow('limit must be now or a valid date or a valid reference');
+            expect(() => Jade.date().greater(NaN)).toThrow('limit must be now or a valid date or a valid reference');
         });
 
         it('should compare dates', () => {
 
             const date = new Date('01/01/2020');
-            const schema = Lyra.date().greater(date);
+            const schema = Jade.date().greater(date);
 
             Utils.validate(schema, [
                 { value: new Date('01/02/2020') },
@@ -467,7 +467,7 @@ describe('date()', () => {
         it('should normalize greater dates passed as strings', () => {
 
             const date = new Date('01/01/2020');
-            const schema = Lyra.date().greater(date.toString());
+            const schema = Jade.date().greater(date.toString());
 
             Utils.validate(schema, [
                 { value: new Date('01/02/2020') },
@@ -492,7 +492,7 @@ describe('date()', () => {
 
         it('should compare with now', () => {
 
-            const schema = Lyra.date().greater('now');
+            const schema = Jade.date().greater('now');
 
             Utils.validate(schema, [
                 { value: new Date(Date.now() + 10000) },
@@ -517,9 +517,9 @@ describe('date()', () => {
 
         it('should support references', () => {
 
-            const ref = Lyra.ref('b');
-            const schema = Lyra.obj({
-                a: Lyra.date().greater(ref),
+            const ref = Jade.ref('b');
+            const schema = Jade.obj({
+                a: Jade.date().greater(ref),
                 b: '01/01/2020',
             });
 
@@ -546,9 +546,9 @@ describe('date()', () => {
 
         it('should error on invalid references', () => {
 
-            const ref = Lyra.ref('b');
-            const schema = Lyra.obj({
-                a: Lyra.date().greater(ref),
+            const ref = Jade.ref('b');
+            const schema = Jade.obj({
+                a: Jade.date().greater(ref),
                 b: 'x',
             });
 
@@ -571,7 +571,7 @@ describe('date()', () => {
 
             const date = new Date('01/01/2020');
             const date2 = new Date('01/02/2020');
-            const schema = Lyra.date().greater(date2.toString()).greater(date.toString());
+            const schema = Jade.date().greater(date2.toString()).greater(date.toString());
 
             Utils.validate(schema, [
                 { value: date2 },
@@ -591,14 +591,14 @@ describe('date()', () => {
 
         it('should throw on incorrect parameters', () => {
 
-            expect(() => Lyra.date().less('x')).toThrow('limit must be now or a valid date or a valid reference');
-            expect(() => Lyra.date().less(NaN)).toThrow('limit must be now or a valid date or a valid reference');
+            expect(() => Jade.date().less('x')).toThrow('limit must be now or a valid date or a valid reference');
+            expect(() => Jade.date().less(NaN)).toThrow('limit must be now or a valid date or a valid reference');
         });
 
         it('should compare dates', () => {
 
             const date = new Date('01/01/2020');
-            const schema = Lyra.date().less(date);
+            const schema = Jade.date().less(date);
 
             Utils.validate(schema, [
                 { value: new Date('12/31/2019') },
@@ -624,7 +624,7 @@ describe('date()', () => {
         it('should normalize less dates passed as strings', () => {
 
             const date = new Date('01/01/2020');
-            const schema = Lyra.date().less(date.toString());
+            const schema = Jade.date().less(date.toString());
 
             Utils.validate(schema, [
                 { value: new Date('12/31/2019') },
@@ -649,7 +649,7 @@ describe('date()', () => {
 
         it('should compare with now', () => {
 
-            const schema = Lyra.date().less('now');
+            const schema = Jade.date().less('now');
 
             Utils.validate(schema, [
                 { value: new Date(Date.now() - 10000) },
@@ -674,9 +674,9 @@ describe('date()', () => {
 
         it('should support references', () => {
 
-            const ref = Lyra.ref('b');
-            const schema = Lyra.obj({
-                a: Lyra.date().less(ref),
+            const ref = Jade.ref('b');
+            const schema = Jade.obj({
+                a: Jade.date().less(ref),
                 b: '01/01/2020',
             });
 
@@ -703,9 +703,9 @@ describe('date()', () => {
 
         it('should error on invalid references', () => {
 
-            const ref = Lyra.ref('b');
-            const schema = Lyra.obj({
-                a: Lyra.date().less(ref),
+            const ref = Jade.ref('b');
+            const schema = Jade.obj({
+                a: Jade.date().less(ref),
                 b: 'x',
             });
 
@@ -728,7 +728,7 @@ describe('date()', () => {
 
             const date = new Date('01/01/2020');
             const date2 = new Date('01/02/2020');
-            const schema = Lyra.date().less(date.toString()).less(date2.toString());
+            const schema = Jade.date().less(date.toString()).less(date2.toString());
 
             Utils.validate(schema, [
                 { value: date },

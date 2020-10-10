@@ -1,13 +1,13 @@
 'use strict';
 
-const Lyra = require('../../src');
+const Jade = require('../../src');
 const Utils = require('../utils');
 
 describe('alterantives()', () => {
 
     it('should validate if no alternative is provided', () => {
 
-        const schema = Lyra.alt();
+        const schema = Jade.alt();
 
         Utils.validate(schema, [
             { value: undefined },
@@ -24,7 +24,7 @@ describe('alterantives()', () => {
 
     it('should apply deep labels', () => {
 
-        const schema = Lyra.alt(Lyra.str()).label('A');
+        const schema = Jade.alt(Jade.str()).label('A');
 
         Utils.validate(schema, [
             {
@@ -40,9 +40,9 @@ describe('alterantives()', () => {
 
     it('should compile schemas', () => {
 
-        const schema = Lyra.compile([
+        const schema = Jade.compile([
             'x',
-            Lyra.number(),
+            Jade.number(),
         ]);
 
         Utils.validate(schema, [
@@ -77,7 +77,7 @@ describe('alterantives()', () => {
 
         it('should match any schemas', () => {
 
-            const schema = Lyra.alt(Lyra.num().min(1).convert().required(), Lyra.str());
+            const schema = Jade.alt(Jade.num().min(1).convert().required(), Jade.str());
 
             Utils.validate(schema, [
                 { value: undefined },
@@ -114,7 +114,7 @@ describe('alterantives()', () => {
 
         it('should match schemas added via multiple calls', () => {
 
-            const schema = Lyra.alt(Lyra.num()).try(Lyra.str());
+            const schema = Jade.alt(Jade.num()).try(Jade.str());
 
             Utils.validate(schema, [
                 { value: 'x' },
@@ -146,7 +146,7 @@ describe('alterantives()', () => {
 
         it('should match single item', () => {
 
-            const schema = Lyra.alt(Lyra.str());
+            const schema = Jade.alt(Jade.str());
 
             Utils.validate(schema, [
                 {
@@ -162,7 +162,7 @@ describe('alterantives()', () => {
 
         it('should collect all errors', () => {
 
-            const schema = Lyra.alt(Lyra.str(), Lyra.num().min(2).multiple(2)).settings({ abortEarly: false });
+            const schema = Jade.alt(Jade.str(), Jade.num().min(2).multiple(2)).settings({ abortEarly: false });
 
             Utils.validate(schema, [
                 {
@@ -200,12 +200,12 @@ describe('alterantives()', () => {
 
         it('should throw on incorrect parameters', () => {
 
-            expect(() => Lyra.alt().match('x')).toThrow('Mode must be all, one or any');
+            expect(() => Jade.alt().match('x')).toThrow('Mode must be all, one or any');
         });
 
         it('should match exactly one schema', () => {
 
-            const schema = Lyra.alt(Lyra.num().multiple(2), Lyra.num().multiple(5)).match('one');
+            const schema = Jade.alt(Jade.num().multiple(2), Jade.num().multiple(5)).match('one');
 
             Utils.validate(schema, [
                 { value: 2 },
@@ -231,7 +231,7 @@ describe('alterantives()', () => {
 
         it('should match all schemas', () => {
 
-            const schema = Lyra.alt(Lyra.num().convert(), Lyra.str()).match('all');
+            const schema = Jade.alt(Jade.num().convert(), Jade.str()).match('all');
 
             Utils.validate(schema, [
                 { value: '2' },
@@ -256,7 +256,7 @@ describe('alterantives()', () => {
 
         it('should return modified value from the last schema', () => {
 
-            const schema = Lyra.alt(Lyra.str(), Lyra.num().convert()).match('all');
+            const schema = Jade.alt(Jade.str(), Jade.num().convert()).match('all');
 
             Utils.validate(schema, [
                 {

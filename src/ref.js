@@ -1,8 +1,8 @@
 'use strict';
 
-const Assert = require('@botbind/dust/src/assert');
-const Get = require('@botbind/dust/src/get');
-const SplitPath = require('@botbind/dust/src/splitPath');
+const Assert = require('@botsocket/bone/src/assert');
+const Get = require('@botsocket/bone/src/get');
+const SplitPath = require('@botsocket/bone/src/splitPath');
 
 const Utils = require('./utils');
 

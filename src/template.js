@@ -1,7 +1,7 @@
 'use strict';
 
-const Clone = require('@botbind/dust/src/clone');
-const Template = require('@botbind/template');
+const Clone = require('@botsocket/bone/src/clone');
+const Copal = require('@botsocket/copal');
 
 const Ref = require('./ref');
 const Utils = require('./utils');
@@ -14,7 +14,7 @@ module.exports = internals.Template = class {
         this._refs = [];
         this._settings = options;
 
-        this._template = Template.parse(source, {
+        this._template = Copal.parse(source, {
             reference: (path) => {
 
                 const ref = Ref.create(path, this._settings);

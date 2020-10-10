@@ -1,7 +1,7 @@
 'use strict';
 
-const Assert = require('@botbind/dust/src/assert');
-const Clone = require('@botbind/dust/src/clone');
+const Assert = require('@botsocket/bone/src/assert');
+const Clone = require('@botsocket/bone/src/clone');
 
 const Errors = require('./errors');
 const Utils = require('./utils');

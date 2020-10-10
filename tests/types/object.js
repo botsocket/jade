@@ -1,13 +1,13 @@
 'use strict';
 
-const Lyra = require('../../src');
+const Jade = require('../../src');
 const Utils = require('../utils');
 
 describe('object()', () => {
 
     it('should validate objects', () => {
 
-        const schema = Lyra.obj();
+        const schema = Jade.obj();
 
         Utils.validate(schema, [
             { value: {} },
@@ -26,7 +26,7 @@ describe('object()', () => {
 
     it('should coerce to objects', () => {
 
-        const schema = Lyra.obj().convert();
+        const schema = Jade.obj().convert();
 
         Utils.validate(schema, [
             {
@@ -58,7 +58,7 @@ describe('object()', () => {
 
     it('should use keys for labels', () => {
 
-        const schema = Lyra.obj({ a: { b: 'x' } }).settings({ label: 'key' });
+        const schema = Jade.obj({ a: { b: 'x' } }).settings({ label: 'key' });
 
         Utils.validate(schema, [
             {
@@ -74,14 +74,14 @@ describe('object()', () => {
 
     it('should not trigger deep default is a value is passed to default()', () => {
 
-        const schema = Lyra.obj({ a: 'x' }).default(1);
+        const schema = Jade.obj({ a: 'x' }).default(1);
 
         Utils.validate(schema, [{ output: 1 }]);
     });
 
     it('should cast to maps', () => {
 
-        Utils.validate(Lyra.obj().cast('map'), [
+        Utils.validate(Jade.obj().cast('map'), [
             {
                 value: { x: 1, y: 'x' },
                 output: new Map([
@@ -91,14 +91,14 @@ describe('object()', () => {
             },
         ]);
 
-        Utils.validate(Lyra.obj({}).cast('map'), [
+        Utils.validate(Jade.obj({}).cast('map'), [
             {
                 value: {},
                 output: new Map(),
             },
         ]);
 
-        Utils.validate(Lyra.obj({ x: 'x' }).cast('map'), [
+        Utils.validate(Jade.obj({ x: 'x' }).cast('map'), [
             {
                 value: { x: 'x' },
                 output: new Map([['x', 'x']]),
@@ -108,7 +108,7 @@ describe('object()', () => {
 
     it('should not clone if there are no rules to validate', () => {
 
-        const schema = Lyra.obj();
+        const schema = Jade.obj();
         const obj = {};
 
         const result = schema.validate(obj);
@@ -117,9 +117,9 @@ describe('object()', () => {
 
     it('should clone shallowly on each depth', () => {
 
-        const schema = Lyra.obj({
-            a: Lyra.obj(),
-            b: Lyra.obj({
+        const schema = Jade.obj({
+            a: Jade.obj(),
+            b: Jade.obj({
                 c: 1,
             }),
         });
@@ -136,14 +136,14 @@ describe('object()', () => {
 
         it('should allow unknown keys', () => {
 
-            const schema = Lyra.obj({ a: 'x' }).unknown();
+            const schema = Jade.obj({ a: 'x' }).unknown();
 
             Utils.validate(schema, [{ value: { a: 'x', b: 'y' } }]);
         });
 
         it('should allow unknown patterns', () => {
 
-            const schema = Lyra.obj()
+            const schema = Jade.obj()
                 .pattern(/abc(.*)/)
                 .unknown();
 
@@ -152,14 +152,14 @@ describe('object()', () => {
 
         it('should avoid cloning when called twice', () => {
 
-            const schema = Lyra.obj().unknown();
+            const schema = Jade.obj().unknown();
 
             expect(schema.unknown()).toBe(schema);
         });
 
         it('should not allow unknown keys for nested objects', () => {
 
-            const schema = Lyra.obj({
+            const schema = Jade.obj({
                 a: 'x',
                 b: {
                     c: 'x',
@@ -185,7 +185,7 @@ describe('object()', () => {
 
         it('should disable unknown', () => {
 
-            const schema = Lyra.obj({ a: 'x' }).unknown().unknown(false);
+            const schema = Jade.obj({ a: 'x' }).unknown().unknown(false);
 
             Utils.validate(schema, [
                 {
@@ -201,7 +201,7 @@ describe('object()', () => {
 
         it('should override allowUnknown set via options', () => {
 
-            const schema = Lyra.obj({ a: 'x' }).unknown(false);
+            const schema = Jade.obj({ a: 'x' }).unknown(false);
 
             Utils.validate(schema, { allowUnknown: true }, [
                 {
@@ -220,28 +220,28 @@ describe('object()', () => {
 
         it('should throw on incorrect parameters', () => {
 
-            expect(() => Lyra.obj({}).extract(1)).toThrow('Path must be a non-empty string');
+            expect(() => Jade.obj({}).extract(1)).toThrow('Path must be a non-empty string');
         });
 
         it('should return the current schema if path is not provided', () => {
 
-            const schema = Lyra.obj();
+            const schema = Jade.obj();
 
             expect(schema.extract()).toBe(schema);
         });
 
         it('should extract schema', () => {
 
-            const a = Lyra.str();
-            const b = Lyra.obj({ a });
+            const a = Jade.str();
+            const b = Jade.obj({ a });
 
             expect(b.extract('a')).toBe(a);
         });
 
         it('should extract deeply', () => {
 
-            const a = Lyra.str();
-            const b = Lyra.obj({
+            const a = Jade.str();
+            const b = Jade.obj({
                 a: { b: a },
             });
 
@@ -250,34 +250,34 @@ describe('object()', () => {
 
         it('should escape "."', () => {
 
-            const a = Lyra.str();
-            const b = Lyra.obj({ 'a.b': a });
+            const a = Jade.str();
+            const b = Jade.obj({ 'a.b': a });
 
             expect(b.extract('a\\.b')).toBe(a);
         });
 
         it('should extract schemas that allow any keys', () => {
 
-            expect(Lyra.obj().extract('a.b.c.d.e')).toBe(undefined);
+            expect(Jade.obj().extract('a.b.c.d.e')).toBe(undefined);
         });
 
         it('should extract schemas that allow no keys', () => {
 
-            expect(Lyra.obj({}).extract('a.b.c.d.e')).toBe(undefined);
+            expect(Jade.obj({}).extract('a.b.c.d.e')).toBe(undefined);
         });
 
         it('should extract non-object schemas', () => {
 
-            const schema = Lyra.obj({ a: Lyra.num() });
+            const schema = Jade.obj({ a: Jade.num() });
 
             expect(schema.extract('a.b')).toBe(undefined);
         });
 
         it('should extract non-native objects', () => {
 
-            const custom = Lyra.extend({
+            const custom = Jade.extend({
                 type: 'test',
-                from: Lyra.obj(),
+                from: Jade.obj(),
             });
 
             const a = custom.num();
@@ -291,14 +291,14 @@ describe('object()', () => {
 
         it('should allow any keys', () => {
 
-            const schema = Lyra.obj().keys();
+            const schema = Jade.obj().keys();
 
             Utils.validate(schema, [{ value: {} }, { value: { a: 'x' } }]);
         });
 
         it('should reject all keys', () => {
 
-            const schema = Lyra.obj({});
+            const schema = Jade.obj({});
 
             Utils.validate(schema, [
                 { value: {} },
@@ -315,12 +315,12 @@ describe('object()', () => {
 
         it('should set keys via multiple calls', () => {
 
-            const schema = Lyra.obj({
-                a: Lyra.num(),
+            const schema = Jade.obj({
+                a: Jade.num(),
                 b: 'x',
             })
                 .keys({
-                    a: Lyra.str(),
+                    a: Jade.str(),
                     c: 'y',
                 });
 
@@ -355,11 +355,11 @@ describe('object()', () => {
 
         it('should collect all errors', () => {
 
-            const schema = Lyra.obj({
-                a: Lyra.num(),
+            const schema = Jade.obj({
+                a: Jade.num(),
                 b: {
                     c: 'x',
-                    d: Lyra.num().integer().min(1),
+                    d: Jade.num().integer().min(1),
                 },
             })
                 .settings({ abortEarly: false });
@@ -407,8 +407,8 @@ describe('object()', () => {
 
         it('should not use parent label for unknown keys', () => {
 
-            const schema = Lyra.obj({
-                a: Lyra.str(),
+            const schema = Jade.obj({
+                a: Jade.str(),
             })
                 .label('Options');
 
@@ -438,7 +438,7 @@ describe('object()', () => {
 
         it('should set patterns', () => {
 
-            const schema = Lyra.obj().pattern(/abc(.*)/, 'x');
+            const schema = Jade.obj().pattern(/abc(.*)/, 'x');
 
             Utils.validate(schema, [
                 { value: { abc: 'x' } },
@@ -463,7 +463,7 @@ describe('object()', () => {
 
         it('should set patterns via multiple calls', () => {
 
-            const schema = Lyra.obj()
+            const schema = Jade.obj()
                 .pattern(/abc(.*)/, 'x')
                 .pattern(/xyz(.*)/, 'y');
 
@@ -490,9 +490,9 @@ describe('object()', () => {
 
         it('should support in references for key patterns', () => {
 
-            const schema = Lyra.obj({
-                a: Lyra.arr(Lyra.str()),
-                b: Lyra.obj().pattern(Lyra.in('a'), Lyra.str()),
+            const schema = Jade.obj({
+                a: Jade.arr(Jade.str()),
+                b: Jade.obj().pattern(Jade.in('a'), Jade.str()),
             });
 
             Utils.validate(schema, [
@@ -538,10 +538,10 @@ describe('object()', () => {
 
         it('should support in references for both key and value patterns', () => {
 
-            const ref = Lyra.in('...a');
-            const schema = Lyra.obj({
-                a: Lyra.arr(Lyra.str()),
-                b: Lyra.obj().pattern(Lyra.in('a'), ref),
+            const ref = Jade.in('...a');
+            const schema = Jade.obj({
+                a: Jade.arr(Jade.str()),
+                b: Jade.obj().pattern(Jade.in('a'), ref),
             });
 
             Utils.validate(schema, [
@@ -605,9 +605,9 @@ describe('object()', () => {
 
         it('should support templates', () => {
 
-            const schema = Lyra.obj({
+            const schema = Jade.obj({
                 a: 'x',
-                b: Lyra.obj().pattern(Lyra.template('prefix-{a}'), Lyra.str()),
+                b: Jade.obj().pattern(Jade.template('prefix-{a}'), Jade.str()),
             });
 
             Utils.validate(schema, [
@@ -633,7 +633,7 @@ describe('object()', () => {
 
         it('should allow only key patterns', () => {
 
-            const schema = Lyra.obj().pattern(/abc(.*)/);
+            const schema = Jade.obj().pattern(/abc(.*)/);
 
             Utils.validate(schema, [
                 { value: { abc: 'x' } },
@@ -650,8 +650,8 @@ describe('object()', () => {
 
         it('should collect all errors', () => {
 
-            const schema = Lyra.obj()
-                .pattern(/abc(.*)/, Lyra.num().integer().min(1))
+            const schema = Jade.obj()
+                .pattern(/abc(.*)/, Jade.num().integer().min(1))
                 .pattern(/xyz(.*)/, 'x')
                 .settings({ abortEarly: false });
 
@@ -689,13 +689,13 @@ describe('object()', () => {
 
         it('should throw on incorrect parameters', () => {
 
-            expect(() => Lyra.obj().length('x')).toThrow('limit must be a number or a valid reference');
-            expect(() => Lyra.obj().length(NaN)).toThrow('limit must be a number or a valid reference');
+            expect(() => Jade.obj().length('x')).toThrow('limit must be a number or a valid reference');
+            expect(() => Jade.obj().length(NaN)).toThrow('limit must be a number or a valid reference');
         });
 
         it('should set length', () => {
 
-            const schema = Lyra.obj().length(2);
+            const schema = Jade.obj().length(2);
 
             Utils.validate(schema, [
                 { value: { a: 'x', b: 'x' } },
@@ -712,10 +712,10 @@ describe('object()', () => {
 
         it('should support reference', () => {
 
-            const ref = Lyra.ref('a');
-            const schema = Lyra.obj({
+            const ref = Jade.ref('a');
+            const schema = Jade.obj({
                 a: 2,
-                b: Lyra.obj().length(ref),
+                b: Jade.obj().length(ref),
             });
 
             Utils.validate(schema, [
@@ -741,10 +741,10 @@ describe('object()', () => {
 
         it('should throw on invalid reference', () => {
 
-            const ref = Lyra.ref('a');
-            const schema = Lyra.obj({
+            const ref = Jade.ref('a');
+            const schema = Jade.obj({
                 a: 'x',
-                b: Lyra.obj().length(ref),
+                b: Jade.obj().length(ref),
             });
 
             Utils.validate(schema, [
@@ -766,7 +766,7 @@ describe('object()', () => {
 
         it('should override length', () => {
 
-            const schema = Lyra.obj().length(1).length(2);
+            const schema = Jade.obj().length(1).length(2);
 
             Utils.validate(schema, [
                 { value: { a: 'x', b: 'x' } },
@@ -786,13 +786,13 @@ describe('object()', () => {
 
         it('should throw on incorrect parameters', () => {
 
-            expect(() => Lyra.obj().max('x')).toThrow('limit must be a number or a valid reference');
-            expect(() => Lyra.obj().max(NaN)).toThrow('limit must be a number or a valid reference');
+            expect(() => Jade.obj().max('x')).toThrow('limit must be a number or a valid reference');
+            expect(() => Jade.obj().max(NaN)).toThrow('limit must be a number or a valid reference');
         });
 
         it('should set max length', () => {
 
-            const schema = Lyra.obj().max(2);
+            const schema = Jade.obj().max(2);
 
             Utils.validate(schema, [
                 { value: { a: 'x' } },
@@ -810,10 +810,10 @@ describe('object()', () => {
 
         it('should support reference', () => {
 
-            const ref = Lyra.ref('a');
-            const schema = Lyra.obj({
+            const ref = Jade.ref('a');
+            const schema = Jade.obj({
                 a: 2,
-                b: Lyra.obj().max(ref),
+                b: Jade.obj().max(ref),
             });
 
             Utils.validate(schema, [
@@ -845,10 +845,10 @@ describe('object()', () => {
 
         it('should throw on invalid reference', () => {
 
-            const ref = Lyra.ref('a');
-            const schema = Lyra.obj({
+            const ref = Jade.ref('a');
+            const schema = Jade.obj({
                 a: 'x',
-                b: Lyra.obj().max(ref),
+                b: Jade.obj().max(ref),
             });
 
             Utils.validate(schema, [
@@ -870,7 +870,7 @@ describe('object()', () => {
 
         it('should override max length', () => {
 
-            const schema = Lyra.obj().max(1).max(2);
+            const schema = Jade.obj().max(1).max(2);
 
             Utils.validate(schema, [{ value: { a: 'x', b: 'x' } }, { value: { a: 'x' } }]);
         });
@@ -880,13 +880,13 @@ describe('object()', () => {
 
         it('should throw on incorrect parameters', () => {
 
-            expect(() => Lyra.obj().min('x')).toThrow('limit must be a number or a valid reference');
-            expect(() => Lyra.obj().min(NaN)).toThrow('limit must be a number or a valid reference');
+            expect(() => Jade.obj().min('x')).toThrow('limit must be a number or a valid reference');
+            expect(() => Jade.obj().min(NaN)).toThrow('limit must be a number or a valid reference');
         });
 
         it('should set min length', () => {
 
-            const schema = Lyra.obj().min(2);
+            const schema = Jade.obj().min(2);
 
             Utils.validate(schema, [
                 { value: { a: 'x', b: 'x', c: 'x' } },
@@ -904,10 +904,10 @@ describe('object()', () => {
 
         it('should support reference', () => {
 
-            const ref = Lyra.ref('a');
-            const schema = Lyra.obj({
+            const ref = Jade.ref('a');
+            const schema = Jade.obj({
                 a: 2,
-                b: Lyra.obj().min(ref),
+                b: Jade.obj().min(ref),
             });
 
             Utils.validate(schema, [
@@ -939,10 +939,10 @@ describe('object()', () => {
 
         it('should throw on invalid reference', () => {
 
-            const ref = Lyra.ref('a');
-            const schema = Lyra.obj({
+            const ref = Jade.ref('a');
+            const schema = Jade.obj({
                 a: 'x',
-                b: Lyra.obj().min(ref),
+                b: Jade.obj().min(ref),
             });
 
             Utils.validate(schema, [
@@ -964,7 +964,7 @@ describe('object()', () => {
 
         it('should override min length', () => {
 
-            const schema = Lyra.obj().min(1).min(2);
+            const schema = Jade.obj().min(1).min(2);
 
             Utils.validate(schema, [
                 { value: { a: 'x', b: 'x' } },
@@ -984,7 +984,7 @@ describe('object()', () => {
 
         it('should throw on incorrect parameters', () => {
 
-            expect(() => Lyra.obj().instance(1)).toThrow('Constructor must be a function');
+            expect(() => Jade.obj().instance(1)).toThrow('Constructor must be a function');
         });
 
         it('should validate class instances', () => {
@@ -992,7 +992,7 @@ describe('object()', () => {
             class X { }
 
             const a = new X();
-            const schema = Lyra.obj().instance(X);
+            const schema = Jade.obj().instance(X);
 
             Utils.validate(schema, [
                 { value: a },
@@ -1017,7 +1017,7 @@ describe('object()', () => {
 
             const b = new Y();
             const c = new Z();
-            const schema = Lyra.obj().instance(X).instance(Y);
+            const schema = Jade.obj().instance(X).instance(Y);
 
             Utils.validate(schema, [
                 { value: b },
@@ -1045,7 +1045,7 @@ describe('object()', () => {
 
         it('should validate regular expressions', () => {
 
-            const schema = Lyra.obj().regex();
+            const schema = Jade.obj().regex();
 
             Utils.validate(schema, [
                 { value: /x/ },
@@ -1065,16 +1065,16 @@ describe('object()', () => {
 
         it('should throw on incorrect parameters', () => {
 
-            expect(() => Lyra.obj().schema(1)).toThrow('Type must be a string');
+            expect(() => Jade.obj().schema(1)).toThrow('Type must be a string');
         });
 
         it('should validate schema objects', () => {
 
-            const schema = Lyra.obj().schema();
+            const schema = Jade.obj().schema();
 
             Utils.validate(schema, [
-                { value: Lyra.num() },
-                { value: Lyra.str() },
+                { value: Jade.num() },
+                { value: Jade.str() },
                 {
                     value: {},
                     error: {
@@ -1088,12 +1088,12 @@ describe('object()', () => {
 
         it('should validate schema types', () => {
 
-            const schema = Lyra.obj().schema('number');
+            const schema = Jade.obj().schema('number');
 
             Utils.validate(schema, [
-                { value: Lyra.num() },
+                { value: Jade.num() },
                 {
-                    value: Lyra.str(),
+                    value: Jade.str(),
                     error: {
                         code: 'object.schema.type',
                         message: 'unknown must be a valid schema of type number',
@@ -1105,9 +1105,9 @@ describe('object()', () => {
 
         it('should validate schema bases', () => {
 
-            const custom = Lyra.extend({
+            const custom = Jade.extend({
                 type: 'test',
-                from: Lyra.obj(),
+                from: Jade.obj(),
             });
 
             const schema = custom.obj().schema('object', { allowBase: true });
@@ -1120,10 +1120,10 @@ describe('object()', () => {
 
         it('should validate values objects', () => {
 
-            const schema = Lyra.obj().values();
+            const schema = Jade.obj().values();
 
             Utils.validate(schema, [
-                { value: Lyra.values() },
+                { value: Jade.values() },
                 {
                     value: {},
                     error: {
@@ -1140,10 +1140,10 @@ describe('object()', () => {
 
         it('should validate reference objects', () => {
 
-            const schema = Lyra.obj().ref();
+            const schema = Jade.obj().ref();
 
             Utils.validate(schema, [
-                { value: Lyra.ref('a') },
+                { value: Jade.ref('a') },
                 {
                     value: {},
                     error: {
@@ -1160,10 +1160,10 @@ describe('object()', () => {
 
         it('should validate template objects', () => {
 
-            const schema = Lyra.obj().template();
+            const schema = Jade.obj().template();
 
             Utils.validate(schema, [
-                { value: Lyra.template('x') },
+                { value: Jade.template('x') },
                 {
                     value: {},
                     error: {
@@ -1180,12 +1180,12 @@ describe('object()', () => {
 
         it('should throw on incorrect parameters', () => {
 
-            expect(() => Lyra.obj().and('a', Lyra.ref('b'), 'c')).toThrow('Peer must be a string');
+            expect(() => Jade.obj().and('a', Jade.ref('b'), 'c')).toThrow('Peer must be a string');
         });
 
         it('should validate peers', () => {
 
-            const schema = Lyra.obj({
+            const schema = Jade.obj({
                 a: 'x',
                 b: 'y',
                 c: 'z',
@@ -1260,7 +1260,7 @@ describe('object()', () => {
 
         it('should validate nested peers', () => {
 
-            const schema = Lyra.obj({
+            const schema = Jade.obj({
                 a: 'x',
                 b: {
                     c: 'y',
@@ -1305,7 +1305,7 @@ describe('object()', () => {
 
         it('should validate invalid nested peers', () => {
 
-            const schema = Lyra.obj({
+            const schema = Jade.obj({
                 a: 'x',
                 b: 'y',
             })
@@ -1351,7 +1351,7 @@ describe('object()', () => {
 
         it('should not validate unknown peers', () => {
 
-            const schema = Lyra.obj({ a: 'x' }).and('a', 'b');
+            const schema = Jade.obj({ a: 'x' }).and('a', 'b');
 
             Utils.validate(schema, [
                 { value: {} },
@@ -1380,7 +1380,7 @@ describe('object()', () => {
 
         it('should validate unknown peers when unknown is set to true', () => {
 
-            const schema = Lyra.obj({ a: 'x' })
+            const schema = Jade.obj({ a: 'x' })
                 .unknown()
                 .and('a', 'b');
 
@@ -1403,9 +1403,9 @@ describe('object()', () => {
 
         it('should use labels', () => {
 
-            const schema = Lyra.obj({
-                a: Lyra.valid('x').label('A'),
-                b: Lyra.valid('y').label('B'),
+            const schema = Jade.obj({
+                a: Jade.valid('x').label('A'),
+                b: Jade.valid('y').label('B'),
             })
                 .and('a', 'b');
 
@@ -1427,8 +1427,8 @@ describe('object()', () => {
 
         it('should use labels when validating invalid nested peers', () => {
 
-            const schema = Lyra.obj({
-                a: Lyra.valid('x').label('A'),
+            const schema = Jade.obj({
+                a: Jade.valid('x').label('A'),
                 b: 'y',
             })
                 .and('a', 'b.c');
@@ -1454,12 +1454,12 @@ describe('object()', () => {
 
         it('should throw on incorrect parameters', () => {
 
-            expect(() => Lyra.obj().nand('a', Lyra.ref('b'), 'c')).toThrow('Peer must be a string');
+            expect(() => Jade.obj().nand('a', Jade.ref('b'), 'c')).toThrow('Peer must be a string');
         });
 
         it('should validate peers', () => {
 
-            const schema = Lyra.obj({
+            const schema = Jade.obj({
                 a: 'x',
                 b: 'y',
                 c: 'z',
@@ -1494,7 +1494,7 @@ describe('object()', () => {
 
         it('should validate nested peers', () => {
 
-            const schema = Lyra.obj({
+            const schema = Jade.obj({
                 a: 'x',
                 b: {
                     c: 'y',
@@ -1528,7 +1528,7 @@ describe('object()', () => {
 
         it('should validate invalid nested peers', () => {
 
-            const schema = Lyra.obj({
+            const schema = Jade.obj({
                 a: 'x',
                 b: 'y',
             })
@@ -1552,7 +1552,7 @@ describe('object()', () => {
 
         it('should not validate unknown peers', () => {
 
-            const schema = Lyra.obj({ a: 'x' }).nand('a', 'b');
+            const schema = Jade.obj({ a: 'x' }).nand('a', 'b');
 
             Utils.validate(schema, { abortEarly: false }, [
                 {
@@ -1581,7 +1581,7 @@ describe('object()', () => {
 
         it('should validate unknown peers when unknown is set to true', () => {
 
-            const schema = Lyra.obj({ a: 'x' })
+            const schema = Jade.obj({ a: 'x' })
                 .nand('a', 'b')
                 .unknown();
 
@@ -1608,9 +1608,9 @@ describe('object()', () => {
 
         it('should use labels', () => {
 
-            const schema = Lyra.obj({
-                a: Lyra.valid('x').label('A'),
-                b: Lyra.valid('y').label('B'),
+            const schema = Jade.obj({
+                a: Jade.valid('x').label('A'),
+                b: Jade.valid('y').label('B'),
             })
                 .nand('a', 'b');
 
@@ -1637,12 +1637,12 @@ describe('object()', () => {
 
         it('should throw on incorrect parameters', () => {
 
-            expect(() => Lyra.obj().or('a', Lyra.ref('b'), 'c')).toThrow('Peer must be a string');
+            expect(() => Jade.obj().or('a', Jade.ref('b'), 'c')).toThrow('Peer must be a string');
         });
 
         it('should validate peers', () => {
 
-            const schema = Lyra.obj({
+            const schema = Jade.obj({
                 a: 'x',
                 b: 'y',
                 c: 'z',
@@ -1677,7 +1677,7 @@ describe('object()', () => {
 
         it('should validate nested peers', () => {
 
-            const schema = Lyra.obj({
+            const schema = Jade.obj({
                 a: 'x',
                 b: {
                     c: 'y',
@@ -1713,7 +1713,7 @@ describe('object()', () => {
 
         it('should validate invalid nested peers', () => {
 
-            const schema = Lyra.obj({
+            const schema = Jade.obj({
                 a: 'x',
                 b: 'y',
             })
@@ -1763,7 +1763,7 @@ describe('object()', () => {
 
         it('should not validate unknown peers', () => {
 
-            const schema = Lyra.obj({ a: 'x' }).or('a', 'b');
+            const schema = Jade.obj({ a: 'x' }).or('a', 'b');
 
             Utils.validate(schema, [
                 { value: { a: 'x' } },
@@ -1802,7 +1802,7 @@ describe('object()', () => {
 
         it('should validate unknown peers when unknown is set to true', () => {
 
-            const schema = Lyra.obj({ a: 'x' })
+            const schema = Jade.obj({ a: 'x' })
                 .unknown()
                 .or('a', 'b');
 
@@ -1829,9 +1829,9 @@ describe('object()', () => {
 
         it('should use labels', () => {
 
-            const schema = Lyra.obj({
-                a: Lyra.valid('x').label('A'),
-                b: Lyra.valid('y').label('B'),
+            const schema = Jade.obj({
+                a: Jade.valid('x').label('A'),
+                b: Jade.valid('y').label('B'),
             })
                 .or('a', 'b');
 
@@ -1855,8 +1855,8 @@ describe('object()', () => {
 
         it('should use labels when validating invalid nested peers', () => {
 
-            const schema = Lyra.obj({
-                a: Lyra.valid('x').label('A'),
+            const schema = Jade.obj({
+                a: Jade.valid('x').label('A'),
                 b: 'y',
             })
                 .or('a', 'b.c');
@@ -1884,12 +1884,12 @@ describe('object()', () => {
 
         it('should throw on incorrect parameters', () => {
 
-            expect(() => Lyra.obj().xor('a', Lyra.ref('b'), 'c')).toThrow('Peer must be a string');
+            expect(() => Jade.obj().xor('a', Jade.ref('b'), 'c')).toThrow('Peer must be a string');
         });
 
         it('should validate peers', () => {
 
-            const schema = Lyra.obj({
+            const schema = Jade.obj({
                 a: 'x',
                 b: 'y',
                 c: 'z',
@@ -1998,7 +1998,7 @@ describe('object()', () => {
 
         it('should validate nested peers', () => {
 
-            const schema = Lyra.obj({
+            const schema = Jade.obj({
                 a: 'x',
                 b: {
                     c: 'y',
@@ -2035,7 +2035,7 @@ describe('object()', () => {
 
         it('should validate invalid nested peers', () => {
 
-            const schema = Lyra.obj({
+            const schema = Jade.obj({
                 a: 'x',
                 b: 'y',
             })
@@ -2087,7 +2087,7 @@ describe('object()', () => {
 
         it('should not validate unknown peers', () => {
 
-            const schema = Lyra.obj({ a: 'x' }).xor('a', 'b');
+            const schema = Jade.obj({ a: 'x' }).xor('a', 'b');
 
             Utils.validate(schema, [
                 { value: { a: 'x' } },
@@ -2127,7 +2127,7 @@ describe('object()', () => {
 
         it('should validate unknown peers when unknown is set to true', () => {
 
-            const schema = Lyra.obj({ a: 'x' })
+            const schema = Jade.obj({ a: 'x' })
                 .unknown()
                 .xor('a', 'b');
 
@@ -2172,9 +2172,9 @@ describe('object()', () => {
 
         it('should use labels', () => {
 
-            const schema = Lyra.obj({
-                a: Lyra.valid('x').label('A'),
-                b: Lyra.valid('y').label('B'),
+            const schema = Jade.obj({
+                a: Jade.valid('x').label('A'),
+                b: Jade.valid('y').label('B'),
             })
                 .xor('a', 'b');
 
@@ -2202,8 +2202,8 @@ describe('object()', () => {
 
         it('should use labels when validating invalid nested peers', () => {
 
-            const schema = Lyra.obj({
-                a: Lyra.valid('x').label('A'),
+            const schema = Jade.obj({
+                a: Jade.valid('x').label('A'),
                 b: 'y',
             })
                 .xor('a', 'b.c');
@@ -2232,12 +2232,12 @@ describe('object()', () => {
 
         it('should throw on incorrect parameters', () => {
 
-            expect(() => Lyra.obj().oxor('a', Lyra.ref('b'), 'c')).toThrow('Peer must be a string');
+            expect(() => Jade.obj().oxor('a', Jade.ref('b'), 'c')).toThrow('Peer must be a string');
         });
 
         it('should validate peers', () => {
 
-            const schema = Lyra.obj({
+            const schema = Jade.obj({
                 a: 'x',
                 b: 'y',
                 c: 'z',
@@ -2331,7 +2331,7 @@ describe('object()', () => {
 
         it('should validate nested peers', () => {
 
-            const schema = Lyra.obj({
+            const schema = Jade.obj({
                 a: 'x',
                 b: {
                     c: 'y',
@@ -2368,7 +2368,7 @@ describe('object()', () => {
 
         it('should validate invalid nested peers', () => {
 
-            const schema = Lyra.obj({
+            const schema = Jade.obj({
                 a: 'x',
                 b: 'y',
             })
@@ -2392,7 +2392,7 @@ describe('object()', () => {
 
         it('should not validate unknown peers', () => {
 
-            const schema = Lyra.obj({ a: 'x' }).oxor('a', 'b');
+            const schema = Jade.obj({ a: 'x' }).oxor('a', 'b');
 
             Utils.validate(schema, [
                 { value: { a: 'x' } },
@@ -2418,7 +2418,7 @@ describe('object()', () => {
 
         it('should validate unknown peers when unknown is set to true', () => {
 
-            const schema = Lyra.obj({ a: 'x' })
+            const schema = Jade.obj({ a: 'x' })
                 .unknown()
                 .oxor('a', 'b');
 
@@ -2449,9 +2449,9 @@ describe('object()', () => {
 
         it('should use labels', () => {
 
-            const schema = Lyra.obj({
-                a: Lyra.valid('x').label('A'),
-                b: Lyra.valid('y').label('B'),
+            const schema = Jade.obj({
+                a: Jade.valid('x').label('A'),
+                b: Jade.valid('y').label('B'),
             })
                 .oxor('a', 'b');
 

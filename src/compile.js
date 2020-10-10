@@ -1,6 +1,6 @@
 'use strict';
 
-const Assert = require('@botbind/dust/src/assert');
+const Assert = require('@botsocket/bone/src/assert');
 
 const Ref = require('./ref');
 const Utils = require('./utils');

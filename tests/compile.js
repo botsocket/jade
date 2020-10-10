@@ -1,8 +1,8 @@
 'use strict';
 
-const Dust = require('@botbind/dust');
+const Bone = require('@botsocket/bone');
 
-const Lyra = require('../src');
+const Jade = require('../src');
 const Utils = require('./utils');
 
 describe('compile()', () => {
@@ -19,8 +19,8 @@ describe('compile()', () => {
             throw error;
         };
 
-        const ref = Lyra.ref('a');
-        const schema = Lyra.compile({
+        const ref = Jade.ref('a');
+        const schema = Jade.compile({
             a: 'x',
             b: [ref, 1],
             c: /^abc$/,
@@ -88,16 +88,16 @@ describe('compile()', () => {
             },
         ]);
 
-        const schema2 = Lyra.obj({
-            a: Lyra.valid(Lyra.override, 'x'),
-            b: Lyra.valid(Lyra.override, ref, 1),
-            c: Lyra.str().pattern(/^abc$/),
-            d: Lyra.any().rule(validateFn),
-            e: Lyra.obj({
-                f: Lyra.valid(Lyra.override, 1),
+        const schema2 = Jade.obj({
+            a: Jade.valid(Jade.override, 'x'),
+            b: Jade.valid(Jade.override, ref, 1),
+            c: Jade.str().pattern(/^abc$/),
+            d: Jade.any().rule(validateFn),
+            e: Jade.obj({
+                f: Jade.valid(Jade.override, 1),
             }),
         });
 
-        expect(Dust.equal(schema, schema2, { deepFunction: true })).toBe(true);
+        expect(Bone.equal(schema, schema2, { deepFunction: true })).toBe(true);
     });
 });

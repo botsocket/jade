@@ -1,14 +1,14 @@
 'use strict';
 
-const Lyra = require('../src');
+const Jade = require('../src');
 const Utils = require('./utils');
 
 describe('template()', () => {
 
     it('should support reference options', () => {
 
-        const template = Lyra.template('This is {#a}', { prefix: false });
-        const schema = Lyra.obj({
+        const template = Jade.template('This is {#a}', { prefix: false });
+        const schema = Jade.obj({
             '#a': 'x',
             b: template,
         });

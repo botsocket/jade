@@ -1,10 +1,10 @@
 'use strict';
 
-const Assert = require('@botbind/dust/src/assert');
-const Clone = require('@botbind/dust/src/clone');
-const Equal = require('@botbind/dust/src/equal');
-const IsObject = require('@botbind/dust/src/isObject');
-const Merge = require('@botbind/dust/src/merge');
+const Assert = require('@botsocket/bone/src/assert');
+const Clone = require('@botsocket/bone/src/clone');
+const Equal = require('@botsocket/bone/src/equal');
+const IsObject = require('@botsocket/bone/src/isObject');
+const Merge = require('@botsocket/bone/src/merge');
 
 const Compile = require('./compile');
 const State = require('./state');

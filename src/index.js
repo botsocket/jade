@@ -1,6 +1,6 @@
 'use strict';
 
-const Assert = require('@botbind/dust/src/assert');
+const Assert = require('@botsocket/bone/src/assert');
 
 const Compile = require('./compile');
 const Values = require('./values');
@@ -82,7 +82,7 @@ internals.root = function () {
 
     root.in = function (path, options = {}) {
 
-        Assert(options.in === undefined, 'Option in cannot be provided when using Lyra.in()');
+        Assert(options.in === undefined, 'Option in cannot be provided when using Jade.in()');
 
         return Ref.create(path, { ...options, in: true });
     };

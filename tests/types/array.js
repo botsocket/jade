@@ -1,13 +1,13 @@
 'use strict';
 
-const Lyra = require('../../src');
+const Jade = require('../../src');
 const Utils = require('../utils');
 
 describe('array()', () => {
 
     it('should validate arrays', () => {
 
-        const schema = Lyra.arr();
+        const schema = Jade.arr();
 
         Utils.validate(schema, [
             { value: [] },
@@ -33,7 +33,7 @@ describe('array()', () => {
 
     it('should coerce to arrays', () => {
 
-        const schema = Lyra.arr().convert();
+        const schema = Jade.arr().convert();
 
         Utils.validate(schema, [
             {
@@ -65,7 +65,7 @@ describe('array()', () => {
 
     it('should cast to sets', () => {
 
-        const schema = Lyra.arr().cast('set');
+        const schema = Jade.arr().cast('set');
 
         Utils.validate(schema, [
             {
@@ -77,7 +77,7 @@ describe('array()', () => {
 
     it('should reject sparse array items', () => {
 
-        const schema = Lyra.arr();
+        const schema = Jade.arr();
 
         Utils.validate(schema, [
             {
@@ -93,7 +93,7 @@ describe('array()', () => {
 
     it('should not clone sparse arrays if there are no rules to validate', () => {
 
-        const schema = Lyra.arr().sparse();
+        const schema = Jade.arr().sparse();
         const arr = [1];
 
         const result = schema.validate(arr);
@@ -104,12 +104,12 @@ describe('array()', () => {
 
         it('should throw on incorrect parameters', () => {
 
-            expect(() => Lyra.arr().items()).toThrow('Items must have at least one item');
+            expect(() => Jade.arr().items()).toThrow('Items must have at least one item');
         });
 
         it('should validate single item', () => {
 
-            const schema = Lyra.arr({ a: Lyra.str().required() });
+            const schema = Jade.arr({ a: Jade.str().required() });
 
             Utils.validate(schema, [
                 { value: [] },
@@ -136,7 +136,7 @@ describe('array()', () => {
 
         it('should reject sparse item', () => {
 
-            const schema = Lyra.arr(Lyra.str());
+            const schema = Jade.arr(Jade.str());
 
             Utils.validate(schema, [
                 {
@@ -152,7 +152,7 @@ describe('array()', () => {
 
         it('should validate items added via multiple calls', () => {
 
-            const schema = Lyra.arr(Lyra.str()).items(Lyra.num()).items(Lyra.bool());
+            const schema = Jade.arr(Jade.str()).items(Jade.num()).items(Jade.bool());
 
             Utils.validate(schema, [
                 { value: ['a', 1, true] },
@@ -169,7 +169,7 @@ describe('array()', () => {
 
         it('should validate multiple items', () => {
 
-            const schema = Lyra.arr(Lyra.num().max(10).convert(), Lyra.num().max(5).convert(), Lyra.str());
+            const schema = Jade.arr(Jade.num().max(10).convert(), Jade.num().max(5).convert(), Jade.str());
 
             Utils.validate(schema, [
                 {
@@ -197,7 +197,7 @@ describe('array()', () => {
 
         it('should validate array items', () => {
 
-            const schema = Lyra.arr(Lyra.arr(Lyra.str()));
+            const schema = Jade.arr(Jade.arr(Jade.str()));
 
             Utils.validate(schema, [
                 { value: [] },
@@ -216,7 +216,7 @@ describe('array()', () => {
 
         it('should validate forbidden items', () => {
 
-            const schema = Lyra.arr().items(Lyra.str().min(2).forbidden(), Lyra.number().convert(), Lyra.str());
+            const schema = Jade.arr().items(Jade.str().min(2).forbidden(), Jade.number().convert(), Jade.str());
 
             Utils.validate(schema, [
                 {
@@ -240,9 +240,9 @@ describe('array()', () => {
 
         it('should support forbidden references', () => {
 
-            const schema = Lyra.obj({
-                a: Lyra.arr(Lyra.valid(Lyra.ref('...b')).forbidden(), Lyra.str()),
-                b: Lyra.number().convert(),
+            const schema = Jade.obj({
+                a: Jade.arr(Jade.valid(Jade.ref('...b')).forbidden(), Jade.str()),
+                b: Jade.number().convert(),
             });
 
             Utils.validate(schema, [
@@ -262,7 +262,7 @@ describe('array()', () => {
 
         it('should validate single required items', () => {
 
-            const schema = Lyra.arr(Lyra.str().required());
+            const schema = Jade.arr(Jade.str().required());
 
             Utils.validate(schema, [
                 { value: ['x'] },
@@ -288,8 +288,8 @@ describe('array()', () => {
 
         it('should validate multiple required items', () => {
 
-            const a = Lyra.str().min(2).required();
-            const schema = Lyra.arr(a, a, Lyra.num());                              // 2 required 'a' schemas
+            const a = Jade.str().min(2).required();
+            const schema = Jade.arr(a, a, Jade.num());                              // 2 required 'a' schemas
 
             Utils.validate(schema, [
                 { value: ['xy', 'xx'] },
@@ -315,7 +315,7 @@ describe('array()', () => {
 
         it('should strip required values', () => {
 
-            const schema = Lyra.arr(Lyra.str().required().strip(), Lyra.num().required().strip(), Lyra.bool());
+            const schema = Jade.arr(Jade.str().required().strip(), Jade.num().required().strip(), Jade.bool());
 
             Utils.validate(schema, [
                 {
@@ -327,9 +327,9 @@ describe('array()', () => {
 
         it('should support required references', () => {
 
-            const schema = Lyra.obj({
-                a: Lyra.arr(Lyra.valid(Lyra.ref('...b')).required(), Lyra.str()),
-                b: Lyra.number().convert(),
+            const schema = Jade.obj({
+                a: Jade.arr(Jade.valid(Jade.ref('...b')).required(), Jade.str()),
+                b: Jade.number().convert(),
             });
 
             Utils.validate(schema, [
@@ -359,7 +359,7 @@ describe('array()', () => {
 
         it('should use labels for required items', () => {
 
-            const schema = Lyra.arr(Lyra.str().label('A').required(), Lyra.num().label('B').required());
+            const schema = Jade.arr(Jade.str().label('A').required(), Jade.num().label('B').required());
 
             Utils.validate(schema, [
                 {
@@ -375,7 +375,7 @@ describe('array()', () => {
 
         it('should use labels for some required items if provided', () => {
 
-            const schema = Lyra.arr(Lyra.str().label('A').required(), Lyra.num().required());
+            const schema = Jade.arr(Jade.str().label('A').required(), Jade.num().required());
 
             Utils.validate(schema, [
                 {
@@ -391,7 +391,7 @@ describe('array()', () => {
 
         it('should strip unknown items', () => {
 
-            const schema = Lyra.arr(Lyra.str(), Lyra.num().required()).settings({ stripUnknown: true });
+            const schema = Jade.arr(Jade.str(), Jade.num().required()).settings({ stripUnknown: true });
 
             Utils.validate(schema, [
                 {
@@ -415,7 +415,7 @@ describe('array()', () => {
 
         it('should strip unknown if provided a single item', () => {
 
-            const schema = Lyra.arr(Lyra.str()).settings({ stripUnknown: true });
+            const schema = Jade.arr(Jade.str()).settings({ stripUnknown: true });
 
             Utils.validate(schema, [
                 {
@@ -427,7 +427,7 @@ describe('array()', () => {
 
         it('should collect all errors for single item', () => {
 
-            const schema = Lyra.arr(Lyra.str().min(2).forbidden(), Lyra.str()).settings({ abortEarly: false });
+            const schema = Jade.arr(Jade.str().min(2).forbidden(), Jade.str()).settings({ abortEarly: false });
 
             Utils.validate(schema, [
                 {
@@ -470,7 +470,7 @@ describe('array()', () => {
 
         it('should collect all errors for multiple items', () => {
 
-            const schema = Lyra.arr(Lyra.str().min(2).forbidden(), Lyra.num().required(), Lyra.str()).settings({ abortEarly: false });
+            const schema = Jade.arr(Jade.str().min(2).forbidden(), Jade.num().required(), Jade.str()).settings({ abortEarly: false });
 
             Utils.validate(schema, [
                 {
@@ -501,12 +501,12 @@ describe('array()', () => {
 
         it('should throw on incorrect parameters', () => {
 
-            expect(() => Lyra.arr().ordered()).toThrow('Items must have at least one item');
+            expect(() => Jade.arr().ordered()).toThrow('Items must have at least one item');
         });
 
         it('should validate ordered items', () => {
 
-            const schema = Lyra.arr().ordered(Lyra.str(), Lyra.num().convert());
+            const schema = Jade.arr().ordered(Jade.str(), Jade.num().convert());
 
             Utils.validate(schema, [
                 { value: ['x', 1] },
@@ -535,7 +535,7 @@ describe('array()', () => {
 
         it('should validate optional ordered items', () => {
 
-            const schema = Lyra.arr().ordered(Lyra.str().required(), Lyra.num().required(), Lyra.num());
+            const schema = Jade.arr().ordered(Jade.str().required(), Jade.num().required(), Jade.num());
 
             Utils.validate(schema, [
                 { value: ['x', 1, 1] },
@@ -561,7 +561,7 @@ describe('array()', () => {
 
         it('should reject sparse array items', () => {
 
-            const schema = Lyra.arr().ordered(Lyra.str().required(), Lyra.num());
+            const schema = Jade.arr().ordered(Jade.str().required(), Jade.num());
 
             Utils.validate(schema, [
                 {
@@ -585,9 +585,9 @@ describe('array()', () => {
 
         it('should validate items after ordered items', () => {
 
-            const schema = Lyra.arr()
-                .ordered(Lyra.str(), Lyra.num())
-                .items(Lyra.str().min(2).required(), Lyra.str());
+            const schema = Jade.arr()
+                .ordered(Jade.str(), Jade.num())
+                .items(Jade.str().min(2).required(), Jade.str());
 
             Utils.validate(schema, [
                 { value: ['x', 1, 'xx', 'x'] },
@@ -620,9 +620,9 @@ describe('array()', () => {
 
         it('should validate forbidden items with ordered items', () => {
 
-            const schema = Lyra.arr()
-                .ordered(Lyra.str())
-                .items(Lyra.str().min(2).forbidden(), Lyra.num());
+            const schema = Jade.arr()
+                .ordered(Jade.str())
+                .items(Jade.str().min(2).forbidden(), Jade.num());
 
             Utils.validate(schema, [
                 { value: ['x', 1] },
@@ -639,7 +639,7 @@ describe('array()', () => {
 
         it('should strip ordered items', () => {
 
-            const schema = Lyra.arr().ordered(Lyra.str().strip(), Lyra.num());
+            const schema = Jade.arr().ordered(Jade.str().strip(), Jade.num());
 
             Utils.validate(schema, [
                 {
@@ -655,9 +655,9 @@ describe('array()', () => {
 
         it('should collect all errors', () => {
 
-            const schema = Lyra.arr()
-                .ordered(Lyra.str(), Lyra.num().required())
-                .items(Lyra.str().min(2).forbidden(), Lyra.num())
+            const schema = Jade.arr()
+                .ordered(Jade.str(), Jade.num().required())
+                .items(Jade.str().min(2).forbidden(), Jade.num())
                 .settings({ abortEarly: false });
 
             Utils.validate(schema, [
@@ -737,8 +737,8 @@ describe('array()', () => {
 
         it('should collect all errors when there are more ordered items than array items', () => {
 
-            const schema = Lyra.arr()
-                .ordered(Lyra.str())
+            const schema = Jade.arr()
+                .ordered(Jade.str())
                 .settings({ abortEarly: false });
 
             Utils.validate(schema, [
@@ -765,24 +765,24 @@ describe('array()', () => {
 
         it('should throw when array has array items', () => {
 
-            expect(() => Lyra.arr(Lyra.arr()).single()).toThrow('Cannot specify single when array has array items');
-            expect(() => Lyra.arr().single().items(Lyra.str(), Lyra.arr())).toThrow('Cannot specify single when array has array items');
-            expect(() => Lyra.arr().single().items(Lyra.alt(Lyra.arr()))).toThrow('Cannot specify single when array has array items');
-            expect(() => Lyra.arr().single().items(Lyra.alt(Lyra.str()).try(Lyra.arr()))).toThrow('Cannot specify single when array has array items');
-            expect(() => Lyra.arr().single().items(Lyra.str())).not.toThrow();
-            expect(() => Lyra.arr().single().items(Lyra.alt(Lyra.str()))).not.toThrow();
+            expect(() => Jade.arr(Jade.arr()).single()).toThrow('Cannot specify single when array has array items');
+            expect(() => Jade.arr().single().items(Jade.str(), Jade.arr())).toThrow('Cannot specify single when array has array items');
+            expect(() => Jade.arr().single().items(Jade.alt(Jade.arr()))).toThrow('Cannot specify single when array has array items');
+            expect(() => Jade.arr().single().items(Jade.alt(Jade.str()).try(Jade.arr()))).toThrow('Cannot specify single when array has array items');
+            expect(() => Jade.arr().single().items(Jade.str())).not.toThrow();
+            expect(() => Jade.arr().single().items(Jade.alt(Jade.str()))).not.toThrow();
 
-            expect(() => Lyra.arr().ordered(Lyra.arr()).single()).toThrow('Cannot specify single when array has array items');
-            expect(() => Lyra.arr().single().ordered(Lyra.str(), Lyra.arr())).toThrow('Cannot specify single when array has array items');
-            expect(() => Lyra.arr().single().ordered(Lyra.alt(Lyra.arr()))).toThrow('Cannot specify single when array has array items');
-            expect(() => Lyra.arr().single().ordered(Lyra.alt(Lyra.str()).try(Lyra.arr()))).toThrow('Cannot specify single when array has array items');
-            expect(() => Lyra.arr().single().ordered(Lyra.str())).not.toThrow();
-            expect(() => Lyra.arr().single().ordered(Lyra.alt(Lyra.str()))).not.toThrow();
+            expect(() => Jade.arr().ordered(Jade.arr()).single()).toThrow('Cannot specify single when array has array items');
+            expect(() => Jade.arr().single().ordered(Jade.str(), Jade.arr())).toThrow('Cannot specify single when array has array items');
+            expect(() => Jade.arr().single().ordered(Jade.alt(Jade.arr()))).toThrow('Cannot specify single when array has array items');
+            expect(() => Jade.arr().single().ordered(Jade.alt(Jade.str()).try(Jade.arr()))).toThrow('Cannot specify single when array has array items');
+            expect(() => Jade.arr().single().ordered(Jade.str())).not.toThrow();
+            expect(() => Jade.arr().single().ordered(Jade.alt(Jade.str()))).not.toThrow();
         });
 
         it('should validate single item', () => {
 
-            const schema = Lyra.arr(Lyra.str()).single();
+            const schema = Jade.arr(Jade.str()).single();
 
             Utils.validate(schema, [
                 {
@@ -802,7 +802,7 @@ describe('array()', () => {
 
         it('should validate single ordered item', () => {
 
-            const schema = Lyra.arr().ordered(Lyra.str()).single();
+            const schema = Jade.arr().ordered(Jade.str()).single();
 
             Utils.validate(schema, [
                 {
@@ -825,21 +825,21 @@ describe('array()', () => {
 
         it('should avoid cloning if set to the same value', () => {
 
-            const schema = Lyra.arr().sparse();
+            const schema = Jade.arr().sparse();
 
             expect(schema.sparse()).toBe(schema);
         });
 
         it('should allow sparse array items', () => {
 
-            const schema = Lyra.arr().sparse();
+            const schema = Jade.arr().sparse();
 
             Utils.validate(schema, [{ value: [1, 2, undefined, 3] }]);
         });
 
         it('should allow sparse array items when combined with items calls', () => {
 
-            const schema = Lyra.arr(Lyra.str().min(2).required(), Lyra.str(), Lyra.num().forbidden()).sparse();
+            const schema = Jade.arr(Jade.str().min(2).required(), Jade.str(), Jade.num().forbidden()).sparse();
 
             Utils.validate(schema, [
                 { value: ['xx', undefined, 'x', undefined, 'y', 'z'] },
@@ -864,9 +864,9 @@ describe('array()', () => {
 
         it('should allow sparse array items when combined with ordered calls', () => {
 
-            const schema = Lyra.arr()
-                .ordered(Lyra.str(), Lyra.num().required())
-                .items(Lyra.str()).sparse();
+            const schema = Jade.arr()
+                .ordered(Jade.str(), Jade.num().required())
+                .items(Jade.str()).sparse();
 
             Utils.validate(schema, [
                 { value: [undefined, 1, 'x'] },
@@ -884,7 +884,7 @@ describe('array()', () => {
 
         it('should cancel sparse', () => {
 
-            const schema = Lyra.arr().sparse().sparse(false);
+            const schema = Jade.arr().sparse().sparse(false);
 
             Utils.validate(schema, [
                 {
@@ -903,13 +903,13 @@ describe('array()', () => {
 
         it('should throw  on incorrect parameters', () => {
 
-            expect(() => Lyra.arr().length('x')).toThrow('limit must be a number or a valid reference');
-            expect(() => Lyra.arr().length(NaN)).toThrow('limit must be a number or a valid reference');
+            expect(() => Jade.arr().length('x')).toThrow('limit must be a number or a valid reference');
+            expect(() => Jade.arr().length(NaN)).toThrow('limit must be a number or a valid reference');
         });
 
         it('should validate array lengths', () => {
 
-            const schema = Lyra.arr().length(2);
+            const schema = Jade.arr().length(2);
 
             Utils.validate(schema, [
                 { value: ['x', 'y'] },
@@ -926,10 +926,10 @@ describe('array()', () => {
 
         it('should support references', () => {
 
-            const ref = Lyra.ref('b');
-            const schema = Lyra.obj({
-                a: Lyra.arr().length(ref),
-                b: Lyra.num(),
+            const ref = Jade.ref('b');
+            const schema = Jade.obj({
+                a: Jade.arr().length(ref),
+                b: Jade.num(),
             });
 
             Utils.validate(schema, [
@@ -955,9 +955,9 @@ describe('array()', () => {
 
         it('should error on invalid references', () => {
 
-            const ref = Lyra.ref('b');
-            const schema = Lyra.obj({
-                a: Lyra.arr().length(ref),
+            const ref = Jade.ref('b');
+            const schema = Jade.obj({
+                a: Jade.arr().length(ref),
                 b: 'x',
             });
 
@@ -978,7 +978,7 @@ describe('array()', () => {
 
         it('should override length', () => {
 
-            const schema = Lyra.arr().length(1).length(2);
+            const schema = Jade.arr().length(1).length(2);
 
             Utils.validate(schema, [
                 { value: ['x', 'y'] },
@@ -998,13 +998,13 @@ describe('array()', () => {
 
         it('should throw  on incorrect parameters', () => {
 
-            expect(() => Lyra.arr().max('x')).toThrow('limit must be a number or a valid reference');
-            expect(() => Lyra.arr().max(NaN)).toThrow('limit must be a number or a valid reference');
+            expect(() => Jade.arr().max('x')).toThrow('limit must be a number or a valid reference');
+            expect(() => Jade.arr().max(NaN)).toThrow('limit must be a number or a valid reference');
         });
 
         it('should validate max array lengths', () => {
 
-            const schema = Lyra.arr().max(2);
+            const schema = Jade.arr().max(2);
 
             Utils.validate(schema, [
                 { value: ['x'] },
@@ -1022,10 +1022,10 @@ describe('array()', () => {
 
         it('should support references', () => {
 
-            const ref = Lyra.ref('b');
-            const schema = Lyra.obj({
-                a: Lyra.arr().max(ref),
-                b: Lyra.num(),
+            const ref = Jade.ref('b');
+            const schema = Jade.obj({
+                a: Jade.arr().max(ref),
+                b: Jade.num(),
             });
 
             Utils.validate(schema, [
@@ -1051,9 +1051,9 @@ describe('array()', () => {
 
         it('should error on invalid references', () => {
 
-            const ref = Lyra.ref('b');
-            const schema = Lyra.obj({
-                a: Lyra.arr().max(ref),
+            const ref = Jade.ref('b');
+            const schema = Jade.obj({
+                a: Jade.arr().max(ref),
                 b: 'x',
             });
 
@@ -1074,7 +1074,7 @@ describe('array()', () => {
 
         it('should override max length', () => {
 
-            const schema = Lyra.arr().max(1).max(2);
+            const schema = Jade.arr().max(1).max(2);
 
             Utils.validate(schema, [{ value: ['x', 'y'] }, { value: ['x'] }]);
         });
@@ -1084,13 +1084,13 @@ describe('array()', () => {
 
         it('should throw  on incorrect parameters', () => {
 
-            expect(() => Lyra.arr().min('x')).toThrow('limit must be a number or a valid reference');
-            expect(() => Lyra.arr().min(NaN)).toThrow('limit must be a number or a valid reference');
+            expect(() => Jade.arr().min('x')).toThrow('limit must be a number or a valid reference');
+            expect(() => Jade.arr().min(NaN)).toThrow('limit must be a number or a valid reference');
         });
 
         it('should validate max array lengths', () => {
 
-            const schema = Lyra.arr().min(2);
+            const schema = Jade.arr().min(2);
 
             Utils.validate(schema, [
                 { value: ['x', 'y'] },
@@ -1107,10 +1107,10 @@ describe('array()', () => {
 
         it('should support references', () => {
 
-            const ref = Lyra.ref('b');
-            const schema = Lyra.obj({
-                a: Lyra.arr().min(ref),
-                b: Lyra.num(),
+            const ref = Jade.ref('b');
+            const schema = Jade.obj({
+                a: Jade.arr().min(ref),
+                b: Jade.num(),
             });
 
             Utils.validate(schema, [
@@ -1136,9 +1136,9 @@ describe('array()', () => {
 
         it('should error on invalid references', () => {
 
-            const ref = Lyra.ref('b');
-            const schema = Lyra.obj({
-                a: Lyra.arr().min(ref),
+            const ref = Jade.ref('b');
+            const schema = Jade.obj({
+                a: Jade.arr().min(ref),
                 b: 'x',
             });
 
@@ -1159,7 +1159,7 @@ describe('array()', () => {
 
         it('should override max length', () => {
 
-            const schema = Lyra.arr().min(1).min(2);
+            const schema = Jade.arr().min(1).min(2);
 
             Utils.validate(schema, [
                 { value: ['x', 'y'] },
@@ -1179,12 +1179,12 @@ describe('array()', () => {
 
         it('should throw on incorrect parameter', () => {
 
-            expect(() => Lyra.arr().unique(1)).toThrow('Comparator must be a string or a function');
+            expect(() => Jade.arr().unique(1)).toThrow('Comparator must be a string or a function');
         });
 
         it('should validate uniqueness', () => {
 
-            const schema = Lyra.arr().unique();
+            const schema = Jade.arr().unique();
             const fn = () => { };
             const obj = {};
             const date = new Date('01/01/2020');
@@ -1262,7 +1262,7 @@ describe('array()', () => {
 
         it('should use custom comparators', () => {
 
-            const schema = Lyra.arr().unique((a, b) => a === b);
+            const schema = Jade.arr().unique((a, b) => a === b);
 
             Utils.validate(schema, [
                 { value: [{}, {}] },
@@ -1280,7 +1280,7 @@ describe('array()', () => {
 
         it('should use paths', () => {
 
-            const schema = Lyra.arr().unique('id');
+            const schema = Jade.arr().unique('id');
 
             Utils.validate(schema, [
                 { value: [{ id: 'x' }, { id: 'y' }, { id: 1 }] },

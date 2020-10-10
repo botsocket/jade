@@ -1,10 +1,10 @@
 'use strict';
 
-const Constellation = require('@botbind/constellation');
-const Assert = require('@botbind/dust/src/assert');
-const Clone = require('@botbind/dust/src/clone');
-const IsObject = require('@botbind/dust/src/isObject');
-const SplitPath = require('@botbind/dust/src/splitPath');
+const Topaz = require('@botsocket/topaz');
+const Assert = require('@botsocket/bone/src/assert');
+const Clone = require('@botsocket/bone/src/clone');
+const IsObject = require('@botsocket/bone/src/isObject');
+const SplitPath = require('@botsocket/bone/src/splitPath');
 
 const BaseObject = require('./baseObject');
 const Compile = require('../compile');
@@ -110,7 +110,7 @@ module.exports = Extend.schema(BaseObject, {
 
         // Sort keys
 
-        const sorter = Constellation.sorter();
+        const sorter = Topaz.sorter();
         const keys = new Map(children.map((child) => [child.key, child]));
         for (const child of children) {
             const references = child

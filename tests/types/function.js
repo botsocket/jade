@@ -1,13 +1,13 @@
 'use strict';
 
-const Lyra = require('../../src');
+const Jade = require('../../src');
 const Utils = require('../utils');
 
 describe('function()', () => {
 
     it('should validate functions', () => {
 
-        const schema = Lyra.fn();
+        const schema = Jade.fn();
 
         Utils.validate(schema, [
             { value: () => { } },
@@ -26,7 +26,7 @@ describe('function()', () => {
 
         it('should throw on incorrect parameters', () => {
 
-            expect(() => Lyra.fn().inherit('x')).toThrow('Constructor must be a function');
+            expect(() => Jade.fn().inherit('x')).toThrow('Constructor must be a function');
         });
 
         it('should validate inheritance', () => {
@@ -35,7 +35,7 @@ describe('function()', () => {
 
             class Y extends X { }
 
-            const schema = Lyra.fn().inherit(X);
+            const schema = Jade.fn().inherit(X);
 
             Utils.validate(schema, [
                 { value: Y },
@@ -66,7 +66,7 @@ describe('function()', () => {
 
             class Z extends Y { }
 
-            const schema = Lyra.fn().inherit(X).inherit(Y);
+            const schema = Jade.fn().inherit(X).inherit(Y);
 
             Utils.validate(schema, [
                 { value: Z },

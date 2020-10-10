@@ -1,13 +1,13 @@
 'use strict';
 
-const Lyra = require('../../src');
+const Jade = require('../../src');
 const Utils = require('../utils');
 
 describe('string()', () => {
 
     it('should validate strings', () => {
 
-        const schema = Lyra.str();
+        const schema = Jade.str();
 
         Utils.validate(schema, [
             { value: 'x' },
@@ -40,14 +40,14 @@ describe('string()', () => {
 
     it('should allow empty string if specified', () => {
 
-        const schema = Lyra.str().allow('');
+        const schema = Jade.str().allow('');
 
         Utils.validate(schema, [{ value: '' }]);
     });
 
     it('should coerce to strings', () => {
 
-        const schema = Lyra.str().convert();
+        const schema = Jade.str().convert();
 
         Utils.validate(schema, [
             { value: 'x' },
@@ -66,13 +66,13 @@ describe('string()', () => {
 
         it('should throw on incorrect parameters', () => {
 
-            expect(() => Lyra.str().length('x')).toThrow('limit must be a number or a valid reference');
-            expect(() => Lyra.str().length(NaN)).toThrow('limit must be a number or a valid reference');
+            expect(() => Jade.str().length('x')).toThrow('limit must be a number or a valid reference');
+            expect(() => Jade.str().length(NaN)).toThrow('limit must be a number or a valid reference');
         });
 
         it('should validate lengths', () => {
 
-            const schema = Lyra.str().length(2);
+            const schema = Jade.str().length(2);
 
             Utils.validate(schema, [
                 { value: 'xx' },
@@ -89,10 +89,10 @@ describe('string()', () => {
 
         it('should support references', () => {
 
-            const ref = Lyra.ref('b');
-            const schema = Lyra.obj({
-                a: Lyra.str().length(ref),
-                b: Lyra.num(),
+            const ref = Jade.ref('b');
+            const schema = Jade.obj({
+                a: Jade.str().length(ref),
+                b: Jade.num(),
             });
 
             Utils.validate(schema, [
@@ -110,9 +110,9 @@ describe('string()', () => {
 
         it('should error on invalid references', () => {
 
-            const ref = Lyra.ref('b');
-            const schema = Lyra.obj({
-                a: Lyra.str().length(ref),
+            const ref = Jade.ref('b');
+            const schema = Jade.obj({
+                a: Jade.str().length(ref),
                 b: 'x',
             });
 
@@ -130,7 +130,7 @@ describe('string()', () => {
 
         it('should override lengths', () => {
 
-            const schema = Lyra.str().length(1).length(2);
+            const schema = Jade.str().length(1).length(2);
 
             Utils.validate(schema, [
                 { value: 'xx' },
@@ -150,13 +150,13 @@ describe('string()', () => {
 
         it('should throw on incorrect parameters', () => {
 
-            expect(() => Lyra.str().max('x')).toThrow('limit must be a number or a valid reference');
-            expect(() => Lyra.str().max(NaN)).toThrow('limit must be a number or a valid reference');
+            expect(() => Jade.str().max('x')).toThrow('limit must be a number or a valid reference');
+            expect(() => Jade.str().max(NaN)).toThrow('limit must be a number or a valid reference');
         });
 
         it('should validate max lengths', () => {
 
-            const schema = Lyra.str().max(2);
+            const schema = Jade.str().max(2);
 
             Utils.validate(schema, [
                 { value: 'xx' },
@@ -173,10 +173,10 @@ describe('string()', () => {
 
         it('should support references', () => {
 
-            const ref = Lyra.ref('b');
-            const schema = Lyra.obj({
-                a: Lyra.str().max(ref),
-                b: Lyra.num(),
+            const ref = Jade.ref('b');
+            const schema = Jade.obj({
+                a: Jade.str().max(ref),
+                b: Jade.num(),
             });
 
             Utils.validate(schema, [
@@ -194,9 +194,9 @@ describe('string()', () => {
 
         it('should error on invalid references', () => {
 
-            const ref = Lyra.ref('b');
-            const schema = Lyra.obj({
-                a: Lyra.str().max(ref),
+            const ref = Jade.ref('b');
+            const schema = Jade.obj({
+                a: Jade.str().max(ref),
                 b: 'x',
             });
 
@@ -214,7 +214,7 @@ describe('string()', () => {
 
         it('should override max lengths', () => {
 
-            const schema = Lyra.str().max(2).max(1);
+            const schema = Jade.str().max(2).max(1);
 
             Utils.validate(schema, [
                 { value: 'x' },
@@ -234,13 +234,13 @@ describe('string()', () => {
 
         it('should throw on incorrect parameters', () => {
 
-            expect(() => Lyra.str().min('x')).toThrow('limit must be a number or a valid reference');
-            expect(() => Lyra.str().min(NaN)).toThrow('limit must be a number or a valid reference');
+            expect(() => Jade.str().min('x')).toThrow('limit must be a number or a valid reference');
+            expect(() => Jade.str().min(NaN)).toThrow('limit must be a number or a valid reference');
         });
 
         it('should validate min lengths', () => {
 
-            const schema = Lyra.str().min(2);
+            const schema = Jade.str().min(2);
 
             Utils.validate(schema, [
                 { value: 'xxx' },
@@ -257,10 +257,10 @@ describe('string()', () => {
 
         it('should support references', () => {
 
-            const ref = Lyra.ref('b');
-            const schema = Lyra.obj({
-                a: Lyra.str().min(ref),
-                b: Lyra.num(),
+            const ref = Jade.ref('b');
+            const schema = Jade.obj({
+                a: Jade.str().min(ref),
+                b: Jade.num(),
             });
 
             Utils.validate(schema, [
@@ -278,9 +278,9 @@ describe('string()', () => {
 
         it('should error on invalid references', () => {
 
-            const ref = Lyra.ref('b');
-            const schema = Lyra.obj({
-                a: Lyra.str().min(ref),
+            const ref = Jade.ref('b');
+            const schema = Jade.obj({
+                a: Jade.str().min(ref),
                 b: 'x',
             });
 
@@ -298,7 +298,7 @@ describe('string()', () => {
 
         it('should override min lengths', () => {
 
-            const schema = Lyra.str().min(1).min(2);
+            const schema = Jade.str().min(1).min(2);
 
             Utils.validate(schema, [
                 { value: 'xx' },
@@ -318,14 +318,14 @@ describe('string()', () => {
 
         it('should avoid cloning if called twice', () => {
 
-            const schema = Lyra.str().insensitive();
+            const schema = Jade.str().insensitive();
 
             expect(schema.insensitive()).toBe(schema);
         });
 
         it('should match strings insensitively', () => {
 
-            const a = Lyra.str().min(3).allow('xx');
+            const a = Jade.str().min(3).allow('xx');
             const b = a.insensitive();
 
             Utils.validate(a, [
@@ -353,7 +353,7 @@ describe('string()', () => {
 
         it('should cancel insensitive match', () => {
 
-            const schema = Lyra.str().min(3).allow('xx').insensitive().insensitive(false);
+            const schema = Jade.str().min(3).allow('xx').insensitive().insensitive(false);
 
             Utils.validate(schema, [
                 {
@@ -372,7 +372,7 @@ describe('string()', () => {
 
         it('should validate dataUris with paddingRequired and urlSafe enabled implicitly', () => {
 
-            const schema = Lyra.str().dataUri();
+            const schema = Jade.str().dataUri();
 
             Utils.validate(schema, [
                 { value: 'data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==' },
@@ -464,7 +464,7 @@ describe('string()', () => {
 
         it('should validate dataUris without paddings and urlSafe enabled implicitly', () => {
 
-            const schema = Lyra.str().dataUri({ paddingRequired: false });
+            const schema = Jade.str().dataUri({ paddingRequired: false });
 
             Utils.validate(schema, [
                 { value: 'data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==' },
@@ -492,7 +492,7 @@ describe('string()', () => {
 
         it('should validate non url safe dataUris and paddingRequired enabled implicitly', () => {
 
-            const schema = Lyra.str().dataUri({ urlSafe: false });
+            const schema = Jade.str().dataUri({ urlSafe: false });
 
             Utils.validate(schema, [
                 { value: 'data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==' },
@@ -534,7 +534,7 @@ describe('string()', () => {
 
         it('should validate non url safe dataUris without padding', () => {
 
-            const schema = Lyra.str().dataUri({ urlSafe: false, paddingRequired: false });
+            const schema = Jade.str().dataUri({ urlSafe: false, paddingRequired: false });
 
             Utils.validate(schema, [
                 { value: 'data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==' },
@@ -565,7 +565,7 @@ describe('string()', () => {
 
         it('should validate base64 strings with paddingRequired and urlSafe enabled implicitly', () => {
 
-            const schema = Lyra.str().base64();
+            const schema = Jade.str().base64();
 
             Utils.validate(schema, [
                 { value: 'R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==' },
@@ -615,7 +615,7 @@ describe('string()', () => {
 
         it('should validate base64 strings without paddings and urlSafe enabled implicitly', () => {
 
-            const schema = Lyra.str().base64({ paddingRequired: false });
+            const schema = Jade.str().base64({ paddingRequired: false });
 
             Utils.validate(schema, [
                 { value: 'R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==' },
@@ -643,7 +643,7 @@ describe('string()', () => {
 
         it('should validate non url safe base64 strings and paddingRequired enabled implicitly', () => {
 
-            const schema = Lyra.str().base64({ urlSafe: false });
+            const schema = Jade.str().base64({ urlSafe: false });
 
             Utils.validate(schema, [
                 { value: 'R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==' },
@@ -685,7 +685,7 @@ describe('string()', () => {
 
         it('should validate non url safe base64 strings without padding', () => {
 
-            const schema = Lyra.str().base64({ urlSafe: false, paddingRequired: false });
+            const schema = Jade.str().base64({ urlSafe: false, paddingRequired: false });
 
             Utils.validate(schema, [
                 { value: 'R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==' },
@@ -716,7 +716,7 @@ describe('string()', () => {
 
         it('should validate credit card numbers', () => {
 
-            const schema = Lyra.str().creditCard();
+            const schema = Jade.str().creditCard();
 
             Utils.validate(schema, [
                 // American Express
@@ -792,15 +792,15 @@ describe('string()', () => {
 
         it('should throw on incorrect parameters', () => {
 
-            expect(() => Lyra.str().pattern('x')).toThrow('Regex must be a valid regular expression');
-            expect(() => Lyra.str().pattern(/a/g)).toThrow('Regex must not contain global and sticky flags');
-            expect(() => Lyra.str().pattern(/a/y)).toThrow('Regex must not contain global and sticky flags');
-            expect(() => Lyra.str().pattern(/a/, 1)).toThrow('Name must be a string');
+            expect(() => Jade.str().pattern('x')).toThrow('Regex must be a valid regular expression');
+            expect(() => Jade.str().pattern(/a/g)).toThrow('Regex must not contain global and sticky flags');
+            expect(() => Jade.str().pattern(/a/y)).toThrow('Regex must not contain global and sticky flags');
+            expect(() => Jade.str().pattern(/a/, 1)).toThrow('Name must be a string');
         });
 
         it('should set patterns without names', () => {
 
-            const schema = Lyra.str().pattern(/^abc/);
+            const schema = Jade.str().pattern(/^abc/);
 
             Utils.validate(schema, [
                 { value: 'abc' },
@@ -817,7 +817,7 @@ describe('string()', () => {
 
         it('should set patterns with names', () => {
 
-            const schema = Lyra.str().pattern(/^abc/, 'abc');
+            const schema = Jade.str().pattern(/^abc/, 'abc');
 
             Utils.validate(schema, [
                 {
@@ -836,7 +836,7 @@ describe('string()', () => {
 
         it('should validate emails', () => {
 
-            const schema = Lyra.str().email();
+            const schema = Jade.str().email();
 
             Utils.validate(schema, [
                 { value: 'email@example.com' },
@@ -884,7 +884,7 @@ describe('string()', () => {
 
         it('should validate urls', () => {
 
-            const schema = Lyra.str().url();
+            const schema = Jade.str().url();
 
             Utils.validate(schema, [
                 { value: 'http://foo.com/blah_blah' },
@@ -1116,7 +1116,7 @@ describe('string()', () => {
 
         it('should validate alphanumeric strings', () => {
 
-            const schema = Lyra.str().alphanum();
+            const schema = Jade.str().alphanum();
 
             Utils.validate(schema, [
                 { value: 'xYz123' },
@@ -1136,7 +1136,7 @@ describe('string()', () => {
 
         it('should validate numeric strings', () => {
 
-            const schema = Lyra.str().numeric();
+            const schema = Jade.str().numeric();
 
             Utils.validate(schema, [
                 { value: '0123456789' },
@@ -1156,12 +1156,12 @@ describe('string()', () => {
 
         it('should throw on incorrect parameters', () => {
 
-            expect(() => Lyra.str().case('x')).toThrow('Direction must be upper or lower');
+            expect(() => Jade.str().case('x')).toThrow('Direction must be upper or lower');
         });
 
         it('should validate uppercase characters in strict mode', () => {
 
-            const schema = Lyra.str().uppercase();
+            const schema = Jade.str().uppercase();
 
             Utils.validate(schema, [
                 { value: 'ABC' },
@@ -1178,7 +1178,7 @@ describe('string()', () => {
 
         it('should validate lowercase characters in strict mode', () => {
 
-            const schema = Lyra.str().lowercase();
+            const schema = Jade.str().lowercase();
 
             Utils.validate(schema, [
                 { value: 'abc' },
@@ -1195,7 +1195,7 @@ describe('string()', () => {
 
         it('should convert to uppercase if strict mode is disabled', () => {
 
-            const schema = Lyra.str().uppercase().convert();
+            const schema = Jade.str().uppercase().convert();
 
             Utils.validate(schema, [
                 { value: 'ABC' },
@@ -1208,7 +1208,7 @@ describe('string()', () => {
 
         it('should validate lowercase characters in strict mode', () => {
 
-            const schema = Lyra.str().lowercase().convert();
+            const schema = Jade.str().lowercase().convert();
 
             Utils.validate(schema, [
                 { value: 'abc' },
@@ -1224,7 +1224,7 @@ describe('string()', () => {
 
         it('should validate trailing and leading whitespaces in strict mode', () => {
 
-            const schema = Lyra.str().trim();
+            const schema = Jade.str().trim();
 
             Utils.validate(schema, [
                 { value: 'xyz' },
@@ -1241,7 +1241,7 @@ describe('string()', () => {
 
         it('should trim if strict mode is disabled', () => {
 
-            const schema = Lyra.str().trim().convert();
+            const schema = Jade.str().trim().convert();
 
             Utils.validate(schema, [
                 { value: 'xyz' },
@@ -1254,14 +1254,14 @@ describe('string()', () => {
 
         it('should cancel trim mode', () => {
 
-            const schema = Lyra.str().trim().trim(false);
+            const schema = Jade.str().trim().trim(false);
 
             Utils.validate(schema, [{ value: ' xyz ' }]);
         });
 
         it('should cancel trim mode if strict mode is disabled', () => {
 
-            const schema = Lyra.str().trim().trim(false).convert();
+            const schema = Jade.str().trim().trim(false).convert();
 
             Utils.validate(schema, [{ value: ' xyz ' }]);
         });
@@ -1271,13 +1271,13 @@ describe('string()', () => {
 
         it('should throw on incorrect parameters', () => {
 
-            expect(() => Lyra.str().replace(1)).toThrow('Pattern must be a valid regular expression or a string');
-            expect(() => Lyra.str().replace('x', 1)).toThrow('Replacement must be a string');
+            expect(() => Jade.str().replace(1)).toThrow('Pattern must be a valid regular expression or a string');
+            expect(() => Jade.str().replace('x', 1)).toThrow('Replacement must be a string');
         });
 
         it('should perform single replacement', () => {
 
-            const schema = Lyra.str().replace('x', 'a').convert();
+            const schema = Jade.str().replace('x', 'a').convert();
 
             Utils.validate(schema, [
                 { value: 'abc' },
@@ -1290,7 +1290,7 @@ describe('string()', () => {
 
         it('should perform multiple replacements', () => {
 
-            const schema = Lyra.str().replace('x', 'a').replace('y', 'b').convert();
+            const schema = Jade.str().replace('x', 'a').replace('y', 'b').convert();
 
             Utils.validate(schema, [
                 { value: 'abc' },
