@@ -100,11 +100,8 @@ module.exports = Extend.schema(BaseObject, {
         // Call default() on child schemas
 
         if (schema.$getFlag('default') === Utils.symbols.deepDefault) {
-            for (let i = 0; i < children.length; i++) {
-                const child = children[i];
-                if (child.schema.$isType('object')) {
-                    child.schema = internals.deepDefault(child.schema);
-                }
+            for (const child of children) {
+                child.schema = internals.deepDefault(child.schema);
             }
         }
 
@@ -499,23 +496,18 @@ module.exports = Extend.schema(BaseObject, {
 
 internals.deepDefault = function (schema) {
 
-    if (schema.$getFlag('default') !== undefined) {                             // Do not process if already has default
+    if (schema.$getFlag('default') !== undefined ||
+        !schema.$isType('object') ||
+        !schema.$terms.keys) {
+
         return schema;
     }
 
-    if (!schema.$terms.keys) {
-        return schema;
-    }
-
-    for (let i = 0; i < schema.$terms.keys.length; i++) {
-        const child = schema.$terms.keys[i];
-
-        if (child.schema.$isType('object')) {
-            child.schema = internals.deepDefault(child.schema);
-        }
+    for (const child of schema.$terms.keys) {
+        child.schema = internals.deepDefault(child.schema);
 
         if (child.schema.$getFlag('default') !== undefined) {
-            return schema.default();
+            return schema.default(Utils.symbols.deepDefault);              // Pass deepDefault explicitly to prevent $rebuild from being triggered
         }
     }
 

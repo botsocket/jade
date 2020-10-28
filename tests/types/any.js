@@ -2249,12 +2249,17 @@ describe('any()', () => {
                 j: Jade.obj().default(),
                 k: {},
                 l: {
-                    m: Jade.num(),
+                    m: {
+                        n: Jade.num(),
+                    },
                 },
-                n: Jade.obj({
-                    o: Jade.any(),
+                o: Jade.obj({
+                    p: Jade.any(),
                 })
                     .default(),
+                q: Jade.obj({}),
+                r: Jade.obj({}).default(),
+                s: Jade.obj().default(1),
             })
                 .default();
 
@@ -2272,7 +2277,9 @@ describe('any()', () => {
                             },
                         },
                         j: {},
-                        n: {},
+                        o: {},
+                        r: {},
+                        s: 1,
                     },
                 },
             ]);
