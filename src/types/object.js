@@ -97,14 +97,6 @@ module.exports = Extend.schema(BaseObject, {
             return;
         }
 
-        // Call default() on child schemas
-
-        if (schema.$getFlag('default') === Utils.symbols.deepDefault) {
-            for (const child of children) {
-                child.schema = internals.deepDefault(child.schema);
-            }
-        }
-
         // Sort keys
 
         const sorter = Topaz.sorter();
@@ -493,26 +485,6 @@ module.exports = Extend.schema(BaseObject, {
         map: (value) => new Map(Object.entries(value)),
     },
 });
-
-internals.deepDefault = function (schema) {
-
-    if (schema.$getFlag('default') !== undefined ||
-        !schema.$isType('object') ||
-        !schema.$terms.keys) {
-
-        return schema;
-    }
-
-    for (const child of schema.$terms.keys) {
-        child.schema = internals.deepDefault(child.schema);
-
-        if (child.schema.$getFlag('default') !== undefined) {
-            return schema.default(Utils.symbols.deepDefault);              // Pass deepDefault explicitly to prevent $rebuild from being triggered
-        }
-    }
-
-    return schema;
-};
 
 internals.dependencies = {
     and: (value, peers, settings, state) => {

@@ -381,6 +381,7 @@ internals.Schema = class {
             stripUnknown: false,
             label: 'path',
             presence: 'optional',
+            produceSparseArrays: false,
         }, options);
 
         return this.$validate(value, settings, new State());

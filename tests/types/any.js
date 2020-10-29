@@ -2228,38 +2228,59 @@ describe('any()', () => {
             ]);
         });
 
-        it('should generate deep defaults on objects', () => {
+        it('should generate deep defaults on objects and arrays', () => {
 
             const schema = Jade.obj({
                 a: Jade.any().default('x'),
                 b: {
-                    c: {
-                        d: Jade.any().default('x'),
+                    bb: {
+                        bbb: Jade.any().default('x'),
                     },
                 },
-                e: {
-                    f: {
-                        g: Jade.obj({
-                            h: Jade.any().default('x'),
+                c: {
+                    cc: {
+                        ccc: Jade.obj({
+                            cccc: Jade.any().default('x'),
                         })
                             .default('someOtherDefault'),
                     },
                 },
-                i: Jade.obj(),
-                j: Jade.obj().default(),
-                k: {},
-                l: {
-                    m: {
-                        n: Jade.num(),
+                d: Jade.obj(),
+                e: Jade.obj().default(),
+                f: {},
+                g: {
+                    gg: {
+                        ggg: Jade.num(),
                     },
                 },
-                o: Jade.obj({
-                    p: Jade.any(),
+                h: Jade.obj({
+                    hh: Jade.any(),
                 })
                     .default(),
-                q: Jade.obj({}),
-                r: Jade.obj({}).default(),
-                s: Jade.obj().default(1),
+                i: Jade.obj({}),
+                j: Jade.obj({}).default(),
+                k: Jade.obj().default(1),
+                l: {
+                    ll: Jade.num().default(1),
+                    lll: {
+                        llll: Jade.num().default(1),
+                    },
+                },
+
+                m: Jade.arr(),
+                n: Jade.arr().default(),
+                o: Jade.arr().ordered(Jade.num(), Jade.num().default(1)),
+                p: Jade.arr().ordered(Jade.num(), Jade.num().default(1)).settings({ produceSparseArrays: true }),
+                q: Jade.arr().ordered(Jade.num().default(1), Jade.str().default('test')),
+                r: Jade.arr().ordered(Jade.obj({ a: Jade.num().default(1) })),
+                s: Jade.arr().ordered(Jade.num().default(1), Jade.obj({ a: Jade.num().default(1) })),
+                t: {
+                    tt: Jade.arr().ordered(Jade.num(), Jade.str(), {
+                        ttt: Jade.arr().ordered(Jade.num().default(1)),
+                    })
+                        .settings({ produceSparseArrays: true }),
+                },
+                u: Jade.arr().ordered(Jade.arr().ordered({ uu: Jade.num().default(1) })),
             })
                 .default();
 
@@ -2269,29 +2290,44 @@ describe('any()', () => {
                     output: {
                         a: 'x',
                         b: {
-                            c: { d: 'x' },
+                            bb: { bbb: 'x' },
                         },
-                        e: {
-                            f: {
-                                g: 'someOtherDefault',
+                        c: {
+                            cc: {
+                                ccc: 'someOtherDefault',
                             },
                         },
+                        e: {},
+                        h: {},
                         j: {},
-                        o: {},
-                        r: {},
-                        s: 1,
+                        k: 1,
+                        l: { ll: 1, lll: { llll: 1 } },
+                        n: [],
+                        o: [],
+                        p: [undefined, 1],
+                        q: [1, 'test'],
+                        r: [{ a: 1 }],
+                        s: [1, { a: 1 }],
+                        t: {
+                            tt: [undefined, undefined, { ttt: [1] }],
+                        },
+                        u: [[{ uu: 1 }]],
                     },
                 },
             ]);
         });
 
-        it('should generate deep defaults for non-native objects', () => {
+        it('should generate deep defaults for non-native objects and arrays', () => {
 
-            const custom = Jade.extend({ type: 'test', from: Jade.obj() });
-            const schema = custom.test({
+            const custom = Jade.extend(
+                { type: 'newObject', from: Jade.obj() },
+                { type: 'newArray', from: Jade.arr() },
+            );
+
+            const schema = custom.newObject({
                 a: custom.obj({
-                    b: custom.test({
-                        c: custom.any().default('x'),
+                    b: custom.newObject({
+                        c: custom.arr().ordered(custom.newArray().ordered(custom.num().default(1))),
                     }),
                 }),
             })
@@ -2301,7 +2337,7 @@ describe('any()', () => {
                 {
                     value: {},
                     output: {
-                        a: { b: { c: 'x' } },
+                        a: { b: { c: [[1]] } },
                     },
                 },
             ]);

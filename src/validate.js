@@ -55,7 +55,7 @@ exports.schema = function (schema, value, settings, state, overrides) {
                 return internals.result(value, helpers);
             }
 
-            value = {};
+            value = schema.$isType('object') ? {} : [];
         }
     }
 
