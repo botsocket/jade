@@ -301,6 +301,8 @@ module.exports = Extend.schema(BaseObject, {
             }
         }
 
+        // Required checks
+
         if (requireds.length) {
             errors.push(internals.errorMissedRequireds(requireds, error));
 
@@ -319,7 +321,41 @@ module.exports = Extend.schema(BaseObject, {
             }
         }
 
-        return errors.length ? errors : value;
+        if (errors.length) {
+            return errors;
+        }
+
+        // Fill ordered default values
+
+        for (let i = 0; i < ordereds.length; i++) {
+            const result = ordereds[i].$validate(undefined, settings, state.dive(value.length + i - 1));
+            const defaultValue = result.value;
+
+            if (defaultValue === undefined) {
+                if (!settings.produceSparseArrays) {
+                    break;
+                }
+
+                let next;
+                while (next === undefined &&
+                    i < ordereds.length - 1) {
+
+                    i++;
+                    const nextResult = ordereds[i].$validate(undefined, settings, state.dive(value.length + i - 1));
+                    next = nextResult.value;
+                }
+
+                if (next !== undefined) {
+                    value[i] = next;
+                }
+
+                continue;
+            }
+
+            value.push(defaultValue);
+        }
+
+        return value;
     },
 
     rules: {

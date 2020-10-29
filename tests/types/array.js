@@ -759,6 +759,105 @@ describe('array()', () => {
                 },
             ]);
         });
+
+        it('should fill default values', () => {
+
+            const schema = Jade.arr().ordered(
+                Jade.str().required(),
+                Jade.num().default(1),
+                Jade.str().default('test'),
+                Jade.any(),
+                Jade.str().default('test'),
+                Jade.any(),
+                Jade.any(),
+            );
+
+            Utils.validate(schema, [
+                {
+                    value: [],
+                    error: {
+                        code: 'array.requiredUnknowns',
+                        message: 'unknown does not have 1 required value',
+                        local: { label: 'unknown', unknownMisses: 1 },
+                    },
+                },
+                {
+                    value: ['test'],
+                    output: ['test', 1, 'test'],
+                },
+                {
+                    value: ['test', 2],
+                    output: ['test', 2, 'test'],
+                },
+            ]);
+        });
+
+        it('should fill default values with sparse items', () => {
+
+            const schema = Jade.arr()
+                .ordered(
+                    Jade.str(),
+                    Jade.num().default(1),
+                    Jade.str(),
+                    Jade.str(),
+                    Jade.num().default(2),
+                    Jade.str(),
+                    Jade.str(),
+                )
+                .settings({ produceSparseArrays: true });
+
+            Utils.validate(schema, [
+                {
+                    value: [],
+                    output: [undefined, 1, undefined, undefined, 2],
+                },
+            ]);
+        });
+
+        it('should fill default values as references', () => {
+
+            const schema = Jade.obj({
+                a: 1,
+                b: 2,
+                c: Jade.arr()
+                    .ordered(
+                        Jade.str(),
+                        Jade.num().default(Jade.ref('...a')),
+                        Jade.str(),
+                        Jade.num().default(Jade.ref('...b')),
+                        Jade.str(),
+                        Jade.str(),
+                    )
+                    .settings({ produceSparseArrays: true }),
+            });
+
+            Utils.validate(schema, [
+                {
+                    value: {
+                        a: 1,
+                        b: 2,
+                        c: [],
+                    },
+                    output: {
+                        a: 1,
+                        b: 2,
+                        c: [undefined, 1, undefined, 2],
+                    },
+                },
+            ]);
+        });
+
+        it('should fill default values of nested arrays', () => {
+
+            const schema = Jade.arr().ordered(Jade.str().default('test'), Jade.arr().ordered(Jade.num().default(1)).default());
+
+            Utils.validate(schema, [
+                {
+                    value: [],
+                    output: ['test', [1]],
+                },
+            ]);
+        });
     });
 
     describe('single()', () => {
