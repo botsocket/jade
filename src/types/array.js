@@ -328,7 +328,7 @@ module.exports = Extend.schema(BaseObject, {
         // Fill ordered default values
 
         for (let i = 0; i < ordereds.length; i++) {
-            const result = ordereds[i].$validate(undefined, settings, state.dive(value.length + i - 1));
+            const result = ordereds[i].$validate(undefined, settings, state.dive(value, value.length + i));
             const defaultValue = result.value;
 
             if (defaultValue === undefined) {
@@ -341,7 +341,7 @@ module.exports = Extend.schema(BaseObject, {
                     i < ordereds.length - 1) {
 
                     i++;
-                    const nextResult = ordereds[i].$validate(undefined, settings, state.dive(value.length + i - 1));
+                    const nextResult = ordereds[i].$validate(undefined, settings, state.dive(value, value.length + i));
                     next = nextResult.value;
                 }
 
