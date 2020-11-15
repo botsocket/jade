@@ -3472,6 +3472,14 @@ describe('any()', () => {
                         local: { label: 'b' },
                     },
                 },
+                {
+                    value: {},
+                    error: {
+                        code: 'any.required',
+                        message: 'b is required',
+                        local: { label: 'b' },
+                    },
+                },
             ]);
         });
 
@@ -3699,6 +3707,14 @@ describe('any()', () => {
                         local: { values: ['y'], label: 'b' },
                     },
                 },
+                {
+                    value: { b: 'y' },
+                    error: {
+                        code: 'any.only',
+                        message: 'b must be x',
+                        local: { values: ['x'], label: 'b' },
+                    },
+                },
             ]);
         });
 
@@ -3733,6 +3749,55 @@ describe('any()', () => {
                         code: 'any.forbidden',
                         message: 'b is forbidden',
                         local: { label: 'b' },
+                    },
+                },
+            ]);
+        });
+
+        it('should not apply conditions when "is" is a schema', () => {
+
+            const schema = Jade.obj({
+                a: Jade.str(),
+                b: Jade.when('a', {
+                    is: Jade.str(),
+                    then: 'x',
+                    otherwise: 'y',
+                }),
+            });
+
+            Utils.validate(schema, [
+                { value: { b: 'x' } },
+                {
+                    value: { b: 'y' },
+                    error: {
+                        code: 'any.only',
+                        message: 'b must be x',
+                        local: { label: 'b', values: ['x'] },
+                    },
+                },
+            ]);
+        });
+
+        it('should not apply conditions when "is" is a reference', () => {
+
+            const schema = Jade.obj({
+                a: Jade.str(),
+                b: Jade.str(),
+                c: Jade.when('a', {
+                    is: Jade.ref('a'),
+                    then: 'x',
+                    otherwise: 'y',
+                }),
+            });
+
+            Utils.validate(schema, [
+                { value: { c: 'x' } },
+                {
+                    value: { c: 'y' },
+                    error: {
+                        code: 'any.only',
+                        message: 'c must be x',
+                        local: { label: 'c', values: ['x'] },
                     },
                 },
             ]);

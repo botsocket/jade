@@ -352,7 +352,16 @@ internals.Schema = class {
         }
 
         condition.subject = Compile.ref(subject);
-        condition.is = condition.is === undefined ? this.$root.invalid(null, 0, false, '') : this.$compile(condition.is);
+
+        let is = condition.is === undefined ? this.$root.invalid(null, 0, false, '').required() : this.$compile(condition.is);
+        if (condition.is !== undefined &&
+            !Utils.isRef(condition.is) &&
+            !Utils.isSchema(condition.is)) {
+
+            is = is.required();
+        }
+
+        condition.is = is;
 
         for (const key of ['then', 'otherwise']) {
             if (condition[key] === undefined) {
