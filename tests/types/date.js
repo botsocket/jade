@@ -5,7 +5,7 @@ const Utils = require('../utils');
 
 describe('date()', () => {
 
-    beforeEach(() => {
+    beforeAll(() => {
 
         const original = Date.now;
 
@@ -17,7 +17,7 @@ describe('date()', () => {
         };
     });
 
-    afterEach(() => {
+    afterAll(() => {
 
         Date.now.restore();
     });
