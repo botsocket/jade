@@ -6,7 +6,7 @@ exports.symbols = {
     deepDefault: Symbol('deepDefault'),
     callable: Symbol('callable'),
     values: Symbol('values'),
-    schema: Symbol('schema'),
+    schema: Symbol.for('@botsocket/jade/schema'),
     ref: Symbol('ref'),
     template: Symbol('template'),
     override: Symbol('override'),
